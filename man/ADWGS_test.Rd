@@ -7,15 +7,37 @@
 ADWGS_test(id, gr_element_coords, gr_site_coords, gr_maf, win_size)
 }
 \arguments{
-\item{id}{}
+\item{id}{A string used to identify the element of interest. \code{id} 
+corresponds to an element in the id column of the elements file}
 
-\item{gr_element_coords}{}
+\item{gr_element_coords}{A GenomicRanges object that describes the elements of interest containing the
+chromosome, start and end coordinates, and an mcols column corresponding to id}
 
-\item{gr_site_coords}{}
+\item{gr_site_coords}{A GenomicRanges object that describes the sites of interest which reside 
+in the elements of interest containing the chromosome, start and end coordinates, 
+and an mcols column corresponding to id. Examples of sites include transcription factor binding
+sites in promoter regions or phosphosites in exons of protein coding genes. An empty GenomicRanges object
+nullifies the requirement for sites to exist.}
 
-\item{gr_maf}{}
+\item{gr_maf}{A GenomicRanges object that describes the mutations in the dataset containing the chromosome,
+start and end coordinates, patient id, and trinucleotide context}
 
-\item{win_size}{}
+\item{win_size}{An integer indicating the size of the background window in base pairs for which the 
+mutation rate is expected to remain the same. The default is 50000bps.}
+}
+\value{
+A data frame containing the following columns
+\describe{
+    \item{id}{A string identifying the element of interest}
+    \item{pp_element}{The p-value of the element}
+    \item{element_muts_obs}{The number of patients with a mutation in the element}
+    \item{element_muts_exp}{The expected number of patients with a mutation in the element with respect to background}
+    \item{element_enriched}{A boolean indicating whether the element is enriched in mutations}
+    \item{pp_site}{The p-value of the element}
+    \item{site_muts_obs}{The number of patients with a mutation in the site}
+    \item{site_muts_exp}{The expected number of patients with a mutation in the site with respect to element}
+    \item{site_enriched}{A boolean indicating whether the site is enriched in mutations}
+}
 }
 \description{
 ADWGS_test executes the statistical test for ActiveDriverWGS
