@@ -8,19 +8,67 @@ ActiveDriverWGS(mutations, elements, sites = NULL, window_size = 50000,
   filter_hyper_MB = 30, recovery.dir = "", mc.cores = 1)
 }
 \arguments{
-\item{mutations}{}
+\item{mutations}{A data frame containing the following columns: chr, pos1, pos2, ref, alt, patient.
+\describe{
+    \item{chr}{autosomal chromosomes as chr1 to chr22 and sex chromosomes as chrX and chrY}
+    \item{pos1}{the start position of the mutation in base 1 coordinates}
+    \item{pos2}{the end position of the mutation in base 1 coordinates}
+    \item{ref}{the reference allele as a string containing the bases A, T, C or G}
+    \item{alt}{the alternate allele as a string containing the bases A, T, C or G}
+    \item{patient}{the patient identifier as a string}
+}}
 
-\item{elements}{}
+\item{elements}{A data frame containing the following columns: chr, start, end, id
+\describe{
+    \item{chr}{autosomal chromosomes as chr1 to chr22 and sex chromosomes as chrX and chrY}
+    \item{start}{the start position of the element in base 0 coordinates (BED format)}
+    \item{end}{the end position of the element in base 0 coordinates (BED format)}
+    \item{id}{the element identifier - if the element contains multiple segments such as exons, 
+    each segment should be a separate row with the segment coordinates 
+    and the element identifier as id. Elements can be coding or noncoding such as exons of protein
+    coding genes or active enhancers.}
+}}
 
-\item{sites}{}
+\item{sites}{A data frame containing the following columns: chr, start, end, id
+\describe{
+    \item{chr}{autosomal chromosomes as chr1 to chr22 and sex chromosomes as chrX and chrY}
+    \item{start}{the start position of the site in base 0 coordinates (BED format)}
+    \item{end}{the end position of the site in base 0 coordinates (BED format)}
+    \item{id}{the site identifier - each site should contain only 1 segment and a unique id. If ids are duplicated,
+    each segment of the site will be treated as an individual site. Sites can be coding or noncoding such as
+    phosphosites of protein coding genes in genomic coordinates or transcription factor binding sites of active
+    enhancers.}
+}}
 
-\item{window_size}{}
+\item{window_size}{An integer indicating the size of the background window in base pairs for which the 
+mutation rate is expected to remain the same. The default is 50000bps.}
 
-\item{filter_hyper_MB}{}
+\item{filter_hyper_MB}{Hyper-mutated samples carry many passenger mutations and dilute the signal of true drivers.
+Samples with a rate greater than \code{filter_hyper_MB} mutations per megabase are excluded. 
+The default is 30 mutations per megabase.}
 
-\item{recovery.dir}{}
+\item{recovery.dir}{The directory for storing recovery files. If no directory is specified, ActiveDriverWGS will write
+recovery files in the current directory. If the directory does not exist, ActiveDriverWGS will create the directory.}
 
-\item{mc.cores}{}
+\item{mc.cores}{The number of cores which can be used if multiple cores are available. The default is 1.}
+}
+\value{
+A data frame containing the results of driver discovery containing the following columns: id, pp_element,
+element_muts_obs, element_muts_exp, element_enriched, pp_site, site_muts_obs, site_muts_exp, site_enriched,
+fdr_element, fdr_site
+\describe{
+    \item{id}{A string identifying the element of interest}
+    \item{pp_element}{The p-value of the element}
+    \item{element_muts_obs}{The number of patients with a mutation in the element}
+    \item{element_muts_exp}{The expected number of patients with a mutation in the element with respect to background}
+    \item{element_enriched}{A boolean indicating whether the element is enriched in mutations}
+    \item{pp_site}{The p-value of the element}
+    \item{site_muts_obs}{The number of patients with a mutation in the site}
+    \item{site_muts_exp}{The expected number of patients with a mutation in the site with respect to element}
+    \item{site_enriched}{A boolean indicating whether the site is enriched in mutations}
+    \item{fdr_element}{The false discovery rate of \code{pp_element}}
+    \item{fdr_site}{The false discovery rate of \code{pp_site}}
+}
 }
 \description{
 ActiveDriverWGS is a driver discovery tool for simple somatic mutations in cancer whole genomes
@@ -28,4 +76,6 @@ ActiveDriverWGS is a driver discovery tool for simple somatic mutations in cance
 \examples{
 TODO Make sure all mutations are legal
 TODO Format all results
+TODO Add sample data
+TODO Check that the result columns are actually correct
 }
