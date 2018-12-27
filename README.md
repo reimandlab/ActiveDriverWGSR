@@ -38,4 +38,4 @@ Regions of interest can be coding or noncoding should be in a BED12 format
 #### 3. Sites of Interest 
 Sites of interest (e.g. Transcription factor binding sites) which may be active sites in regions of interest should be in a BED4 format
 
-More thorough documentation of the activePathways function can be found in R with `?activePathways`, and complete tutorials can be found with `browseVignettes(package='ActiveDriverWGSR')`
+More thorough documentation of the activePathways function can be found in R with `?ActiveDriverWGS`, and complete tutorials can be found with `browseVignettes(package='ActiveDriverWGSR')`
