@@ -1,0 +1,56 @@
+---
+title: "ActiveDriverWGSR"
+author: "Helen Zhu, Dr. Juri Reimand"
+date: "`r Sys.Date()`"
+output: 
+  rmarkdown::html_vignette:
+    toc: false
+vignette: >
+  %\VignetteIndexEntry{ActiveDriverWGSR}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE,
+                      warning=FALSE, 
+                      message=FALSE, 
+                      width=500)
+options(max.print=35)
+```
+
+# Introduction
+
+ActiveDriverWGS is a driver discovery tool for cancer whole genome sequencing data. It analyzes the mutational burden of SNVs and short INDELs in functionally defined regions of interest and returns regions which are significantly mutated compared to a background window. For more information, please refer to the ActiveDriverWGS preprint. https://www.biorxiv.org/content/early/2017/12/19/236802
+
+### Please note 
+ActiveDriverWGS is only currently available for GRCh37. We are working on adding the option for GRCh38.
+
+# Input Data
+ActiveDriverWGSR requires a file for somatic mutations and a file for genomic elements. A third optional file for sites within genomic elements (i.e. post-translational modification sites in protein coding genes) can be used to find genomic elements with enriched site mutations.
+
+```{r cars}
+library(ActiveDriverWGSR)
+
+data("breastcancer_mutations")
+
+head(breastcancer_mutations)
+
+data("coding_regions")
+
+head(coding_regions)
+
+data("post_translational_modification_sites")
+
+head(post_translational_modification_sites)
+
+```
+
+## Using the Software
+
+## Interpreting the Results
+
+
+
+```{r pressure, echo=FALSE}
+```
