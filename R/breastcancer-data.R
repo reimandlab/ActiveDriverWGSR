@@ -1,9 +1,9 @@
 #' breast cancer mutations
 #'
 #' breast cancer whole genome simple somatic mutations from Alexandrov et, 2013
-#' 
+#'
 #' @name breastcancer_mutations
-#' 
+#'
 #' @docType data
 #'
 #' @usage data(breastcancer_mutations)
@@ -17,6 +17,7 @@
 #'     \item{alt}{the alternate allele as a string containing the bases A, T, C or G}
 #'     \item{patient}{the patient identifier as a string}
 #'     \item{cc}{cancer type of the sample}
+#' }
 #'
 #' @keywords datasets
 #'
@@ -27,6 +28,6 @@
 #'
 #' @examples
 #' data(breastcancer_mutations)
-#' data(cds_coords)
-#' ActiveDriverWGS(mutations = breastcancer_mutations, elements = cds_coords)
+#' data(coding_regions)
+#' ActiveDriverWGS(mutations = breastcancer_mutations, elements = coding_regions)
 NULL
