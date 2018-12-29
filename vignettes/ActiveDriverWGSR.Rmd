@@ -65,8 +65,28 @@ ActiveDriverWGS has several adjustable parameters:
 4) Multiple cores `mc.cores`
 
 # Interpreting the Results
+ActiveDriverWGSR will return a results file in a data frame format with the following columns.
 
+1) `id`
 
+2) `pp_element`
+
+3) `element_muts_obs`
+
+4) `element_muts_exp`
+
+5) `element_enriched`
+
+6) `pp_site`
+
+7) `site_muts_obs`
+
+8) `site_enriched`
+
+9) `fdr_element`
+
+10) `fdr_site`
 
 ```{r pressure, echo=FALSE}
+# heaa(results)
 ```
