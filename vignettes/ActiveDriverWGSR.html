@@ -74,21 +74,20 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 
 
 
-<div id="introduction" class="section level2">
-<h2>Introduction</h2>
-<p>ActiveDriverWGS is a driver discovery tool for cancer whole genome sequencing data. It analyzes the mutational burden of SNVs and short INDELs in functionally defined regions of interest and returns regions which are significantly mutated compared to a background window.</p>
-<p>For more information, please refer to the ActiveDriverWGS preprint. <a href="https://www.biorxiv.org/content/early/2017/12/19/236802" class="uri">https://www.biorxiv.org/content/early/2017/12/19/236802</a></p>
-<div id="please-note-activedriverwgs-is-only-currently-available-for-grch37.-we-are-working-on-adding-the-option-for-grch38." class="section level3">
-<h3>Please note: ActiveDriverWGS is only currently available for GRCh37. We are working on adding the option for GRCh38.</h3>
+<div id="introduction" class="section level1">
+<h1>Introduction</h1>
+<p>ActiveDriverWGS is a driver discovery tool for cancer whole genome sequencing data. It analyzes the mutational burden of SNVs and short INDELs in functionally defined regions of interest and returns regions which are significantly mutated compared to a background window. For more information, please refer to the ActiveDriverWGS preprint. <a href="https://www.biorxiv.org/content/early/2017/12/19/236802" class="uri">https://www.biorxiv.org/content/early/2017/12/19/236802</a></p>
+<div id="please-note" class="section level3">
+<h3>Please note</h3>
+<p>ActiveDriverWGS is only currently available for GRCh37. We are working on adding the option for GRCh38.</p>
 </div>
 </div>
-<div id="input-data" class="section level2">
-<h2>Input Data</h2>
+<div id="input-data" class="section level1">
+<h1>Input Data</h1>
 <p>ActiveDriverWGSR requires a file for somatic mutations and a file for genomic elements. A third optional file for sites within genomic elements (i.e. post-translational modification sites in protein coding genes) can be used to find genomic elements with enriched site mutations.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(ActiveDriverWGSR)
 
 <span class="kw">data</span>(<span class="st">&quot;breastcancer_mutations&quot;</span>)
-
 <span class="kw">head</span>(breastcancer_mutations)</code></pre></div>
 <pre><code>##         chr      pos1      pos2                 ref alt patient     cc
 ## 53431 chr10  60723391  60723409 CAGAGATTGCAGGAAAAAA   - PD3851a Breast
@@ -98,7 +97,6 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 ## 53435 chr14  52111863  52111865                 TTC   - PD3851a Breast
 ##  [ reached getOption(&quot;max.print&quot;) -- omitted 1 row ]</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">data</span>(<span class="st">&quot;coding_regions&quot;</span>)
-
 <span class="kw">head</span>(coding_regions)</code></pre></div>
 <pre><code>##    chr  start    end                                                  id
 ## 1 chr1  69090  70008      gc19_pc.cds::gencode::OR4F5::ENSG00000186092.4
@@ -108,7 +106,6 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 ## 5 chr1 738531 738618 gc19_pc.cds::gencode::AL669831.1::ENSG00000269831.1
 ## 6 chr1 738787 738812 gc19_pc.cds::gencode::AL669831.1::ENSG00000269831.1</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">data</span>(<span class="st">&quot;post_translational_modification_sites&quot;</span>)
-
 <span class="kw">head</span>(post_translational_modification_sites)</code></pre></div>
 <pre><code>##     chr  start    end                   id
 ## 1  chr1 874473 874473 SAMD11 NM_152486 162
@@ -118,11 +115,24 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 ## 12 chr1 874477 874477 SAMD11 NM_152486 163
 ## 13 chr1 874479 874479 SAMD11 NM_152486 164</code></pre>
 </div>
-<div id="using-the-software" class="section level2">
-<h2>Using the Software</h2>
+<div id="basic-use" class="section level1">
+<h1>Basic Use</h1>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># results = ActiveDriverWGS(mutations = breastcancer_mutations,</span>
+<span class="co">#                           elements = coding_regions,</span>
+<span class="co">#                           sites = post_translational_modification_sites) # an optional input parameter</span></code></pre></div>
+<div id="parameter-interpretation" class="section level2">
+<h2>Parameter Interpretation</h2>
+<p>ActiveDriverWGS has several adjustable parameters:</p>
+<ol style="list-style-type: decimal">
+<li><p>Background window <code>window_size</code></p></li>
+<li><p>Filtering hypermutated samples <code>filter_hyper_MB</code></p></li>
+<li><p>Recovery directory <code>recovery.dir</code></p></li>
+<li><p>Multiple cores <code>mc.cores</code></p></li>
+</ol>
 </div>
-<div id="interpreting-the-results" class="section level2">
-<h2>Interpreting the Results</h2>
+</div>
+<div id="interpreting-the-results" class="section level1">
+<h1>Interpreting the Results</h1>
 </div>
 
 

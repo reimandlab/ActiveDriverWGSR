@@ -29,26 +29,42 @@ ActiveDriverWGS is only currently available for GRCh37. We are working on adding
 # Input Data
 ActiveDriverWGSR requires a file for somatic mutations and a file for genomic elements. A third optional file for sites within genomic elements (i.e. post-translational modification sites in protein coding genes) can be used to find genomic elements with enriched site mutations.
 
-```{r cars}
+```{r input}
 library(ActiveDriverWGSR)
 
 data("breastcancer_mutations")
-
 head(breastcancer_mutations)
 
 data("coding_regions")
-
 head(coding_regions)
 
 data("post_translational_modification_sites")
-
 head(post_translational_modification_sites)
 
 ```
 
-## Using the Software
+# Basic Use
 
-## Interpreting the Results
+
+```{r ActiveDriverWGS}
+# results = ActiveDriverWGS(mutations = breastcancer_mutations,
+#                           elements = coding_regions,
+#                           sites = post_translational_modification_sites) # an optional input parameter
+
+```
+
+## Parameter Interpretation
+ActiveDriverWGS has several adjustable parameters:
+
+1) Background window `window_size`
+
+2) Filtering hypermutated samples `filter_hyper_MB`
+
+3) Recovery directory `recovery.dir`
+
+4) Multiple cores `mc.cores`
+
+# Interpreting the Results
 
 
 
