@@ -1,5 +1,5 @@
-library(GenomicRanges)
-library(BSgenome.Hsapiens.UCSC.hg19)
+require(GenomicRanges)
+require(BSgenome.Hsapiens.UCSC.hg19)
 
 #' This function finds the tri-nucleotide context of mutations
 #'
@@ -19,6 +19,7 @@ library(BSgenome.Hsapiens.UCSC.hg19)
 #' @export
 #'
 #' @examples
+#' get_3n_context_of_mutations(mutations)
 get_3n_context_of_mutations = function(mutations) {
   
   legal_dna = c("A", "C", "G", "T")

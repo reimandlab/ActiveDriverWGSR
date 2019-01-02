@@ -1,5 +1,5 @@
-library(BSgenome.Hsapiens.UCSC.hg19)
-library(plyr)
+require(BSgenome.Hsapiens.UCSC.hg19)
+require(plyr)
 
 
 #' Makes mutational signatures
