@@ -23,8 +23,8 @@ ActiveDriverWGS(mutations, elements, sites = NULL, window_size = 50000,
     \item{chr}{autosomal chromosomes as chr1 to chr22 and sex chromosomes as chrX and chrY}
     \item{start}{the start position of the element in base 0 coordinates (BED format)}
     \item{end}{the end position of the element in base 0 coordinates (BED format)}
-    \item{id}{the element identifier - if the element contains multiple segments such as exons, 
-    each segment should be a separate row with the segment coordinates 
+    \item{id}{the element identifier - if the element contains multiple segments such as exons,
+    each segment should be a separate row with the segment coordinates
     and the element identifier as id. Elements can be coding or noncoding such as exons of protein
     coding genes or active enhancers.}
 }}
@@ -40,11 +40,11 @@ ActiveDriverWGS(mutations, elements, sites = NULL, window_size = 50000,
     enhancers.}
 }}
 
-\item{window_size}{An integer indicating the size of the background window in base pairs for which the 
+\item{window_size}{An integer indicating the size of the background window in base pairs for which the
 mutation rate is expected to remain the same. The default is 50000bps.}
 
 \item{filter_hyper_MB}{Hyper-mutated samples carry many passenger mutations and dilute the signal of true drivers.
-Samples with a rate greater than \code{filter_hyper_MB} mutations per megabase are excluded. 
+Samples with a rate greater than \code{filter_hyper_MB} mutations per megabase are excluded.
 The default is 30 mutations per megabase.}
 
 \item{recovery.dir}{The directory for storing recovery files. If no directory is specified, ActiveDriverWGS will write

@@ -2,25 +2,26 @@
 % Please edit documentation in R/format_muts.R
 \name{format_muts}
 \alias{format_muts}
-\title{Title}
+\title{This function filters hypermutated samples and returns the formatted mutations with the appropriate trinucleotide context}
 \usage{
-format_muts(fname, cols_we_need, sample_blacklist,
-  sample_name_col = "file.name", read_nrow = 1e+08,
-  filter_hyper_MB = NA)
+format_muts(mutations, filter_hyper_MB = NA)
 }
 \arguments{
-\item{fname}{}
-
-\item{cols_we_need}{}
-
-\item{sample_blacklist}{}
-
-\item{sample_name_col}{}
-
-\item{read_nrow}{}
+\item{mutations}{A data frame with the following columns: chr, pos1, pos2, ref, alt, patient
+\describe{
+    \item{chr}{autosomal chromosomes as chr1 to chr22 and sex chromosomes as chrX and chrY}
+    \item{pos1}{the start position of the mutation in base 1 coordinates}
+    \item{pos2}{the end position of the mutation in base 1 coordinates}
+    \item{ref}{the reference allele as a string containing the bases A, T, C or G}
+    \item{alt}{the alternate allele as a string containing the bases A, T, C or G}
+    \item{patient}{the patient identifier as a string}
+}}
 
 \item{filter_hyper_MB}{}
 }
+\value{
+a data frame called mutations which has been formatted with an extra column for trinucleotide context
+}
 \description{
-Title
+This function filters hypermutated samples and returns the formatted mutations with the appropriate trinucleotide context
 }

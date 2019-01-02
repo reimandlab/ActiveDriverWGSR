@@ -52,70 +52,55 @@ get_3n_context_of_mutations = function(mutations) {
 }
 
 
-#' Title
+#' This function filters hypermutated samples and returns the formatted mutations with the appropriate trinucleotide context
 #'
-#' @param fname 
-#' @param cols_we_need 
-#' @param sample_blacklist 
-#' @param sample_name_col 
-#' @param read_nrow 
 #' @param filter_hyper_MB 
+#' @param mutations A data frame with the following columns: chr, pos1, pos2, ref, alt, patient
+#' \describe{
+#'     \item{chr}{autosomal chromosomes as chr1 to chr22 and sex chromosomes as chrX and chrY}
+#'     \item{pos1}{the start position of the mutation in base 1 coordinates}
+#'     \item{pos2}{the end position of the mutation in base 1 coordinates}
+#'     \item{ref}{the reference allele as a string containing the bases A, T, C or G}
+#'     \item{alt}{the alternate allele as a string containing the bases A, T, C or G}
+#'     \item{patient}{the patient identifier as a string}
+#' }
 #'
-#' @return
+#' @return a data frame called mutations which has been formatted with an extra column for trinucleotide context
 #' @export
 #'
 #' @examples
-format_muts = function(fname, cols_we_need, sample_blacklist, sample_name_col="file.name", 
-                      read_nrow=100000000, filter_hyper_MB=NA) {
-  maf = read.delim(fname, stringsAsFactors=F, nrow=read_nrow)
-  if (nrow(maf)==read_nrow) {
-    stop(paste("warning:", fname, "was not read completely\n"))		
-  }
-  
-  if (!all(cols_we_need %in% colnames(maf))) {
-    stop(paste("error:", fname, "has wrong colnames\n"))		
-  }
-  
-  # remove blacklisted samples
-  which_black = which(maf[, sample_name_col] %in% sample_blacklist)
-  cat("blacklisted", length(which_black), "\n", sample_blacklist, "\n")
-  maf = maf[!maf[, sample_name_col] %in% sample_blacklist,]
-  
-  # keep only needed columns
-  maf = maf[,cols_we_need]
-  colnames(maf) = c("chr", "pos1", "pos2", "ref", "alt", "patient", "cc")
-  gc()
-  
+format_muts = function(mutations, filter_hyper_MB=NA) {
+
   # remove hypermutated samples, according to muts/megabase rate defined
   if (!is.na(filter_hyper_MB) & filter_hyper_MB>0) {
     total_muts_filter = 3000*filter_hyper_MB
-    sample_mut_count = table(maf$patient)
+    sample_mut_count = table(mutations$patient)
     hyper_tab = sample_mut_count[sample_mut_count>total_muts_filter]
     spl_rm = names(hyper_tab)
     no_mut_rm = sum(hyper_tab)
-    cat(length(spl_rm), "remove hypermut, n=", no_mut_rm, ", ", round(100*no_mut_rm/nrow(maf)), "%\n")
+    cat(length(spl_rm), "remove hypermut, n=", no_mut_rm, ", ", round(100*no_mut_rm/nrow(mutations)), "%\n")
     cat("hypermuted samples: ", spl_rm, "\n\n")
-    maf = maf[!maf$patient %in% spl_rm,, drop=F]
+    mutations = mutations[!mutations$patient %in% spl_rm,, drop=F]
   }
   
   # keep only relevant chrs, make sure CHR is present in address
-  maf$chr = toupper(gsub("chr", "", maf$chr, ignore.case=TRUE))
-  maf$chr = paste0("chr", maf$chr)
-  maf = maf[maf$chr %in% paste0("chr", c(1:22, "Y", "X", "M")),]	
+  mutations$chr = toupper(gsub("chr", "", mutations$chr, ignore.case=TRUE))
+  mutations$chr = paste0("chr", mutations$chr)
+  mutations = mutations[mutations$chr %in% paste0("chr", c(1:22, "Y", "X", "M")),]	
   
-  maf$pos1 = as.numeric(maf$pos1)
-  maf$pos2 = as.numeric(maf$pos2)
+  mutations$pos1 = as.numeric(mutations$pos1)
+  mutations$pos2 = as.numeric(mutations$pos2)
   
   # reverse start/end coordinates of deletions
-  rev_coords = which(maf$pos2-maf$pos1<0)
+  rev_coords = which(mutations$pos2-mutations$pos1<0)
   cat("reversing", length(rev_coords), "positions\n")
   if (length(rev_coords)>0) {
-    pos1 = maf[rev_coords, "pos1"]
-    pos2 = maf[rev_coords, "pos2"]
-    maf[rev_coords, "pos1"] = pos2
-    maf[rev_coords, "pos2"] = pos1
+    pos1 = mutations[rev_coords, "pos1"]
+    pos2 = mutations[rev_coords, "pos2"]
+    mutations[rev_coords, "pos1"] = pos2
+    mutations[rev_coords, "pos2"] = pos1
     rm(pos1, pos2)
   }
-  maf = get_3n_context_of_mutations(maf)
-  maf
+  mutations = get_3n_context_of_mutations(mutations)
+  mutations
 }

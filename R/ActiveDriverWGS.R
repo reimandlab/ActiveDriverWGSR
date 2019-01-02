@@ -88,7 +88,7 @@ ActiveDriverWGS = function(mutations,
       message(paste0("Creating ", recovery.dir))
     }
   }
-  if(!endsWith(recovery.dir, "[/]")){
+  if(!endsWith(recovery.dir, "[/]") && recovery.dir != ""){
     recovery.dir = paste0(recovery.dir, "/")
   }
 
@@ -104,18 +104,19 @@ ActiveDriverWGS = function(mutations,
   if (!(is.character(mutations$patient))) stop("patient identifier must be a string")
 
   # Creating gr_muts
-  mutations = format_muts(mutations, filter_hyper_MB = filter_hyper_MB)
+  mutations = format_muts(mutations = mutations, 
+                          filter_hyper_MB = filter_hyper_MB)
   gr_muts = GRanges(mutations$chr,
                     IRanges(mutations$pos1, mutations$pos2), mcols=mutations[,c("patient", "tag")])
-  save(gr_muts, file=paste0(recovery.dir,"/gr_muts.rsav"))
+  save(gr_muts, file=paste0(recovery.dir,"gr_muts.rsav"))
 
   # Verifying Format for Elements
   if (!is.data.frame(elements)) stop("elements must be a data frame")
   if (!all(c("chr", "start", "end", "id") %in% colnames(elements))) stop("elements must contain the following columns: chr, start, end & id")
   if (any(is.na(elements))) stop("elements may not contain missing values")
   if (any(duplicated(elements))) stop("duplicated elements are present. please review your format")
-  if (!all(elements$chr %in% seqnames(Hsapiens)[1:24])) stop("Only the 22 autosomal and 2 sex chromosomes may be used at this time. Note that chr23 should be formatted as chrX and chr24 should be formatted as chrY")
-  if (!(is.integer(elements$start) && is.integer(elements$end))) stop("start and end must be integers")
+  # if (!all(elements$chr %in% seqnames(Hsapiens)[1:24])) stop("Only the 22 autosomal and 2 sex chromosomes may be used at this time. Note that chr23 should be formatted as chrX and chr24 should be formatted as chrY")
+  if (!(is.numeric(elements$start) && is.numeric(elements$end))) stop("start and end must be numeric")
   if (!(is.character(elements$id))) stop("element identifier must be a string")
 
   # Creating elements_gr
@@ -145,11 +146,11 @@ ActiveDriverWGS = function(mutations,
 
   recovered_results = NULL
   recovered_result_numbers = c()
-  if (!is.na(recovery_dir)) {
-    results_filenames = list.files(recovery_dir, pattern = "ADWGS_result[0123456789]+_recovery_file.rsav")
+  if (!is.na(recovery.dir)) {
+    results_filenames = list.files(recovery.dir, pattern = "ADWGS_result[0123456789]+_recovery_file.rsav")
     if (length(results_filenames) > 0) results_filenames = paste0("/", results_filenames)
     recovered_results = do.call(rbind, lapply(results_filenames, function(filename) {
-      load_result = suppressWarnings(try(load(paste0(recovery_dir, filename)), silent = TRUE))
+      load_result = suppressWarnings(try(load(paste0(recovery.dir, filename)), silent = TRUE))
       if (class(load_result) == try_error) return(NULL)
       if (ncol(result) != 13) return(NULL)
       result = result
@@ -163,15 +164,14 @@ ActiveDriverWGS = function(mutations,
   mutated_results = do.call(rbind, parallel::mclapply(1:length(not_done), function(i) {
     if (i %% 100 == 0) cat(i, " elements completed\n")
     if (i %in% recovered_result_numbers) return(NULL)
-    element_id = not_done[i]
     result = ADWGS_test(id = not_done[i],
                         gr_element_coords = gr_element_coords,
                         gr_site_coords = gr_site_coords,
                         gr_maf = gr_muts,
                         win_size = window_size)
-    if (!is.na(recovery_dir)) {
+    if (!is.na(recovery.dir)) {
       result$result_number = i
-      save(result, file = paste0(recovery_dir, "/ADWGS_result", i, "_recovery_file.rsav"))
+      save(result, file = paste0(recovery.dir, "ADWGS_result", i, "_recovery_file.rsav"))
     }
     result
   }, mc.cores = mc.cores))

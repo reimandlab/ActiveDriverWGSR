@@ -1,6 +1,50 @@
 library(BSgenome.Hsapiens.UCSC.hg19)
 library(plyr)
 
+
+#' Makes mutational signatures
+#'
+#' @return a dataframe with mutational signatures
+#' @export
+#'
+#' @examples
+#' mut_signatures = make_mut_signatures()
+make_mut_signatures = function() {
+  nucs = c("A", "C", "G", "T")
+  
+  signatures_dfr = data.frame(as.matrix(expand.grid(left=nucs, mid=nucs, right=nucs, alt=nucs)), stringsAsFactors=F)
+  signatures_dfr = signatures_dfr[signatures_dfr$mid!=signatures_dfr$alt,]
+  signatures_dfr = signatures_dfr[signatures_dfr$mid %in% c("C", "T"),]
+  signatures_dfr$tri = paste0(signatures_dfr$left, signatures_dfr$mid, signatures_dfr$right)
+  signatures_dfr$signt = paste0(signatures_dfr$tri, ">", signatures_dfr$alt)
+  signatures_dfr
+}
+
+#' Calculates the number of expected mutations based
+#'
+#' @param hyp hypothesis to be tested
+#' @param select_positions boolean column which indicates which positions are in the element of interest
+#' @param dfr a dataframe containing the data to be tested
+#' @param colname name of the column which indicates the count of mutations in the positions of interest
+#'
+#' @return a list of observed mutations (numeric), expected mutations (numeric),
+#' observations enriched (boolean) and observations depleted (boolean)  
+#' @export
+#'
+#' @examples get_obs_exp(h0, dfr$is_element, dfr, "n_mut") 
+get_obs_exp = function(hyp, select_positions, dfr, colname) {
+  obs_mut = sum(dfr[select_positions, colname])
+  
+  exp_probs = hyp$fitted.values[select_positions]
+  # simulate from poisson distribution with values from model response
+  exp_boot = replicate(1000, sum(rpois(rep(1, length(exp_probs)), exp_probs)))
+  exp_mut = median(exp_boot)
+  obs_enriched = obs_mut > quantile(exp_boot, 0.95)
+  obs_depleted = obs_mut < quantile(exp_boot, 0.05)
+  
+  list(obs_mut, exp_mut, obs_enriched, obs_depleted)
+}
+
 #' ADWGS_test executes the statistical test for ActiveDriverWGS
 #'
 #' @param id A string used to identify the element of interest. \code{id} 
@@ -106,7 +150,7 @@ ADWGS_test = function(id, gr_element_coords, gr_site_coords, gr_maf, win_size) {
   # count mutations by position and quad-nucl context; indels will be counted by midpoint
   gr_maf_element_plus_background = c(gr_maf_element, gr_maf_background_only)
   mut_midpoint = round((start(gr_maf_element_plus_background) + end(gr_maf_element_plus_background))/2)
-  mut_tag = mcols(gr_maf_element_plus_background)[,3]
+  mut_tag = gr_maf_element_plus_background$mcols.tag #  mcols(gr_maf_element_plus_background)[,3]
   maf_element_plus_background = data.frame(pos1=mut_midpoint, tag=mut_tag, stringsAsFactors=F)
   muts_per_pos = ddply(maf_element_plus_background, c("pos1", "tag"), function(x) nrow(x))
   colnames(muts_per_pos)[3] = "n_mut"
