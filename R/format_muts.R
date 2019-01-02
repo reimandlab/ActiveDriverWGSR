@@ -1,5 +1,5 @@
-require(GenomicRanges)
-require(BSgenome.Hsapiens.UCSC.hg19)
+# require(GenomicRanges)
+# require(BSgenome.Hsapiens.UCSC.hg19)
 
 #' This function finds the tri-nucleotide context of mutations
 #'

@@ -1,5 +1,7 @@
 require(parallel)
 require(GenomicRanges)
+require(BSgenome.Hsapiens.UCSC.hg19)
+require(plyr)
 
 #' ActiveDriverWGS is a driver discovery tool for simple somatic mutations in cancer whole genomes
 #'
