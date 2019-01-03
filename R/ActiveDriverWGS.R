@@ -1,7 +1,12 @@
-require(parallel)
-require(GenomicRanges)
-require(BSgenome.Hsapiens.UCSC.hg19)
-require(plyr)
+# require(parallel)
+# require(GenomicRanges)
+# require(BSgenome.Hsapiens.UCSC.hg19)
+# require(plyr)
+# require(IRanges)
+# require(BSgenome)
+# require(Biostrings)
+# require(GenomeInfoDb)
+
 
 #' ActiveDriverWGS is a driver discovery tool for simple somatic mutations in cancer whole genomes
 #'
@@ -59,6 +64,7 @@ require(plyr)
 #'     \item{fdr_element}{The false discovery rate of \code{pp_element}}
 #'     \item{fdr_site}{The false discovery rate of \code{pp_site}}
 #' }
+#' 
 #' @export
 #'
 #' @examples
@@ -101,7 +107,7 @@ ActiveDriverWGS = function(mutations,
   if (!all(c("chr", "pos1", "pos2", "ref", "alt", "patient") %in% colnames(mutations))) stop("mutations must contain the following columns: chr, pos1, pos2, ref, alt & patient")
   if (any(is.na(mutations))) stop("mutations may not contain missing values")
   if (any(duplicated(mutations))) stop("duplicated mutations are present. please review your format")
-  if (!all(mutations$chr %in% seqnames(Hsapiens)[1:24])) stop("Only the 22 autosomal and 2 sex chromosomes may be used at this time. Note that chr23 should be formatted as chrX and chr24 should be formatted as chrY")
+  # if (!all(mutations$chr %in% BSgenome.Hsapiens.UCSC.hg19::seqnames(Hsapiens)[1:24])) stop("Only the 22 autosomal and 2 sex chromosomes may be used at this time. Note that chr23 should be formatted as chrX and chr24 should be formatted as chrY")
   if (!(is.integer(mutations$pos1) && is.integer(mutations$pos2))) stop("pos1 and pos2 must be integers")
   # if (!(all(mutations$ref %in% legal_dna) && all(mutations$alt %in% legal_dna))) stop("Reference and alternate alleles must be A, T, C or G")
   if (!(is.character(mutations$patient))) stop("patient identifier must be a string")
@@ -109,8 +115,8 @@ ActiveDriverWGS = function(mutations,
   # Creating gr_muts
   mutations = format_muts(mutations = mutations, 
                           filter_hyper_MB = filter_hyper_MB)
-  gr_muts = GRanges(mutations$chr,
-                    IRanges(mutations$pos1, mutations$pos2), mcols=mutations[,c("patient", "tag")])
+  gr_muts = GenomicRanges::GRanges(mutations$chr,
+                                   IRanges::IRanges(mutations$pos1, mutations$pos2), mcols=mutations[,c("patient", "tag")])
   save(gr_muts, file=paste0(recovery.dir,"gr_muts.rsav"))
 
   # Verifying Format for Elements
@@ -118,14 +124,14 @@ ActiveDriverWGS = function(mutations,
   if (!all(c("chr", "start", "end", "id") %in% colnames(elements))) stop("elements must contain the following columns: chr, start, end & id")
   if (any(is.na(elements))) stop("elements may not contain missing values")
   if (any(duplicated(elements))) stop("duplicated elements are present. please review your format")
-  # if (!all(elements$chr %in% seqnames(Hsapiens)[1:24])) stop("Only the 22 autosomal and 2 sex chromosomes may be used at this time. Note that chr23 should be formatted as chrX and chr24 should be formatted as chrY")
+  # if (!all(elements$chr %in% BSgenome.Hsapiens.UCSC.hg19::seqnames(Hsapiens)[1:24])) stop("Only the 22 autosomal and 2 sex chromosomes may be used at this time. Note that chr23 should be formatted as chrX and chr24 should be formatted as chrY")
   if (!(is.numeric(elements$start) && is.numeric(elements$end))) stop("start and end must be numeric")
   if (!(is.character(elements$id))) stop("element identifier must be a string")
 
   # Creating elements_gr
-  gr_element_coords = GRanges(elements$chr,
-                              IRanges(elements$start, elements$end),
-                              mcols = elements[,c("id")])
+  gr_element_coords = GenomicRanges::GRanges(elements$chr,
+                                             IRanges::IRanges(elements$start, elements$end),
+                                             mcols = elements[,c("id")])
 
   # Verifying Format for Sites
   if(!is.null(sites)){
@@ -133,14 +139,14 @@ ActiveDriverWGS = function(mutations,
     if (!all(c("chr", "start", "end", "id") %in% colnames(sites))) stop("sites must contain the following columns: chr, start, end & id")
     if (any(is.na(sites))) stop("sites may not contain missing values")
     if (any(duplicated(sites))) stop("duplicated sites are present. please review your format")
-    if (!all(sites$chr %in% seqnames(Hsapiens)[1:24])) stop("Only the 22 autosomal and 2 sex chromosomes may be used at this time. Note that chr23 should be formatted as chrX and chr24 should be formatted as chrY")
+    # if (!all(sites$chr %in% BSgenome.Hsapiens.UCSC.hg19::seqnames(Hsapiens)[1:24])) stop("Only the 22 autosomal and 2 sex chromosomes may be used at this time. Note that chr23 should be formatted as chrX and chr24 should be formatted as chrY")
     if (!(is.integer(sites$start) && is.integer(sites$end))) stop("start and end must be integers")
     if (!(is.character(sites$id))) stop("site identifier must be a string")
 
-    gr_site_coords = GRanges(sites$chr,
-                             IRanges(sites$start, sites$end))
+    gr_site_coords = GenomicRanges::GRanges(sites$chr,
+                                            IRanges::IRanges(sites$start, sites$end))
   }else{
-    gr_site_coords = GRanges(c(seqnames=NULL,ranges=NULL,strand=NULL))
+    gr_site_coords = GenomicRanges::GRanges(c(seqnames=NULL,ranges=NULL,strand=NULL))
   }
 
   # Running ADWGS Test

@@ -1,5 +1,3 @@
-# require(GenomicRanges)
-# require(BSgenome.Hsapiens.UCSC.hg19)
 
 #' This function finds the tri-nucleotide context of mutations
 #'
@@ -16,6 +14,7 @@
 #' @return A data frame consisting of the same columns as the original mutations data frame and sorted
 #' by SNVs and Indels with an additional column \code{tag} which indicates the trinucleotide context of
 #' the mutation
+#' 
 #' @export
 #'
 #' @examples
@@ -28,17 +27,17 @@ get_3n_context_of_mutations = function(mutations) {
   mutations_mnv = mutations[!(mutations$ref %in% legal_dna & mutations$alt %in% legal_dna),]
   
   # snvs can have flanks
-  flank_ranges = GRanges(mutations_snv$chr, 
-                         IRanges(start=mutations_snv$pos1-1, end=mutations_snv$pos2+1), strand="*")
-  triples = as.character(getSeq(Hsapiens, flank_ranges))
+  flank_ranges = GenomicRanges::GRanges(mutations_snv$chr, 
+                                        IRanges::IRanges(start=mutations_snv$pos1-1, end=mutations_snv$pos2+1), strand="*")
+  triples = as.character(BSgenome::getSeq(BSgenome.Hsapiens.UCSC.hg19::Hsapiens, flank_ranges))
   
   # complement trinucleotide where necessary to force into one signature space
   new_triples = triples
   new_alt = mutations_snv$alt
   which_to_complement = which(mutations_snv$ref %in% c("G", "A"))
   
-  new_triples[which_to_complement] = as.character(complement(DNAStringSet(new_triples[which_to_complement])))
-  new_alt[which_to_complement] = as.character(complement(DNAStringSet(new_alt[which_to_complement])))
+  new_triples[which_to_complement] = as.character(Biostrings::complement(Biostrings::DNAStringSet(new_triples[which_to_complement])))
+  new_alt[which_to_complement] = as.character(Biostrings::complement(Biostrings::DNAStringSet(new_alt[which_to_complement])))
   mutations_snv$tag = paste0(new_triples, ">", new_alt)
   #	ref2 = substr(triples, 2,2)
   #	mutations_snv[ref2!=mutations_snv$ref, "tag"] = "dubref"

@@ -1,7 +1,3 @@
-# require(BSgenome.Hsapiens.UCSC.hg19)
-# require(plyr)
-
-
 #' Makes mutational signatures
 #'
 #' @return a dataframe with mutational signatures
@@ -74,10 +70,6 @@ get_obs_exp = function(hyp, select_positions, dfr, colname) {
 #'     \item{site_enriched}{A boolean indicating whether the site is enriched in mutations}
 #' }
 #' 
-#' @import BSgenome.Hsapiens.UCSC.hg19
-#' @import plyr
-#' @import GenomicRanges
-#' 
 #' @export
 #'
 #' @examples
@@ -93,18 +85,19 @@ ADWGS_test = function(id, gr_element_coords, gr_site_coords, gr_maf, win_size) {
                         pp_site=NA, site_muts_obs=NA, site_muts_exp=NA, site_enriched=NA,
                         stringsAsFactors=F)
   
-  gr_element = gr_element_coords[mcols(gr_element_coords)[,1]==id]
+  gr_element = gr_element_coords[GenomicRanges::mcols(gr_element_coords)[,1]==id]
   
   # background is plus/minus window and takes care of cases on chromosome borders
-  background_chr = as.character(seqnames(gr_element))[1]
-  background_start = min(start(gr_element))-win_size-2
+  background_chr = as.character(GenomicRanges::seqnames(gr_element))[1]
+  background_start = min(GenomicRanges::start(gr_element))-win_size-2
   background_start = max(background_start, 2)
-  background_end = max(end(gr_element))+win_size+1
-  background_end = min(background_end, seqlengths(Hsapiens)[background_chr])
-  gr_background_plus_element = GRanges(background_chr, IRanges(background_start, background_end))
+  background_end = max(GenomicRanges::end(gr_element))+win_size+1
+  background_end = min(background_end, GenomeInfoDb::seqlengths(BSgenome.Hsapiens.UCSC.hg19::Hsapiens)[background_chr])
+  gr_background_plus_element = GenomicRanges::GRanges(background_chr, 
+                                                      IRanges::IRanges(background_start, background_end))
   
   # get sequence trinucleotide
-  this_seq = strsplit(as.character(getSeq(Hsapiens, gr_background_plus_element)), '')[[1]]
+  this_seq = strsplit(as.character(BSgenome::getSeq(BSgenome.Hsapiens.UCSC.hg19::Hsapiens, gr_background_plus_element)), '')[[1]]
   left_nucleotide = this_seq[1:(length(this_seq)-2)]
   mid_nucleotide = this_seq[2:(length(this_seq)-1)]
   right_nucleotide = this_seq[3:(length(this_seq)+0)]
@@ -123,11 +116,11 @@ ADWGS_test = function(id, gr_element_coords, gr_site_coords, gr_maf, win_size) {
   # background is plus/minus window size around each segment of element
   # in some cases intermediate non-segments (introns) extend well beyond window size. remove these remote coordinates from background
   # fixing win_size-1 bug
-  exon_bg_posi = unique(unlist(lapply(gr_element, function(gr) (start(gr)-win_size):(end(gr)+win_size))))
+  exon_bg_posi = unique(unlist(lapply(gr_element, function(gr) (GenomicRanges::start(gr)-win_size):(GenomicRanges::end(gr)+win_size))))
   
   # data frame with position and quad-nucleotide context
   mut_signt = make_mut_signatures()
-  positions = (start(gr_background_plus_element)+1):(end(gr_background_plus_element)-1)
+  positions = (GenomicRanges::start(gr_background_plus_element)+1):(GenomicRanges::end(gr_background_plus_element)-1)
   dfr = data.frame(pos=positions, nucl=tri_nucleotide, stringsAsFactors=F)
   dfr = dfr[dfr$pos %in% exon_bg_posi,, drop=F]
   dfr = merge(dfr, mut_signt[,c("tri", "signt")], by.x="nucl", by.y="tri")
@@ -137,22 +130,22 @@ ADWGS_test = function(id, gr_element_coords, gr_site_coords, gr_maf, win_size) {
   rm(exon_bg_posi, positions, tri_nucleotide)
   
   # capture element mutations first and remove repeated mutations per patient
-  gr_maf_element = gr_maf[queryHits(findOverlaps(gr_maf, gr_element))]
-  gr_maf_element = gr_maf_element[!duplicated(mcols(gr_maf_element)[,1])]
+  gr_maf_element = gr_maf[S4Vectors::queryHits(GenomicRanges::findOverlaps(gr_maf, gr_element))]
+  gr_maf_element = gr_maf_element[!duplicated(GenomicRanges::mcols(gr_maf_element)[,1])]
   if (length(gr_maf_element)==0) {
     return(null_res)
   }
   
   # capture background mutations
-  gr_background_only = setdiff(gr_background_plus_element, gr_element)
-  gr_maf_background_only = gr_maf[queryHits(findOverlaps(gr_maf, gr_background_only))]
+  gr_background_only = GenomicRanges::setdiff(gr_background_plus_element, gr_element)
+  gr_maf_background_only = gr_maf[S4Vectors::queryHits(GenomicRanges::findOverlaps(gr_maf, gr_background_only))]
   
   # count mutations by position and quad-nucl context; indels will be counted by midpoint
   gr_maf_element_plus_background = c(gr_maf_element, gr_maf_background_only)
-  mut_midpoint = round((start(gr_maf_element_plus_background) + end(gr_maf_element_plus_background))/2)
+  mut_midpoint = round((GenomicRanges::start(gr_maf_element_plus_background) + GenomicRanges::end(gr_maf_element_plus_background))/2)
   mut_tag = gr_maf_element_plus_background$mcols.tag #  mcols(gr_maf_element_plus_background)[,3]
   maf_element_plus_background = data.frame(pos1=mut_midpoint, tag=mut_tag, stringsAsFactors=F)
-  muts_per_pos = ddply(maf_element_plus_background, c("pos1", "tag"), function(x) nrow(x))
+  muts_per_pos = plyr::ddply(maf_element_plus_background, c("pos1", "tag"), function(x) nrow(x))
   colnames(muts_per_pos)[3] = "n_mut"
   
   # combine entire region and its mutations by positions and nucleotide content
@@ -161,16 +154,16 @@ ADWGS_test = function(id, gr_element_coords, gr_site_coords, gr_maf, win_size) {
   
   # label nucleotides that are part of the element
   # fixing end(gr_element)[i]-1 bug
-  element_posi = unique(unlist(lapply(1:length(gr_element), function(i) start(gr_element)[i]:(end(gr_element)[i]))))
+  element_posi = unique(unlist(lapply(1:length(gr_element), function(i) GenomicRanges::start(gr_element)[i]:(GenomicRanges::end(gr_element)[i]))))
   dfr$is_element = dfr$pos %in% element_posi
   
   # label nucleotides that are part of sites in the element
-  gr_element_sites = gr_site_coords[subjectHits(findOverlaps(gr_element, gr_site_coords))]
+  gr_element_sites = gr_site_coords[S4Vectors::subjectHits(GenomicRanges::findOverlaps(gr_element, gr_site_coords))]
   site_posi = c()
   if (length(gr_element_sites)>0) {
     # fixing end(gr_element_sites)[i]-1 bug
     site_posi = unique(unlist(lapply(1:length(gr_element_sites), 
-                                     function(i) start(gr_element_sites)[i]:(end(gr_element_sites)[i]))))
+                                     function(i) GenomicRanges::start(gr_element_sites)[i]:(GenomicRanges::end(gr_element_sites)[i]))))
     site_posi = intersect(site_posi, element_posi)
   }
   dfr$is_site = dfr$pos %in% site_posi
