@@ -1,9 +1,9 @@
 #' enhancer regions
 #'
 #' enhancer regions as referenced in PCAWG
-#' 
+#'
 #' @name transcription_factor_binding_sites
-#' 
+#'
 #' @docType data
 #'
 #' @usage data(transcription_factor_binding_sites)
@@ -13,10 +13,7 @@
 #'     \item{chr}{autosomal chromosomes as chr1 to chr22 and sex chromosomes as chrX and chrY}
 #'     \item{start}{the start position of the site in base 0 coordinates (BED format)}
 #'     \item{end}{the end position of the site in base 0 coordinates (BED format)}
-#'     \item{id}{the site identifier - each site should contain only 1 segment and a unique id. If ids are duplicated,
-#'     each segment of the site will be treated as an individual site. Sites can be coding or noncoding such as
-#'     phosphosites of protein coding genes in genomic coordinates or transcription factor binding sites of active
-#'     enhancers.}
+#'     \item{id}{the site identifier - each site should contain only 1 segment and a unique id. If ids are duplicated, each segment of the site will be treated as an individual site. Sites can be coding or noncoding such as phosphosites of protein coding genes in genomic coordinates or transcription factor binding sites of active enhancers.}
 #' }
 #'
 #' @keywords datasets

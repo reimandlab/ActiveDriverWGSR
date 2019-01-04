@@ -1,9 +1,21 @@
 
-#' Title
+#' fix_all_results verifies that the results table has the correct format and p-values
 #'
-#' @param all_results 
+#' @param all_results a data frame containing the following columns
+#' \describe{
+#'     \item{id}{A string identifying the element of interest}
+#'     \item{pp_element}{The p-value of the element}
+#'     \item{element_muts_obs}{The number of patients with a mutation in the element}
+#'     \item{element_muts_exp}{The expected number of patients with a mutation in the element with respect to background}
+#'     \item{element_enriched}{A boolean indicating whether the element is enriched in mutations}
+#'     \item{pp_site}{The p-value of the element}
+#'     \item{site_muts_obs}{The number of patients with a mutation in the site}
+#'     \item{site_muts_exp}{The expected number of patients with a mutation in the site with respect to element}
+#'     \item{site_enriched}{A boolean indicating whether the site is enriched in mutations}
+#'     \item{result_number}{A numeric indicator denoting the order in which the results were calculated}
+#' }
 #'
-#' @return
+#' @return the same data frame
 #' @export
 #'
 #' @examples
@@ -29,9 +41,27 @@ fix_all_results = function(all_results) {
 
 #' Title
 #'
-#' @param all_res 
+#' @param all_res a data frame containing the following columns
+#' \describe{
+#'     \item{id}{A string identifying the element of interest}
+#'     \item{pp_element}{The p-value of the element}
+#'     \item{element_muts_obs}{The number of patients with a mutation in the element}
+#'     \item{element_muts_exp}{The expected number of patients with a mutation in the element with respect to background}
+#'     \item{element_enriched}{A boolean indicating whether the element is enriched in mutations}
+#'     \item{pp_site}{The p-value of the element}
+#'     \item{site_muts_obs}{The number of patients with a mutation in the site}
+#'     \item{site_muts_exp}{The expected number of patients with a mutation in the site with respect to element}
+#'     \item{site_enriched}{A boolean indicating whether the site is enriched in mutations}
+#'     \item{result_number}{A numeric indicator denoting the order in which the results were calculated}
+#' }
 #'
-#' @return
+#' @return the same data frame with three addition columns
+#' \describe{
+#'     \item{fdr_element}{The FDR corrected p-value of the element}
+#'     \item{fdr_site}{The FDR corrected p-value of the site}
+#'     \item{has_site_mutations}{A V indicates the presence of site mutations}
+#' }
+#' 
 #' @export
 #'
 #' @examples

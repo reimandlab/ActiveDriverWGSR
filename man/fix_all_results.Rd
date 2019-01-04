@@ -2,13 +2,28 @@
 % Please edit documentation in R/fix_all_results.R
 \name{fix_all_results}
 \alias{fix_all_results}
-\title{Title}
+\title{fix_all_results verifies that the results table has the correct format and p-values}
 \usage{
 fix_all_results(all_results)
 }
 \arguments{
-\item{all_results}{}
+\item{all_results}{a data frame containing the following columns
+\describe{
+    \item{id}{A string identifying the element of interest}
+    \item{pp_element}{The p-value of the element}
+    \item{element_muts_obs}{The number of patients with a mutation in the element}
+    \item{element_muts_exp}{The expected number of patients with a mutation in the element with respect to background}
+    \item{element_enriched}{A boolean indicating whether the element is enriched in mutations}
+    \item{pp_site}{The p-value of the element}
+    \item{site_muts_obs}{The number of patients with a mutation in the site}
+    \item{site_muts_exp}{The expected number of patients with a mutation in the site with respect to element}
+    \item{site_enriched}{A boolean indicating whether the site is enriched in mutations}
+    \item{result_number}{A numeric indicator denoting the order in which the results were calculated}
+}}
+}
+\value{
+the same data frame
 }
 \description{
-Title
+fix_all_results verifies that the results table has the correct format and p-values
 }

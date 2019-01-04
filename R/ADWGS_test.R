@@ -68,6 +68,10 @@ get_obs_exp = function(hyp, select_positions, dfr, colname) {
 #'     \item{site_muts_obs}{The number of patients with a mutation in the site}
 #'     \item{site_muts_exp}{The expected number of patients with a mutation in the site with respect to element}
 #'     \item{site_enriched}{A boolean indicating whether the site is enriched in mutations}
+#'     \item{result_number}{A numeric indicator denoting the order in which the results were calculated}
+#'     \item{fdr_element}{The FDR corrected p-value of the element}
+#'     \item{fdr_site}{The FDR corrected p-value of the site}
+#'     \item{has_site_mutations}{A V indicates the presence of site mutations}
 #' }
 #'
 #' @export
