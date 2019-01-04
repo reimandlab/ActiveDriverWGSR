@@ -64,7 +64,7 @@
 #'     \item{fdr_element}{The false discovery rate of \code{pp_element}}
 #'     \item{fdr_site}{The false discovery rate of \code{pp_site}}
 #' }
-#' 
+#'
 #' @export
 #'
 #' @examples
@@ -113,7 +113,7 @@ ActiveDriverWGS = function(mutations,
   if (!(is.character(mutations$patient))) stop("patient identifier must be a string")
 
   # Creating gr_muts
-  mutations = format_muts(mutations = mutations, 
+  mutations = format_muts(mutations = mutations,
                           filter_hyper_MB = filter_hyper_MB)
   gr_muts = GenomicRanges::GRanges(mutations$chr,
                                    IRanges::IRanges(mutations$pos1, mutations$pos2), mcols=mutations[,c("patient", "tag")])
@@ -185,9 +185,14 @@ ActiveDriverWGS = function(mutations,
     result
   }, mc.cores = mc.cores))
 
-  mutated_results = rbind(recovered_results, mutated_results)
+  all_results = rbind(recovered_results, mutated_results)
 
-  # Calculating FDR Element, FDR Site and Ordering from Most to Least Significant
+  rm(mutated_results, unmutated_results)
+  if (nrow(all_results) != length(unique(element_coords$id))) stop("Error: Something unexpected happened. Please try again.\n")
 
-  mutated_results
+  rm(element_coords)
+
+  all_results = fix_all_results(all_results)
+  all_results = get_signf_results(all_results)
+  all_results
 }
