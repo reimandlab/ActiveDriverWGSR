@@ -187,10 +187,9 @@ ActiveDriverWGS = function(mutations,
 
   all_results = rbind(recovered_results, mutated_results)
 
-  rm(mutated_results, unmutated_results)
+  rm(mutated_results, recovered_results)
   if (nrow(all_results) != length(unique(element_coords$id))) stop("Error: Something unexpected happened. Please try again.\n")
-
-  rm(element_coords)
+  rm(elements, gr_element_coords)
 
   all_results = fix_all_results(all_results)
   all_results = get_signf_results(all_results)
