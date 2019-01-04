@@ -22,8 +22,7 @@ fix_all_results = function(all_results) {
   resi[!is.na(resi$pp_element) & resi$pp_element==0,"pp_element"] = 1e-300
   resi[!is.na(resi$pp_site) & resi$pp_site==0,"pp_site"] = 1e-300
   
-  ## remove duplicated entries that come from computing the same element/cc/mut in multiple rounds
-  resi_tag = paste(resi[,"id"], resi[,"cancer_type"], resi[,"element_type"], resi[,"mutname"], sep="__")
+  resi_tag = resi[,"id"]
   resi = resi[!duplicated(resi_tag),]
   resi
 }

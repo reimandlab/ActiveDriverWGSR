@@ -7,14 +7,14 @@
 ADWGS_test(id, gr_element_coords, gr_site_coords, gr_maf, win_size)
 }
 \arguments{
-\item{id}{A string used to identify the element of interest. \code{id} 
+\item{id}{A string used to identify the element of interest. \code{id}
 corresponds to an element in the id column of the elements file}
 
 \item{gr_element_coords}{A GenomicRanges object that describes the elements of interest containing the
 chromosome, start and end coordinates, and an mcols column corresponding to id}
 
-\item{gr_site_coords}{A GenomicRanges object that describes the sites of interest which reside 
-in the elements of interest containing the chromosome, start and end coordinates, 
+\item{gr_site_coords}{A GenomicRanges object that describes the sites of interest which reside
+in the elements of interest containing the chromosome, start and end coordinates,
 and an mcols column corresponding to id. Examples of sites include transcription factor binding
 sites in promoter regions or phosphosites in exons of protein coding genes. An empty GenomicRanges object
 nullifies the requirement for sites to exist.}
@@ -22,7 +22,7 @@ nullifies the requirement for sites to exist.}
 \item{gr_maf}{A GenomicRanges object that describes the mutations in the dataset containing the chromosome,
 start and end coordinates, patient id, and trinucleotide context}
 
-\item{win_size}{An integer indicating the size of the background window in base pairs for which the 
+\item{win_size}{An integer indicating the size of the background window in base pairs for which the
 mutation rate is expected to remain the same. The default is 50000bps.}
 }
 \value{
