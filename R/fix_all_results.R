@@ -61,7 +61,7 @@ get_signf_results = function(all_res) {
   
   if (nrow(unsignf_results) !=0) {
     unsignf_results$fdr_site = NA
-    unsignf_results$has_site_mutations = NA
+    unsignf_results$has_site_mutations = ""
   }
   
   final_results = rbind(filtered_results, unsignf_results)
@@ -69,5 +69,6 @@ get_signf_results = function(all_res) {
   final_results$pp_site = replace(final_results$pp_site, which(is.na(final_results$pp_site)), 1)
   final_results$fdr_element = replace(final_results$fdr_element, which(is.na(final_results$fdr_element)), 1)
   final_results$fdr_site = replace(final_results$fdr_site, which(is.na(final_results$fdr_site)), 1)
+  rownames(final_results) = NULL
   final_results
 }
