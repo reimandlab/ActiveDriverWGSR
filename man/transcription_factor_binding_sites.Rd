@@ -12,7 +12,7 @@
     \item{id}{the site identifier - each site should contain only 1 segment and a unique id. If ids are duplicated, each segment of the site will be treated as an individual site. Sites can be coding or noncoding such as phosphosites of protein coding genes in genomic coordinates or transcription factor binding sites of active enhancers.}
 }}
 \source{
-\href{https://www.biorxiv.org/content/early/2017/12/19/236802}
+\href{https://www.biorxiv.org/content/early/2017/12/19/236802}{bioRxiv}
 }
 \usage{
 data(transcription_factor_binding_sites)

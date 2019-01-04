@@ -12,7 +12,7 @@
     \item{id}{the element identifier - if the element contains multiple segments such as exons, each segment should be a separate row with the segment coordinates and the element identifier as id. Elements can be coding or noncoding such as exons of protein coding genes or active enhancers.}
 }}
 \source{
-\href{https://www.gencodegenes.org/human/release_19.html}
+\href{https://www.gencodegenes.org/human/release_19.html}{GENCODE}
 }
 \usage{
 data(coding_regions)

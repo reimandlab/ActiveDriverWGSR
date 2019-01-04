@@ -21,7 +21,7 @@
 #' @references Harrow, Jennifer, et al. "GENCODE: the reference human genome annotation for The ENCODE Project." Genome research 22.9 (2012): 1760-1774.
 #' (\href{https://www.ncbi.nlm.nih.gov/pubmed/22955987}{PubMed})
 #'
-#' @source \href{https://www.gencodegenes.org/human/release_19.html}
+#' @source \href{https://www.gencodegenes.org/human/release_19.html}{GENCODE}
 #'
 #' @examples
 #' data(pancancer_mutations)

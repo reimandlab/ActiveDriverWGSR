@@ -21,7 +21,7 @@
 #' @references Wadi, Lina, et al. "Candidate cancer driver mutations in super-enhancers and long-range chromatin interaction networks." bioRxiv (2017): 236802.
 #' (\href{https://www.biorxiv.org/content/early/2017/12/19/236802}{bioRxiv})
 #'
-#' @source \href{https://www.biorxiv.org/content/early/2017/12/19/236802}
+#' @source \href{https://www.biorxiv.org/content/early/2017/12/19/236802}{bioRxiv}
 #'
 #' @examples
 #' data(pancancer_mutations)

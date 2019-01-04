@@ -21,7 +21,7 @@
 #' @references Sabarinathan, Radhakrishnan, et al. "The whole-genome panorama of cancer drivers." bioRxiv (2017): 190330.
 #' (\href{https://www.biorxiv.org/content/early/2017/09/20/190330}{bioRxiv})
 #'
-#' @source \href{https://www.biorxiv.org/content/early/2017/09/20/190330}
+#' @source \href{https://www.biorxiv.org/content/early/2017/09/20/190330}{bioRxiv}
 #'
 #' @examples
 #' data(pancancer_mutations)
