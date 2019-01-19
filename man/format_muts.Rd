@@ -16,8 +16,6 @@ format_muts(mutations, filter_hyper_MB = NA)
     \item{alt}{the alternate allele as a string containing the bases A, T, C or G}
     \item{patient}{the patient identifier as a string}
 }}
-
-\item{filter_hyper_MB}{}
 }
 \value{
 a data frame called mutations which has been formatted with an extra column for trinucleotide context

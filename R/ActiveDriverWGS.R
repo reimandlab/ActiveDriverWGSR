@@ -193,7 +193,7 @@ ActiveDriverWGS = function(mutations,
   if (nrow(all_results) != length(unique(elements$id))) stop("Error: Something unexpected happened. Please try again.\n")
   rm(elements, gr_element_coords)
 
-  all_results = fix_all_results(all_results)
-  all_results = get_signf_results(all_results)
+  all_results = .fix_all_results(all_results)
+  all_results = .get_signf_results(all_results)
   all_results
 }

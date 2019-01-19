@@ -2,10 +2,5 @@
 
 export(ADWGS_test)
 export(ActiveDriverWGS)
-export(fix_all_results)
 export(format_muts)
-export(get_3n_context_of_mutations)
-export(get_obs_exp)
-export(get_signf_results)
-export(make_mut_signatures)
 export(prepare_elements_from_BED12)

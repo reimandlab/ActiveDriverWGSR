@@ -1,11 +1,10 @@
 #' Makes mutational signatures
 #'
 #' @return a dataframe with mutational signatures
-#' @export
 #'
 #' @examples
 #' mut_signatures = make_mut_signatures()
-make_mut_signatures = function() {
+.make_mut_signatures = function() {
   nucs = c("A", "C", "G", "T")
 
   signatures_dfr = data.frame(as.matrix(expand.grid(left=nucs, mid=nucs, right=nucs, alt=nucs)), stringsAsFactors=F)
@@ -25,10 +24,11 @@ make_mut_signatures = function() {
 #'
 #' @return a list of observed mutations (numeric), expected mutations (numeric),
 #' observations enriched (boolean) and observations depleted (boolean)
-#' @export
 #'
-#' @examples get_obs_exp(h0, dfr$is_element, dfr, "n_mut")
-get_obs_exp = function(hyp, select_positions, dfr, colname) {
+#' @examples
+#' # Don't run
+#' .get_obs_exp(h0, dfr$is_element, dfr, "n_mut")
+.get_obs_exp = function(hyp, select_positions, dfr, colname) {
   obs_mut = sum(dfr[select_positions, colname])
 
   exp_probs = hyp$fitted.values[select_positions]
@@ -125,7 +125,7 @@ ADWGS_test = function(id, gr_element_coords, gr_site_coords, gr_maf, win_size) {
                                       function(i) (GenomicRanges::start(gr_element)[i]-win_size):(GenomicRanges::end(gr_element)[i]+win_size))))
 
   # data frame with position and quad-nucleotide context
-  mut_signt = make_mut_signatures()
+  mut_signt = .make_mut_signatures()
   positions = (GenomicRanges::start(gr_background_plus_element)+1):(GenomicRanges::end(gr_background_plus_element)-1)
   dfr = data.frame(pos=positions, nucl=tri_nucleotide, stringsAsFactors=F)
   dfr = dfr[dfr$pos %in% exon_bg_posi,, drop=F]
@@ -190,7 +190,7 @@ ADWGS_test = function(id, gr_element_coords, gr_site_coords, gr_maf, win_size) {
   h1 = update(h0, . ~ . + is_element)
   pp_element = anova(h0, h1, test="Chisq")[2,5]
 
-  element_stats = get_obs_exp(h0, dfr$is_element, dfr, "n_mut")
+  element_stats = .get_obs_exp(h0, dfr$is_element, dfr, "n_mut")
   element_muts_obs = element_stats[[1]]
   element_muts_exp = element_stats[[2]]
   element_enriched = element_stats[[3]]
@@ -208,7 +208,7 @@ ADWGS_test = function(id, gr_element_coords, gr_site_coords, gr_maf, win_size) {
     h2 = update(h1, . ~ . + is_site)
     pp_site = anova(h1, h2, test="Chisq")[2,5]
 
-    site_stats = get_obs_exp(h1, dfr$is_site, dfr, "n_mut")
+    site_stats = .get_obs_exp(h1, dfr$is_site, dfr, "n_mut")
     site_muts_obs = site_stats[[1]]
     site_muts_exp = site_stats[[2]]
     site_enriched = site_stats[[3]]
