@@ -48,7 +48,8 @@ Samples with a rate greater than \code{filter_hyper_MB} mutations per megabase a
 The default is 30 mutations per megabase.}
 
 \item{recovery.dir}{The directory for storing recovery files. If no directory is specified, ActiveDriverWGS will write
-recovery files in the current directory. If the directory does not exist, ActiveDriverWGS will create the directory.}
+recovery files in the current directory. If the directory does not exist, ActiveDriverWGS will create the directory.
+If the parameter is unspecified, recovery files will be written to a directory called ActiveDriverWGS_recovery}
 
 \item{mc.cores}{The number of cores which can be used if multiple cores are available. The default is 1.}
 }
@@ -76,12 +77,7 @@ fdr_element, fdr_site
 ActiveDriverWGS is a driver discovery tool for simple somatic mutations in cancer whole genomes
 }
 \examples{
-data(coding_regions)
-data(breastcancer_mutations)
-result = ActiveDriverWGS(mutations = breastcancer_mutations, elements = coding_regions)
-
-TODO Make sure all mutations are legal
-TODO Format all results
-TODO Add sample data
-TODO Check that the result columns are actually correct
+data(cancer_genes)
+data(cll_mutations)
+result = ActiveDriverWGS(mutations = cll_mutations, elements = cancer_genes)
 }

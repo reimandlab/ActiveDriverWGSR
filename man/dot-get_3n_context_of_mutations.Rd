@@ -26,5 +26,7 @@ the mutation
 This function finds the tri-nucleotide context of mutations
 }
 \examples{
+\dontrun{
 get_3n_context_of_mutations(mutations)
+}
 }
