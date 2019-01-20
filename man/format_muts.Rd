@@ -16,10 +16,17 @@ format_muts(mutations, filter_hyper_MB = NA)
     \item{alt}{the alternate allele as a string containing the bases A, T, C or G}
     \item{patient}{the patient identifier as a string}
 }}
+
+\item{filter_hyper_MB}{The number of mutations per megabase for which a sample is considered hypermutated.
+Hypermutated samples will be removed in further analyses.}
 }
 \value{
 a data frame called mutations which has been formatted with an extra column for trinucleotide context
 }
 \description{
 This function filters hypermutated samples and returns the formatted mutations with the appropriate trinucleotide context
+}
+\examples{
+data(breastcancer_mutations)
+formatted_mutations = format_muts(breastcancer_mutations, filter_hyper_MB=30)
 }

@@ -46,3 +46,14 @@ A data frame containing the following columns
 \description{
 ADWGS_test executes the statistical test for ActiveDriverWGS
 }
+\examples{
+data(coding_regions)
+gr_element_coords = GRanges(seqnames = coding_regions$chr, IRanges(start = coding_regions$start, end = coding_regions$end), mcols = coding_regions$id)
+gr_site_coords = GRanges(c(seqnames=NULL,ranges=NULL,strand=NULL))
+data(breastcancer_mutations)
+breastcancer_mutations = format_muts(breastcancer_mutations)
+gr_maf = GRanges(breastcancer_mutations$chr, IRanges(breastcancer_mutations$pos1, breastcancer_mutations$pos2), mcols=breastcancer_mutations[,c("patient", "tag")])
+id = "gc19_pc.cds::gencode::TP53::ENSG00000141510.11"
+
+result = ADWGS_test(id, gr_element_coords, gr_site_coords, gr_maf, 50000)
+}

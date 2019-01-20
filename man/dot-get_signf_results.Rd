@@ -2,7 +2,7 @@
 % Please edit documentation in R/fix_all_results.R
 \name{.get_signf_results}
 \alias{.get_signf_results}
-\title{Title}
+\title{Returns significant results}
 \usage{
 .get_signf_results(all_res)
 }
@@ -30,5 +30,5 @@ the same data frame with three addition columns
 }
 }
 \description{
-Title
+Returns significant results
 }

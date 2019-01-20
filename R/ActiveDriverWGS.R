@@ -1,11 +1,7 @@
-# require(parallel)
-# require(GenomicRanges)
-# require(BSgenome.Hsapiens.UCSC.hg19)
-# require(plyr)
-# require(IRanges)
-# require(BSgenome)
-# require(Biostrings)
-# require(GenomeInfoDb)
+# @import GenomicRanges
+# @import IRanges
+# @import BSgenome.Hsapiens.UCSC.hg19
+# @import parallel
 
 
 #' ActiveDriverWGS is a driver discovery tool for simple somatic mutations in cancer whole genomes
@@ -70,6 +66,10 @@
 #' @export
 #'
 #' @examples
+#' data(coding_regions)
+#' data(breastcancer_mutations)
+#' result = ActiveDriverWGS(mutations = breastcancer_mutations, elements = coding_regions)
+#'
 #' TODO Make sure all mutations are legal
 #' TODO Format all results
 #' TODO Add sample data
@@ -98,6 +98,10 @@ ActiveDriverWGS = function(mutations,
       dir.create(recovery.dir)
       message(paste0("Creating ", recovery.dir))
     }
+  }else{
+    recovery.dir = "ActiveDriverWGS_results"
+    dir.create(recovery.dir)
+    message(paste0("Writing results to ", recovery.dir))
   }
   if(!endsWith(recovery.dir, "[/]") && recovery.dir != ""){
     recovery.dir = paste0(recovery.dir, "/")
@@ -119,7 +123,7 @@ ActiveDriverWGS = function(mutations,
                           filter_hyper_MB = filter_hyper_MB)
   gr_muts = GenomicRanges::GRanges(mutations$chr,
                                    IRanges::IRanges(mutations$pos1, mutations$pos2), mcols=mutations[,c("patient", "tag")])
-  save(gr_muts, file=paste0(recovery.dir,"gr_muts.rsav"))
+  # save(gr_muts, file=paste0(recovery.dir,"gr_muts.rsav"))
 
   # Verifying Format for Elements
   if (!is.data.frame(elements)) stop("elements must be a data frame")

@@ -56,8 +56,7 @@
 #' @export
 #'
 #' @examples
-#' # Don't run
-#' elements = prepare_elements_from_BED12("gc19_pc.cds.bed")
+#' elements = prepare_elements_from_BED12(system.file("extdata", "chr17.coding_regions.bed", package = "ActiveDriverWGSR", mustWork = TRUE))
 prepare_elements_from_BED12 = function(fname) {
   
   # Legal Chromosomes

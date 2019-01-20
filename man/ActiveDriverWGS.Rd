@@ -76,6 +76,10 @@ fdr_element, fdr_site
 ActiveDriverWGS is a driver discovery tool for simple somatic mutations in cancer whole genomes
 }
 \examples{
+data(coding_regions)
+data(breastcancer_mutations)
+result = ActiveDriverWGS(mutations = breastcancer_mutations, elements = coding_regions)
+
 TODO Make sure all mutations are legal
 TODO Format all results
 TODO Add sample data

@@ -23,6 +23,7 @@ observations enriched (boolean) and observations depleted (boolean)
 Calculates the number of expected mutations based
 }
 \examples{
-# Don't run
+\dontrun{
 .get_obs_exp(h0, dfr$is_element, dfr, "n_mut")
+}
 }

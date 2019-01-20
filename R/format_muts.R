@@ -1,4 +1,11 @@
 
+
+# @import GenomicRanges
+# @import IRanges
+# @import BSgenome
+# @import BSgenome.Hsapiens.UCSC.hg19
+# @import Biostrings
+
 #' This function finds the tri-nucleotide context of mutations
 #'
 #' @param mutations A data frame with the following columns: chr, pos1, pos2, ref, alt, patient
@@ -52,7 +59,8 @@
 
 #' This function filters hypermutated samples and returns the formatted mutations with the appropriate trinucleotide context
 #'
-#' @param filter_hyper_MB
+#' @param filter_hyper_MB The number of mutations per megabase for which a sample is considered hypermutated.
+#' Hypermutated samples will be removed in further analyses.
 #' @param mutations A data frame with the following columns: chr, pos1, pos2, ref, alt, patient
 #' \describe{
 #'     \item{chr}{autosomal chromosomes as chr1 to chr22 and sex chromosomes as chrX and chrY}
@@ -67,6 +75,8 @@
 #' @export
 #'
 #' @examples
+#' data(breastcancer_mutations)
+#' formatted_mutations = format_muts(breastcancer_mutations, filter_hyper_MB=30)
 format_muts = function(mutations, filter_hyper_MB=NA) {
 
   # remove hypermutated samples, according to muts/megabase rate defined

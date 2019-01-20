@@ -36,7 +36,9 @@
   resi
 }
 
-#' Title
+# @import stats
+
+#' Returns significant results
 #'
 #' @param all_res a data frame containing the following columns
 #' \describe{
@@ -58,6 +60,8 @@
 #'     \item{fdr_site}{The FDR corrected p-value of the site}
 #'     \item{has_site_mutations}{A V indicates the presence of site mutations}
 #' }
+#'
+
 .get_signf_results = function(all_res) {
   this_results = all_res
   if (nrow(this_results)==0) {

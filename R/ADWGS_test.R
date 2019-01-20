@@ -3,7 +3,7 @@
 #' @return a dataframe with mutational signatures
 #'
 #' @examples
-#' mut_signatures = make_mut_signatures()
+#' mut_signatures = .make_mut_signatures()
 .make_mut_signatures = function() {
   nucs = c("A", "C", "G", "T")
 
@@ -26,8 +26,9 @@
 #' observations enriched (boolean) and observations depleted (boolean)
 #'
 #' @examples
-#' # Don't run
+#' \dontrun{
 #' .get_obs_exp(h0, dfr$is_element, dfr, "n_mut")
+#' }
 .get_obs_exp = function(hyp, select_positions, dfr, colname) {
   obs_mut = sum(dfr[select_positions, colname])
 
@@ -40,6 +41,14 @@
 
   list(obs_mut, exp_mut, obs_enriched, obs_depleted)
 }
+
+# @import GenomicRanges
+# @import GenomeInfoDb
+# @import BSgenome.Hsapiens.UCSC.hg19
+# @import IRanges
+# @import BSgenome
+# @import S4Vectors
+# @import plyr
 
 #' ADWGS_test executes the statistical test for ActiveDriverWGS
 #'
@@ -77,9 +86,15 @@
 #' @export
 #'
 #' @examples
+#' data(coding_regions)
+#' gr_element_coords = GRanges(seqnames = coding_regions$chr, IRanges(start = coding_regions$start, end = coding_regions$end), mcols = coding_regions$id)
+#' gr_site_coords = GRanges(c(seqnames=NULL,ranges=NULL,strand=NULL))
+#' data(breastcancer_mutations)
+#' breastcancer_mutations = format_muts(breastcancer_mutations)
+#' gr_maf = GRanges(breastcancer_mutations$chr, IRanges(breastcancer_mutations$pos1, breastcancer_mutations$pos2), mcols=breastcancer_mutations[,c("patient", "tag")])
+#' id = "gc19_pc.cds::gencode::TP53::ENSG00000141510.11"
 #'
-#' TODO: Add Examples
-#' TODO: Check that we're not missing any dependencies
+#' result = ADWGS_test(id, gr_element_coords, gr_site_coords, gr_maf, 50000)
 ADWGS_test = function(id, gr_element_coords, gr_site_coords, gr_maf, win_size) {
 
   #	cat(id, "\n")

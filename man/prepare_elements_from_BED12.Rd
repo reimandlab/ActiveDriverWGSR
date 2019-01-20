@@ -27,6 +27,5 @@ to ActiveDriverWGS
 Prepares element coords from a BED12 file
 }
 \examples{
-# Don't run
-elements = prepare_elements_from_BED12("gc19_pc.cds.bed")
+elements = prepare_elements_from_BED12(system.file("extdata", "chr17.coding_regions.bed", package = "ActiveDriverWGSR", mustWork = TRUE))
 }

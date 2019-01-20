@@ -13,5 +13,5 @@ a dataframe with mutational signatures
 Makes mutational signatures
 }
 \examples{
-mut_signatures = make_mut_signatures()
+mut_signatures = .make_mut_signatures()
 }
