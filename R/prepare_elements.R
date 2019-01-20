@@ -29,7 +29,7 @@
   
   # Checking File Format
   if (length(lens) != n_regions | length(starts) != n_regions) stop("Incorrect BED12 Format: Incorrect blockCounts")
-  if (sort(starts) != starts | any(starts < coords[i, "V2"]) | any(ends > coords[i, "V3"])) stop("Incorrect BED12 Format: Incorrect blockSizes or blockStarts")
+  if (any(starts < coords[i, "V2"]) | any(ends > coords[i, "V3"])) stop("Incorrect BED12 Format: Incorrect blockSizes or blockStarts")
   
   # Returning Element
   dfr = cbind(chr=coords[i,"V1"], starts, ends, id=coords[i,"V4"]) # , frag_id=1:length(lens)) to exclude frag_id as a necessary column
