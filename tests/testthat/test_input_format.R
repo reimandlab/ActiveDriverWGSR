@@ -1,9 +1,167 @@
 context("Format of Input Files to ActiveDriverWGSR")
 
-testthat("S",{
-    
+library(ActiveDriverWGSR)
+library(testthat)
+
+# loading regions
+data(cancer_genes)
+
+# loading sites
+data(cancer_gene_sites)
+
+# loading mutations
+data(cll_mutations)
+
+# Some CLL drivers in this dataset + random genes
+some_genes = c("ATM", "MYD88",
+               "NOTCH1","SF3B1",
+               "XPO1", "SOCS1",
+               "CNOT3", "DDX3X",
+               "KMT2A", "HIF1A",
+               "APC")
+
+test_that("mutations are formatted properly",{
+
+  # Mutations are in a dataframe
+  expect_error(ActiveDriverWGS(elements = cancer_genes,
+                               mutations = as.matrix(cll_mutations)),
+               "mutations must be a data frame")
+
+  # Colnames of the mutations
+  this_mutations = cll_mutations
+  colnames(this_mutations) = paste0("V", 1:7)
+  expect_error(ActiveDriverWGS(elements = cancer_genes,
+                               mutations = this_mutations),
+               "mutations must contain the following columns: chr, pos1, pos2, ref, alt & patient")
+
+  # Colnames of the mutations
+  this_mutations = cll_mutations[,c(1:2,4:7)]
+  expect_error(ActiveDriverWGS(elements = cancer_genes,
+                               mutations = this_mutations),
+               "mutations must contain the following columns: chr, pos1, pos2, ref, alt & patient")
+
+  # Missing values
+  this_mutations = cll_mutations
+  this_mutations[sample(1:nrow(this_mutations), 10),3] = NA
+  expect_error(ActiveDriverWGS(elements = cancer_genes,
+                               mutations = this_mutations),
+               "mutations may not contain missing values")
+
+  # Duplicated mutations
+  this_mutations = cll_mutations
+  this_mutations = rbind(this_mutations, this_mutations[sample(1:nrow(this_mutations), 10),])
+  expect_error(ActiveDriverWGS(elements = cancer_genes,
+                               mutations = this_mutations),
+               "duplicated mutations are present. please review your format")
+
+  # Illegal chromosomes
+  this_chromosomes = structure(paste0("chr", letters[1:24]), names = paste0("chr", c(1:22, "X", "Y")))
+  this_mutations = cll_mutations
+  this_mutations$chr = this_chromosomes[this_mutations$chr]
+  expect_error(ActiveDriverWGS(elements = cancer_genes,
+                               mutations = this_mutations),
+               "Only the 22 autosomal and 2 sex chromosomes may be used at this time. Note that chr23 should be formatted as chrX and chr24 should be formatted as chrY")
+
+  # Illegal bases
+  this_mutations = cll_mutations
+  this_mutations$ref = tolower(this_mutations$ref)
+  expect_error(ActiveDriverWGS(elements = cancer_genes,
+                               mutations = this_mutations),
+               "Reference and alternate alleles must be A, T, C or G")
+
+  this_mutations = cll_mutations
+  this_mutations$alt = tolower(this_mutations$alt)
+  expect_error(ActiveDriverWGS(elements = cancer_genes,
+                               mutations = this_mutations),
+               "Reference and alternate alleles must be A, T, C or G")
+
+  # Positions as strings
+  this_mutations = cll_mutations
+  this_mutations$pos1 = as.character(this_mutations$pos1)
+  expect_error(ActiveDriverWGS(elements = cancer_genes,
+                               mutations = this_mutations),
+               "pos1 and pos2 must be integers")
+
+  this_mutations = cll_mutations
+  this_mutations$pos2 = as.character(this_mutations$pos2)
+  expect_error(ActiveDriverWGS(elements = cancer_genes,
+                               mutations = this_mutations),
+               "pos1 and pos2 must be integers")
+
+  # Patient identifier as numeric
+  this_num_patient = structure(1:length(unique(cll_mutations$patient)), names = unique(cll_mutations$patient))
+  this_mutations = cll_mutations
+  this_mutations$patient = as.numeric(this_num_patient[this_mutations$patient])
+  expect_error(ActiveDriverWGS(elements = cancer_genes,
+                               mutations = this_mutations),
+               "patient identifier must be a string")
+
+  # Chromosomes are numeric
+  this_num_chrom = structure(1:24, names = paste0("chr", c(1:22, "X", "Y")))
+  this_mutations = cll_mutations
+  this_mutations$chr = as.numeric(this_num_chrom[this_mutations$chr])
+  expect_error(ActiveDriverWGS(elements = cancer_genes,
+                               mutations = this_mutations),
+               "chr, ref and alt must be character")
+
 })
 
-testthat("",{
-  
+test_that("elements are formatted properly",{
+
+  # Finish this off
+
 })
+
+test_that("sites are formatted properly",{
+
+  # Finish this off
+
+})
+
+test_that("window_size is a positive integer",{
+
+  expect_error(ActiveDriverWGS(elements = cancer_genes,
+                               mutations = cll_mutations,
+                               window_size = -10000),
+               "window size must be a positive integer")
+
+  expect_error(ActiveDriverWGS(elements = cancer_genes,
+                               mutations = cll_mutations,
+                               window_size = "50000"),
+               "window size must be a positive integer")
+
+})
+
+test_that("filter_hyper_MB is a positive integer",{
+
+  expect_error(ActiveDriverWGS(elements = cancer_genes,
+                               mutations = cll_mutations,
+                               filter_hyper_MB = -2),
+               "filter_hyper_MB must be a positive integer")
+
+  expect_error(ActiveDriverWGS(elements = cancer_genes,
+                               mutations = cll_mutations,
+                               filter_hyper_MB = "30"),
+               "filter_hyper_MB must be a positive integer")
+
+})
+
+test_that("recover.dir is appropriate",{
+  expect_error(ActiveDriverWGS(elements = cancer_genes,
+                               mutations = cll_mutations,
+                               recovery.dir = 2),
+               "recovery.dir must be a string")
+})
+
+testthat("mc.cores is a positive integer",{
+  expect_error(ActiveDriverWGS(elements = cancer_genes,
+                               mutations = cll_mutations,
+                               mc.cores = -2),
+               "mc.cores must be a positive integer")
+
+  expect_error(ActiveDriverWGS(elements = cancer_genes,
+                               mutations = cll_mutations,
+                               mc.cores = "a"),
+               "mc.cores must be a positive integer")
+})
+
