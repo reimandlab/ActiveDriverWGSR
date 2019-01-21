@@ -53,7 +53,7 @@ gr_site_coords = GRanges(c(seqnames=NULL,ranges=NULL,strand=NULL))
 data(cll_mutations)
 cll_mutations = format_muts(cll_mutations)
 gr_maf = GRanges(cll_mutations$chr, IRanges(cll_mutations$pos1, cll_mutations$pos2), mcols=cll_mutations[,c("patient", "tag")])
-id = "TP53"
+id = "ATM"
 
 result = ADWGS_test(id, gr_element_coords, gr_site_coords, gr_maf, 50000)
 }
