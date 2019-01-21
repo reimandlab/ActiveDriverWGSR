@@ -33,6 +33,8 @@
   mutations_snv = mutations[mutations$ref %in% legal_dna & mutations$alt %in% legal_dna,]
   mutations_mnv = mutations[!(mutations$ref %in% legal_dna & mutations$alt %in% legal_dna),]
 
+  if((nrow(mutations_mnv) == 0) & (nrow(mutations_snv) == 0))stop("No mutations left after filtering")
+
   # snvs can have flanks
   flank_ranges = GenomicRanges::GRanges(mutations_snv$chr,
                                         IRanges::IRanges(start=mutations_snv$pos1-1, end=mutations_snv$pos2+1), strand="*")
@@ -92,6 +94,7 @@ format_muts = function(mutations, filter_hyper_MB=NA) {
     cat("hypermuted samples: ", spl_rm, "\n\n")
     mutations = mutations[!mutations$patient %in% spl_rm,, drop=F]
   }
+  if(nrow(mutations) == 0)stop("No mutations left after filtering")
 
   # keep only relevant chrs, make sure CHR is present in address
   mutations$chr = toupper(gsub("chr", "", mutations$chr, ignore.case=TRUE))
@@ -100,6 +103,8 @@ format_muts = function(mutations, filter_hyper_MB=NA) {
 
   mutations$pos1 = as.numeric(mutations$pos1)
   mutations$pos2 = as.numeric(mutations$pos2)
+
+  if(nrow(mutations) == 0)stop("No mutations left after filtering")
 
   # reverse start/end coordinates of deletions
   rev_coords = which(mutations$pos2-mutations$pos1<0)
@@ -111,6 +116,7 @@ format_muts = function(mutations, filter_hyper_MB=NA) {
     mutations[rev_coords, "pos2"] = pos1
     rm(pos1, pos2)
   }
+
   mutations = .get_3n_context_of_mutations(mutations)
   mutations
 }

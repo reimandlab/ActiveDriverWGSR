@@ -105,14 +105,15 @@ ActiveDriverWGS = function(mutations,
   }
 
   # Verifying Format for Mutations
-  # legal_dna = c('A', 'T', 'C', 'G')
+  legal_dna = c('A', 'T', 'C', 'G')
   if (!is.data.frame(mutations)) stop("mutations must be a data frame")
   if (!all(c("chr", "pos1", "pos2", "ref", "alt", "patient") %in% colnames(mutations))) stop("mutations must contain the following columns: chr, pos1, pos2, ref, alt & patient")
   if (any(is.na(mutations))) stop("mutations may not contain missing values")
   if (any(duplicated(mutations))) stop("duplicated mutations are present. please review your format")
-  # if (!all(mutations$chr %in% BSgenome.Hsapiens.UCSC.hg19::seqnames(Hsapiens)[1:24])) stop("Only the 22 autosomal and 2 sex chromosomes may be used at this time. Note that chr23 should be formatted as chrX and chr24 should be formatted as chrY")
+  if (!(is.character(mutations$chr) && is.character(mutations$ref) && is.character(mutations$alt))) stop("chr, ref and alt must be character")
+  if (!any(mutations$chr %in% BSgenome::seqnames(BSgenome.Hsapiens.UCSC.hg19::Hsapiens)[1:24])) stop("Only the 22 autosomal and 2 sex chromosomes may be used at this time. Note that chr23 should be formatted as chrX and chr24 should be formatted as chrY")
   if (!(is.integer(mutations$pos1) && is.integer(mutations$pos2))) stop("pos1 and pos2 must be integers")
-  # if (!(all(mutations$ref %in% legal_dna) && all(mutations$alt %in% legal_dna))) stop("Reference and alternate alleles must be A, T, C or G")
+  if (!(any(mutations$ref %in% legal_dna) && any(mutations$alt %in% legal_dna))) stop("Reference and alternate alleles must be A, T, C or G")
   if (!(is.character(mutations$patient))) stop("patient identifier must be a string")
 
   # Creating gr_muts
