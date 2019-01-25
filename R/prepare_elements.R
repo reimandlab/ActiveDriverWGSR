@@ -56,14 +56,19 @@
 #' @export
 #'
 #' @examples
-#' elements = prepare_elements_from_BED12(system.file("extdata", "chr17.coding_regions.bed", package = "ActiveDriverWGSR", mustWork = TRUE))
+#' \code{
+#' elements = prepare_elements_from_BED12(system.file("extdata", 
+#' "chr17.coding_regions.bed", 
+#' package = "ActiveDriverWGSR", 
+#' mustWork = TRUE))
+#' }
 prepare_elements_from_BED12 = function(fname) {
   
   # Legal Chromosomes
   legal_chr = paste0("chr", c(1:22, "M", "X", "Y"))
   
   # Reading File
-  input = read.delim(fname, stringsAsFactors=F, header=F)
+  input = utils::read.delim(fname, stringsAsFactors=F, header=F)
   colnames(input) = paste0("V", 1:ncol(input))
   
   # Checking File Format

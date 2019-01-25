@@ -68,9 +68,11 @@
 #' @export
 #'
 #' @examples
+#' \code{
 #' data(cancer_genes)
 #' data(cll_mutations)
 #' result = ActiveDriverWGS(mutations = cll_mutations, elements = cancer_genes)
+#' }
 ActiveDriverWGS = function(mutations,
                            elements,
                            sites = NULL,
@@ -164,7 +166,7 @@ ActiveDriverWGS = function(mutations,
     if (length(results_filenames) > 0) results_filenames = paste0("/", results_filenames)
     recovered_results = do.call(rbind, lapply(results_filenames, function(filename) {
       load_result = suppressWarnings(try(load(paste0(recovery.dir, filename)), silent = TRUE))
-      if (class(load_result) == try_error) return(NULL)
+      if (class(load_result) == "try-error") return(NULL)
       if (ncol(result) != 13) return(NULL)
       result = result
     }))

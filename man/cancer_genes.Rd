@@ -15,7 +15,7 @@
 \href{https://www.gencodegenes.org/human/release_19.html}{GENCODE}
 }
 \usage{
-data(coding_regions)
+data(cancer_genes)
 }
 \description{
 protein coding genes from gencode v.19, cancer genes adapted from the Cancer Gene Census (November, 2018).

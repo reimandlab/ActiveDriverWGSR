@@ -34,10 +34,10 @@
 
   exp_probs = hyp$fitted.values[select_positions]
   # simulate from poisson distribution with values from model response
-  exp_boot = replicate(1000, sum(rpois(rep(1, length(exp_probs)), exp_probs)))
-  exp_mut = median(exp_boot)
-  obs_enriched = obs_mut > quantile(exp_boot, 0.95)
-  obs_depleted = obs_mut < quantile(exp_boot, 0.05)
+  exp_boot = replicate(1000, sum(stats::rpois(rep(1, length(exp_probs)), exp_probs)))
+  exp_mut = stats::median(exp_boot)
+  obs_enriched = obs_mut > stats::quantile(exp_boot, 0.95)
+  obs_depleted = obs_mut < stats::quantile(exp_boot, 0.05)
 
   list(obs_mut, exp_mut, obs_enriched, obs_depleted)
 }
@@ -86,15 +86,30 @@
 #' @export
 #'
 #' @examples
+#' \code{
+#' 
+#' # Regions
 #' data(cancer_genes)
-#' gr_element_coords = GRanges(seqnames = cancer_genes$chr, IRanges(start = cancer_genes$start, end = cancer_genes$end), mcols = cancer_genes$id)
+#' gr_element_coords = GRanges(seqnames = cancer_genes$chr, 
+#' IRanges(start = cancer_genes$start, end = cancer_genes$end), 
+#' mcols = cancer_genes$id)
+#' 
+#' # Sites (NULL)
 #' gr_site_coords = GRanges(c(seqnames=NULL,ranges=NULL,strand=NULL))
+#' 
+#' # Mutations
 #' data(cll_mutations)
 #' cll_mutations = format_muts(cll_mutations)
-#' gr_maf = GRanges(cll_mutations$chr, IRanges(cll_mutations$pos1, cll_mutations$pos2), mcols=cll_mutations[,c("patient", "tag")])
+#' 
+#' gr_maf = GRanges(cll_mutations$chr, 
+#' IRanges(cll_mutations$pos1, cll_mutations$pos2), 
+#' mcols=cll_mutations[,c("patient", "tag")])
+#' 
+#' # ADWGS_test
 #' id = "ATM"
-#'
 #' result = ADWGS_test(id, gr_element_coords, gr_site_coords, gr_maf, 50000)
+#' }
+#'
 ADWGS_test = function(id, gr_element_coords, gr_site_coords, gr_maf, win_size) {
 
   #	cat(id, "\n")
@@ -201,9 +216,9 @@ ADWGS_test = function(id, gr_element_coords, gr_site_coords, gr_maf, win_size) {
     h0_formula = "n_mut~1"
   }
 
-  h0 = glm(as.formula(h0_formula), data=dfr, family=poisson)
-  h1 = update(h0, . ~ . + is_element)
-  pp_element = anova(h0, h1, test="Chisq")[2,5]
+  h0 = stats::glm(stats::as.formula(h0_formula), data=dfr, family=stats::poisson)
+  h1 = stats::update(h0, . ~ . + is_element)
+  pp_element = stats::anova(h0, h1, test="Chisq")[2,5]
 
   element_stats = .get_obs_exp(h0, dfr$is_element, dfr, "n_mut")
   element_muts_obs = element_stats[[1]]
@@ -220,8 +235,8 @@ ADWGS_test = function(id, gr_element_coords, gr_site_coords, gr_maf, win_size) {
   # if region has sites, test second hypothesis on regions
   pp_site = site_muts_obs = site_muts_exp = site_enriched = site_depleted = NA
   if (sum(dfr$is_site)>0){
-    h2 = update(h1, . ~ . + is_site)
-    pp_site = anova(h1, h2, test="Chisq")[2,5]
+    h2 = stats::update(h1, . ~ . + is_site)
+    pp_site = stats::anova(h1, h2, test="Chisq")[2,5]
 
     site_stats = .get_obs_exp(h1, dfr$is_site, dfr, "n_mut")
     site_muts_obs = site_stats[[1]]

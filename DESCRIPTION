@@ -5,7 +5,21 @@ Authors@R: c(person("Juri", "Reimand", email = "juri.reimand@utoronto.ca", role 
 	     person("Helen", "Zhu", email = "helen.zhu@oicr.on.ca", role = "aut"))
 Description: ActiveDriverWGSR is an R package that finds an enrichment of cancer simple somatic mutations (SNVs and Indels) in functional elements across the human genome.
 Depends: R (>= 3.4.1)
+Imports: 
+	BSgenome, 
+	BSgenome.Hsapiens.UCSC.hg19, 
+	Biostrings, 
+	GenomeInfoDb,
+	GenomicRanges,
+	IRanges,
+	S4Vectors,
+	plyr
 License: GPL-3
 Encoding: UTF-8
 LazyData: true
+Suggests: 
+	knitr, 
+	testthat, 
+	rmarkdown
+VignetteBuilder: knitr
 RoxygenNote: 6.1.1

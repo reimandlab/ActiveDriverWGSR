@@ -79,7 +79,7 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 <p>Cancer is driven by somatic mutations. A few of these mutations confer a survival advantage to the tumour (drivers) while most mutations play a passive role in tumour development (passengers). Most driver mutations up to this point have been discovered in protein coding genes in whole exome sequencing datasets. Yet, as whole genome sequencing datasets grow and become the standard, novel methods are required to detect driver mutations in the vast noncoding regulatory genome. Here, we present our solution to this challenge, ActiveDriverWGS.</p>
 <div id="the-activedriverwgs-model" class="section level3">
 <h3>The ActiveDriverWGS Model</h3>
-<p>ActiveDriverWGS analyzes the mutational burden of <strong>SNVs and short indels</strong> (less than 50bps) in functionally defined <strong>elements</strong>. These elements can include the coding regions of protein coding genes and noncoding regulatory regions such as promoters, enhancers and untranslated regions. These regions may also include <strong>sites</strong> of interest such as post-translational modification sites in protein coding genes, miRNA binding sites in noncoding RNAs and transcription factor binding sites in enhancers. Both regions and sites are left up to the user’s preference and discretion.</p>
+<p>ActiveDriverWGS analyzes the mutational burden of <strong>SNVs and short indels</strong> (less than 50bps) in functionally defined <strong>elements</strong>. These elements can include the coding regions of protein coding genes and noncoding regulatory regions such as promoters, enhancers and untranslated regions. These elements may also include <strong>sites</strong> of interest such as post-translational modification sites in protein coding genes, miRNA binding sites in noncoding RNAs and transcription factor binding sites in enhancers. Both regions and sites are left up to the user’s preference and discretion.</p>
 <p>ActiveDriverWGS uses a Poisson generalized linear regression to compare the mutational burden of elements against the expected mutational burden of a narrow background window, incorporating the effect of mutational signatures. In our work, we have optimized the background to be 50,000 bps upstream and downstream of elements where mutational rates which vary on a larger genomic scale can be assumed to remain constant. If an element is segmented, such as a protein coding gene which contain several exons, the inter-segment sequence is also used to calculated the expected background rate. If sites are specified, enrichment of site mutations are estimated in elements with enriched mutational burden using the same model comparing sites to element. Users also have the option to exclude hyper-mutated samples which decrease the accuracy of driver discovery.</p>
 <p>For a more detailed reference on ActiveDriverWGS, please refer to the <a href="https://www.biorxiv.org/content/early/2017/12/19/236802">preprint</a>.</p>
 </div>
@@ -96,7 +96,7 @@ The ActiveDriverWGS Model
 </div>
 <div id="input-data" class="section level1">
 <h1>Input Data</h1>
-<p>ActiveDriverWGSR requires a file for somatic <code>mutations</code> and a file for genomic <code>elements</code>. A third optional file for <code>sites</code> can be specified by the user.</p>
+<p>ActiveDriverWGSR requires a file for somatic <code>mutations</code> and a file for genomic <code>elements</code>. A third optional file for <code>sites</code> can be specified by the user. Elements may contain multiple segments but each element must have a unique ID.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(ActiveDriverWGSR)
 
 <span class="kw">data</span>(<span class="st">&quot;cll_mutations&quot;</span>)
@@ -128,7 +128,7 @@ The ActiveDriverWGS Model
 ## 337843 chr1 11169418 11169418 MTOR NM_004958 2486</code></pre>
 <div id="importing-bed12-files-as-input-regions" class="section level2">
 <h2>Importing BED12 Files as Input Regions</h2>
-<p>For elements and sites written in BED12 files, the prepare_elements_from_BED12 function can be used to read the file and adapt it to fulfill the format requirements for the <code>elements</code> and <code>sites</code> parameters of the ActiveDriverWGS function. For more information on the BED12 format, please refer to the <a href="https://genome.ucsc.edu/FAQ/FAQformat.html#format1">UCSC guidelines</a>. In this example, regions are adapted from annotations for protein coding genes from <a href="https://www.gencodegenes.org/human/release_19.html">GENCODE.v19</a> for chromosome 17.</p>
+<p>For elements and sites written in BED12 files, the prepare_elements_from_BED12 function can be used to read the file and adapt it to fulfill the format requirements for the <code>elements</code> and <code>sites</code> parameters of the ActiveDriverWGS function. For more information on the BED12 format, please refer to the <a href="https://genome.ucsc.edu/FAQ/FAQformat.html#format1">UCSC guidelines</a>. In this example, elements are adapted from annotations for protein coding genes from <a href="https://www.gencodegenes.org/human/release_19.html">GENCODE.v19</a> for chromosome 17.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">elements =<span class="st"> </span><span class="kw">prepare_elements_from_BED12</span>(
   <span class="kw">system.file</span>(
     <span class="st">&quot;extdata&quot;</span>, 
@@ -151,7 +151,7 @@ The ActiveDriverWGS Model
 </div>
 <div id="basic-use" class="section level1">
 <h1>Basic Use</h1>
-<p>ActiveDriverWGS can be run simply with the mutations file, the elements file and an optional sites file. In this example, mutations are adapted from the <a href="https://www.nature.com/articles/nature12477">Alexandrov et al, 2013</a> dataset for the CLL patients. Regions are adapted from the <a href="https://cancer.sanger.ac.uk/census">cancer gene census</a> and annotations for protein coding genes from GENCODE.v19.</p>
+<p>ActiveDriverWGS can be run simply with the mutations file, the elements file and an optional sites file. In this example, mutations are adapted from the <a href="https://www.nature.com/articles/nature12477">Alexandrov et al, 2013</a> dataset for chronic lymphocytic leukemia (CLL) patients. Regions are adapted from the <a href="https://cancer.sanger.ac.uk/census">cancer gene census</a> and annotations for protein coding genes are adapted from GENCODE.v19.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">some_genes =<span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;ATM&quot;</span>, <span class="st">&quot;MYD88&quot;</span>, <span class="st">&quot;NOTCH1&quot;</span>,
                <span class="st">&quot;SF3B1&quot;</span>, <span class="st">&quot;XPO1&quot;</span>, <span class="st">&quot;SOCS1&quot;</span>, 
                <span class="st">&quot;CNOT3&quot;</span>, <span class="st">&quot;DDX3X&quot;</span>, <span class="st">&quot;KMT2A&quot;</span>, 
@@ -170,10 +170,10 @@ results =<span class="st"> </span><span class="kw">ActiveDriverWGS</span>(<span 
 <h2>Parameter Interpretation</h2>
 <p>ActiveDriverWGS has several adjustable parameters:</p>
 <ol style="list-style-type: decimal">
-<li><p><code>window_size</code>: A narrow background window in which mutation rates are assumed to remain constant. We have optimized this parameter on the PCAWG dataset to be 50,000 bps for SNVs and Indels.</p></li>
+<li><p><code>window_size</code>: A narrow background window in which mutation rates are assumed to remain constant. We have optimized this parameter on the PCAWG dataset to be 50,000 bps for SNVs and indels.</p></li>
 <li><p><code>filter_hyper_MB</code>: The threshold for the number of simple somatic mutations per megabase above which a sample is considered hypermutated. We define the default to be 30 mutations/megabase according to published literature.</p></li>
 <li><p><code>recovery.dir</code>: The directory for writing recovery files for ActiveDriverWGS. If the directory does not exist, it will be created. If none is specified, ActiveDriverWGS will create the directory ActiveDriverWGS_recovery.</p></li>
-<li><p><code>mc.cores</code>: The number of cores that the user wishes to allocate to running ActiveDriverWGS. For more information, refer to the R package <code>parallel</code>.</p></li>
+<li><p><code>mc.cores</code>: The number of cores that the user wishes to allocate to running ActiveDriverWGS. For more information, refer to the R package <a href="https://stat.ethz.ch/R-manual/R-devel/library/parallel/doc/parallel.pdf">parallel</a>.</p></li>
 </ol>
 </div>
 </div>
@@ -190,7 +190,7 @@ results =<span class="st"> </span><span class="kw">ActiveDriverWGS</span>(<span 
 ## 1  0.01241211        1                   
 ## 2  0.01241211        1                   
 ##  [ reached getOption(&quot;max.print&quot;) -- omitted 4 rows ]</code></pre>
-<p>ActiveDriverWGSR will return a results file in a data frame format with the following columns.</p>
+<p>ActiveDriverWGS will return results in a data frame format with the following columns.</p>
 <ol style="list-style-type: decimal">
 <li><p><code>id</code>: The identifier for the element.</p></li>
 <li><p><code>pp_element</code>: The p-value associated with enrichment of mutations in the element.</p></li>
@@ -218,7 +218,7 @@ results =<span class="st"> </span><span class="kw">ActiveDriverWGS</span>(<span 
 </div>
 <div id="example" class="section level2">
 <h2>Example</h2>
-<p>The following example will demonstrate how to build an ActiveDriverWGS pipeline which can be adapted to HPCCs. The idea is that the list of ids can be split into manageable pieces and run in parallel jobs. Note that the creation of GRanges objects is part of the ActiveDriverWGS wrapper function and must be completed manually by users wishing to create personalized pipelines. Also, note that multiple testing corrections have be recalculated in additional steps.</p>
+<p>The following example demonstrates how to build an ActiveDriverWGS pipeline which can be adapted to HPCCs. The idea is that the list of ids can be split into manageable pieces and run in parallel jobs. Note that the creation of GRanges objects is part of the ActiveDriverWGS wrapper function and must be completed manually by users wishing to create personalized pipelines. Also, note that multiple testing corrections have be recalculated in additional steps.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(GenomicRanges)
 
 <span class="co"># Loading elements &amp; creating a GRanges object</span>
@@ -250,7 +250,7 @@ cll_mutations =<span class="st"> </span><span class="kw">format_muts</span>(cll_
                          <span class="dt">end =</span> cll_mutations<span class="op">$</span>pos2),
                  <span class="dt">mcols=</span>cll_mutations[,<span class="kw">c</span>(<span class="st">&quot;patient&quot;</span>, <span class="st">&quot;tag&quot;</span>)])
 
-<span class="co"># Examplifying the TP53 Element</span>
+<span class="co"># Examplifying the ATM Element</span>
 id =<span class="st"> &quot;ATM&quot;</span>
 
 result =<span class="st"> </span><span class="kw">ADWGS_test</span>(<span class="dt">id =</span> id,

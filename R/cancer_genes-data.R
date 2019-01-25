@@ -7,7 +7,7 @@
 #'
 #' @docType data
 #'
-#' @usage data(coding_regions)
+#' @usage data(cancer_genes)
 #'
 #' @format A data frame containing the following columns: chr, start, end, id
 #' \describe{
