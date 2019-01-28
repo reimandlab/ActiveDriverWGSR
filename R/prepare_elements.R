@@ -17,23 +17,23 @@
 #' }
 #'
 .split_coord_fragments_in_BED = function(i, coords) {
-  
+
   # Progress Update
   if (i %% 100 == 0) cat(i, " ")
-  
+
   # Retrieving coords
   n_regions =  as.numeric(coords[i, "V10"])
   lens = as.numeric(strsplit(coords[i, "V11"], ',')[[1]])
   starts = as.numeric(strsplit(coords[i, "V12"], ',')[[1]]) + coords[i, "V2"]
   ends = starts+lens
-  
+
   # Checking File Format
   if (length(lens) != n_regions | length(starts) != n_regions) stop("Incorrect BED12 Format: Incorrect blockCounts")
   if (any(starts < coords[i, "V2"]) | any(ends > coords[i, "V3"])) stop("Incorrect BED12 Format: Incorrect blockSizes or blockStarts")
-  
+
   # Returning Element
   dfr = cbind(chr=coords[i,"V1"], starts, ends, id=coords[i,"V4"]) # , frag_id=1:length(lens)) to exclude frag_id as a necessary column
-  dfr	
+  dfr
 }
 
 
@@ -56,27 +56,25 @@
 #' @export
 #'
 #' @examples
-#' \code{
-#' elements = prepare_elements_from_BED12(system.file("extdata", 
-#' "chr17.coding_regions.bed", 
-#' package = "ActiveDriverWGSR", 
+#' elements = prepare_elements_from_BED12(system.file("extdata",
+#' "chr17.coding_regions.bed",
+#' package = "ActiveDriverWGSR",
 #' mustWork = TRUE))
-#' }
 prepare_elements_from_BED12 = function(fname) {
-  
+
   # Legal Chromosomes
   legal_chr = paste0("chr", c(1:22, "M", "X", "Y"))
-  
+
   # Reading File
   input = utils::read.delim(fname, stringsAsFactors=F, header=F)
   colnames(input) = paste0("V", 1:ncol(input))
-  
+
   # Checking File Format
   if (ncol(input) != 12) stop("Incorrect BED12 Format: 12 Columns in BED12 files")
   if (!is.numeric(input$V2) | !is.numeric(input$V3)) stop("Incorrect BED12 Format: Incorrect coordinate format")
   if (!any(input$V1 %in% legal_chr)) stop("Incorrect BED12 Format: Chromosomes must be autosomal, sex or mitochondrial")
   if (!is.character(input$V4)) stop("Incorrect BED12 Format: IDs must be a character string")
-  
+
   # Processing File
   cat("\n", nrow(input), " Rows :: Processing row ")
   coords = do.call(rbind, lapply(1:nrow(input), .split_coord_fragments_in_BED, input))
@@ -85,7 +83,7 @@ prepare_elements_from_BED12 = function(fname) {
   coords$ends = as.numeric(coords$ends)
   # coords$frag_id = as.numeric(coords$frag_id) to exclude frag_id as a necessary column
   dim1 = nrow(coords)
-  
+
   # Filtering Regions for Those Identified on a Single Chromosome (Mitochondrial, Autosomal and Sex Chromosomes)
   # & Repeated Elements
   chr = by(coords$chr, coords$id, function(x) unique(as.character(x)), simplify=F)

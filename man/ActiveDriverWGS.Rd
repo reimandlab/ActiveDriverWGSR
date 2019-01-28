@@ -79,5 +79,10 @@ ActiveDriverWGS is a driver discovery tool for simple somatic mutations in cance
 \examples{
 data(cancer_genes)
 data(cll_mutations)
-result = ActiveDriverWGS(mutations = cll_mutations, elements = cancer_genes)
+
+some_genes = c("ATM", "MYD88", "NOTCH1", "SF3B1", "XPO1",
+"SOCS1", "CNOT3", "DDX3X", "KMT2A", "HIF1A", "APC")
+
+result = ActiveDriverWGS(mutations = cll_mutations,
+elements = cancer_genes[cancer_genes$id \%in\% some_genes,])
 }

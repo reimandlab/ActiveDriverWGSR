@@ -47,12 +47,12 @@ A data frame containing the following columns
 ADWGS_test executes the statistical test for ActiveDriverWGS
 }
 \examples{
-\\code{
+library(GenomicRanges)
 
 # Regions
 data(cancer_genes)
-gr_element_coords = GRanges(seqnames = cancer_genes$chr, 
-IRanges(start = cancer_genes$start, end = cancer_genes$end), 
+gr_element_coords = GRanges(seqnames = cancer_genes$chr,
+IRanges(start = cancer_genes$start, end = cancer_genes$end),
 mcols = cancer_genes$id)
 
 # Sites (NULL)
@@ -62,13 +62,12 @@ gr_site_coords = GRanges(c(seqnames=NULL,ranges=NULL,strand=NULL))
 data(cll_mutations)
 cll_mutations = format_muts(cll_mutations)
 
-gr_maf = GRanges(cll_mutations$chr, 
-IRanges(cll_mutations$pos1, cll_mutations$pos2), 
+gr_maf = GRanges(cll_mutations$chr,
+IRanges(cll_mutations$pos1, cll_mutations$pos2),
 mcols=cll_mutations[,c("patient", "tag")])
 
 # ADWGS_test
 id = "ATM"
 result = ADWGS_test(id, gr_element_coords, gr_site_coords, gr_maf, 50000)
-}
 
 }

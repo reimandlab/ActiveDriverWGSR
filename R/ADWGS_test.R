@@ -113,7 +113,6 @@
 #'
 ADWGS_test = function(id, gr_element_coords, gr_site_coords, gr_maf, win_size) {
 
-  #	cat(id, "\n")
   cat(".")
   null_res = data.frame(id,
                         pp_element=NA, element_muts_obs=NA, element_muts_exp=NA, element_enriched=NA,
@@ -165,7 +164,7 @@ ADWGS_test = function(id, gr_element_coords, gr_site_coords, gr_maf, win_size) {
   rm(exon_bg_posi, positions, tri_nucleotide)
 
   # capture element mutations first and remove repeated mutations per patient
-  gr_maf_element = gr_maf[S4Vectors::queryHits(GenomicRanges::findOverlaps(gr_maf, gr_element))]
+  gr_maf_element = gr_maf[S4Vectors::queryHits(suppressWarnings(GenomicRanges::findOverlaps(gr_maf, gr_element)))]
   gr_maf_element = gr_maf_element[!duplicated(GenomicRanges::mcols(gr_maf_element)[,1])]
   if (length(gr_maf_element)==0) {
     return(null_res)
@@ -173,7 +172,7 @@ ADWGS_test = function(id, gr_element_coords, gr_site_coords, gr_maf, win_size) {
 
   # capture background mutations
   gr_background_only = GenomicRanges::setdiff(gr_background_plus_element, gr_element)
-  gr_maf_background_only = gr_maf[S4Vectors::queryHits(GenomicRanges::findOverlaps(gr_maf, gr_background_only))]
+  gr_maf_background_only = gr_maf[S4Vectors::queryHits(suppressWarnings(GenomicRanges::findOverlaps(gr_maf, gr_background_only)))]
 
   # count mutations by position and quad-nucl context; indels will be counted by midpoint
   gr_maf_element_plus_background = c(gr_maf_element, gr_maf_background_only)
@@ -193,7 +192,7 @@ ADWGS_test = function(id, gr_element_coords, gr_site_coords, gr_maf, win_size) {
   dfr$is_element = dfr$pos %in% element_posi
 
   # label nucleotides that are part of sites in the element
-  gr_element_sites = gr_site_coords[S4Vectors::subjectHits(GenomicRanges::findOverlaps(gr_element, gr_site_coords))]
+  gr_element_sites = gr_site_coords[S4Vectors::subjectHits(suppressWarnings(GenomicRanges::findOverlaps(gr_element, gr_site_coords)))]
   site_posi = c()
   if (length(gr_element_sites)>0) {
     site_posi = unique(unlist(lapply(1:length(gr_element_sites),

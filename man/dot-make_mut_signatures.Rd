@@ -13,5 +13,7 @@ a dataframe with mutational signatures
 Makes mutational signatures
 }
 \examples{
+\dontrun{
 mut_signatures = .make_mut_signatures()
+}
 }

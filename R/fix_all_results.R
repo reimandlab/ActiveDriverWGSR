@@ -61,7 +61,6 @@
 #'     \item{has_site_mutations}{A V indicates the presence of site mutations}
 #' }
 #'
-
 .get_signf_results = function(all_res) {
   this_results = all_res
   if (nrow(this_results)==0) {

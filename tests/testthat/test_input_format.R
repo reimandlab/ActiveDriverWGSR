@@ -80,13 +80,13 @@ test_that("mutations are formatted properly",{
   this_mutations$pos1 = as.character(this_mutations$pos1)
   expect_error(ActiveDriverWGS(elements = cancer_genes,
                                mutations = this_mutations),
-               "pos1 and pos2 must be integers")
+               "pos1 and pos2 must be numeric")
 
   this_mutations = cll_mutations
   this_mutations$pos2 = as.character(this_mutations$pos2)
   expect_error(ActiveDriverWGS(elements = cancer_genes,
                                mutations = this_mutations),
-               "pos1 and pos2 must be integers")
+               "pos1 and pos2 must be numeric")
 
   # Patient identifier as numeric
   this_num_patient = structure(1:length(unique(cll_mutations$patient)), names = unique(cll_mutations$patient))

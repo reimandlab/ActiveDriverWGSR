@@ -27,10 +27,8 @@ to ActiveDriverWGS
 Prepares element coords from a BED12 file
 }
 \examples{
-\\code{
-elements = prepare_elements_from_BED12(system.file("extdata", 
-"chr17.coding_regions.bed", 
-package = "ActiveDriverWGSR", 
+elements = prepare_elements_from_BED12(system.file("extdata",
+"chr17.coding_regions.bed",
+package = "ActiveDriverWGSR",
 mustWork = TRUE))
-}
 }
