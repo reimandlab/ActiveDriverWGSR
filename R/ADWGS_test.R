@@ -3,7 +3,9 @@
 #' @return a dataframe with mutational signatures
 #'
 #' @examples
+#' \dontrun{
 #' mut_signatures = .make_mut_signatures()
+#' }
 .make_mut_signatures = function() {
   nucs = c("A", "C", "G", "T")
 
@@ -86,29 +88,28 @@
 #' @export
 #'
 #' @examples
-#' \code{
-#' 
+#' library(GenomicRanges)
+#'
 #' # Regions
 #' data(cancer_genes)
-#' gr_element_coords = GRanges(seqnames = cancer_genes$chr, 
-#' IRanges(start = cancer_genes$start, end = cancer_genes$end), 
+#' gr_element_coords = GRanges(seqnames = cancer_genes$chr,
+#' IRanges(start = cancer_genes$start, end = cancer_genes$end),
 #' mcols = cancer_genes$id)
-#' 
+#'
 #' # Sites (NULL)
 #' gr_site_coords = GRanges(c(seqnames=NULL,ranges=NULL,strand=NULL))
-#' 
+#'
 #' # Mutations
 #' data(cll_mutations)
 #' cll_mutations = format_muts(cll_mutations)
-#' 
-#' gr_maf = GRanges(cll_mutations$chr, 
-#' IRanges(cll_mutations$pos1, cll_mutations$pos2), 
+#'
+#' gr_maf = GRanges(cll_mutations$chr,
+#' IRanges(cll_mutations$pos1, cll_mutations$pos2),
 #' mcols=cll_mutations[,c("patient", "tag")])
-#' 
+#'
 #' # ADWGS_test
 #' id = "ATM"
 #' result = ADWGS_test(id, gr_element_coords, gr_site_coords, gr_maf, 50000)
-#' }
 #'
 ADWGS_test = function(id, gr_element_coords, gr_site_coords, gr_maf, win_size) {
 
@@ -149,8 +150,6 @@ ADWGS_test = function(id, gr_element_coords, gr_site_coords, gr_maf, win_size) {
 
   # background is plus/minus window size around each segment of element
   # in some cases intermediate non-segments (introns) extend well beyond window size. remove these remote coordinates from background
-  # fixing win_size-1 bug
-  # exon_bg_posi = unique(unlist(lapply(gr_element, function(gr) (GenomicRanges::start(gr)-win_size):(GenomicRanges::end(gr)+win_size)))) # orignal code
   exon_bg_posi = unique(unlist(lapply(1:length(gr_element),
                                       function(i) (GenomicRanges::start(gr_element)[i]-win_size):(GenomicRanges::end(gr_element)[i]+win_size))))
 
@@ -178,9 +177,9 @@ ADWGS_test = function(id, gr_element_coords, gr_site_coords, gr_maf, win_size) {
 
   # count mutations by position and quad-nucl context; indels will be counted by midpoint
   gr_maf_element_plus_background = c(gr_maf_element, gr_maf_background_only)
-  gr_maf_element_plus_background = gr_maf_element_plus_background[!duplicated(data.frame(gr_maf_element_plus_background))] 	# My fix for duplicated mutations
+  gr_maf_element_plus_background = gr_maf_element_plus_background[!duplicated(data.frame(gr_maf_element_plus_background))]
   mut_midpoint = round((GenomicRanges::start(gr_maf_element_plus_background) + GenomicRanges::end(gr_maf_element_plus_background))/2)
-  mut_tag = gr_maf_element_plus_background$mcols.tag #  mcols(gr_maf_element_plus_background)[,3]
+  mut_tag = gr_maf_element_plus_background$mcols.tag
   maf_element_plus_background = data.frame(pos1=mut_midpoint, tag=mut_tag, stringsAsFactors=F)
   muts_per_pos = plyr::ddply(maf_element_plus_background, c("pos1", "tag"), function(x) nrow(x))
   colnames(muts_per_pos)[3] = "n_mut"
@@ -190,7 +189,6 @@ ADWGS_test = function(id, gr_element_coords, gr_site_coords, gr_maf, win_size) {
   dfr[is.na(dfr$n_mut), "n_mut"] = 0
 
   # label nucleotides that are part of the element
-  # fixing end(gr_element)[i]-1 bug
   element_posi = unique(unlist(lapply(1:length(gr_element), function(i) GenomicRanges::start(gr_element)[i]:(GenomicRanges::end(gr_element)[i]))))
   dfr$is_element = dfr$pos %in% element_posi
 
@@ -198,7 +196,6 @@ ADWGS_test = function(id, gr_element_coords, gr_site_coords, gr_maf, win_size) {
   gr_element_sites = gr_site_coords[S4Vectors::subjectHits(GenomicRanges::findOverlaps(gr_element, gr_site_coords))]
   site_posi = c()
   if (length(gr_element_sites)>0) {
-    # fixing end(gr_element_sites)[i]-1 bug
     site_posi = unique(unlist(lapply(1:length(gr_element_sites),
                                      function(i) GenomicRanges::start(gr_element_sites)[i]:(GenomicRanges::end(gr_element_sites)[i]))))
     site_posi = intersect(site_posi, element_posi)
