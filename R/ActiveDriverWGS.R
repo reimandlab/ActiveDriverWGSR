@@ -68,11 +68,14 @@
 #' @export
 #'
 #' @examples
-#' \code{
 #' data(cancer_genes)
 #' data(cll_mutations)
-#' result = ActiveDriverWGS(mutations = cll_mutations, elements = cancer_genes)
-#' }
+#'
+#' some_genes = c("ATM", "MYD88", "NOTCH1", "SF3B1", "XPO1",
+#' "SOCS1", "CNOT3", "DDX3X", "KMT2A", "HIF1A", "APC")
+#'
+#' result = ActiveDriverWGS(mutations = cll_mutations,
+#' elements = cancer_genes[cancer_genes$id %in% some_genes,])
 ActiveDriverWGS = function(mutations,
                            elements,
                            sites = NULL,
@@ -99,7 +102,9 @@ ActiveDriverWGS = function(mutations,
     }
   }else{
     recovery.dir = "ActiveDriverWGS_recovery"
-    dir.create(recovery.dir)
+    if (!dir.exists(recovery.dir)){
+      dir.create(recovery.dir)
+    }
     message(paste0("Writing results to ", recovery.dir))
   }
   if(!endsWith(recovery.dir, "[/]") && recovery.dir != ""){
@@ -146,7 +151,7 @@ ActiveDriverWGS = function(mutations,
     if (any(is.na(sites))) stop("sites may not contain missing values")
     if (any(duplicated(sites))) stop("duplicated sites are present. please review your format")
     # if (!all(sites$chr %in% BSgenome.Hsapiens.UCSC.hg19::seqnames(Hsapiens)[1:24])) stop("Only the 22 autosomal and 2 sex chromosomes may be used at this time. Note that chr23 should be formatted as chrX and chr24 should be formatted as chrY")
-    if (!(is.integer(sites$start) && is.integer(sites$end))) stop("start and end must be integers")
+    if (!(is.numeric(sites$start) && is.numeric(sites$end))) stop("start and end must be numeric")
     if (!(is.character(sites$id))) stop("site identifier must be a string")
 
     gr_site_coords = GenomicRanges::GRanges(sites$chr,
