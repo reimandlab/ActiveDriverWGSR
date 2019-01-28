@@ -119,7 +119,7 @@ ActiveDriverWGS = function(mutations,
   if (any(duplicated(mutations))) stop("duplicated mutations are present. please review your format")
   if (!(is.character(mutations$chr) && is.character(mutations$ref) && is.character(mutations$alt))) stop("chr, ref and alt must be character")
   if (!any(mutations$chr %in% BSgenome::seqnames(BSgenome.Hsapiens.UCSC.hg19::Hsapiens)[1:24])) stop("Only the 22 autosomal and 2 sex chromosomes may be used at this time. Note that chr23 should be formatted as chrX and chr24 should be formatted as chrY")
-  if (!(is.integer(mutations$pos1) && is.integer(mutations$pos2))) stop("pos1 and pos2 must be integers")
+  if (!(is.numeric(mutations$pos1) && is.numeric(mutations$pos2))) stop("pos1 and pos2 must be numeric")
   if (!(any(mutations$ref %in% legal_dna) && any(mutations$alt %in% legal_dna))) stop("Reference and alternate alleles must be A, T, C or G")
   if (!(is.character(mutations$patient))) stop("patient identifier must be a string")
 
@@ -202,7 +202,9 @@ ActiveDriverWGS = function(mutations,
   if (nrow(all_results) != length(unique(elements$id))) stop("Error: Something unexpected happened. Please try again.\n")
   rm(elements, gr_element_coords)
 
+  # Formatting Results
   all_results = .fix_all_results(all_results)
   all_results = .get_signf_results(all_results)
+  all_results = all_results[,!colnames(all_results) %in% "result_number"]
   all_results
 }
