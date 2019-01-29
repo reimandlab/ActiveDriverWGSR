@@ -44,75 +44,6 @@
   list(obs_mut, exp_mut, obs_enriched, obs_depleted)
 }
 
-#' .assign_muts creates a dataframe with positions, 3N context and # of mutations for 
-#' the entire region
-#'
-#' @param gr_maf_element_plus_background A GRanges object containing mutations in the region
-#' and in the background. It contains the mcols \code{c(mcols.patient, mcols.tag)}
-#' @param gr_background_only A GRanges object containing the coordinates of the background.
-#' @param gr_element_coords A GRanges object containing the coordinates of the region.
-#' It contains the mcols \code{mcols} representing element ID
-#' @param gr_site_coords A GRanges object containing the coordinates of the sites.
-#' It contains the mcols \code{mcols} representing element ID
-#' @param element_bias Whether or not indels overlapping the boundaries of the element
-#' and the background should be biased towards the element
-#' @param site_bias Whether or not indels overlapping the boundaries of the sites
-#' should be biased towards to sites
-#' @return A data.frame called \code{muts_per_pos} containing the columns
-#' pos1, tag and n_mut indicating the position of the mutation, the 3N context
-#' and the number of mutations at that position with the same 3N context
-#'
-.assign_muts = function(gr_maf_element_plus_background, 
-                        gr_background_only,
-                        gr_element_coords,
-                        gr_site_coords,
-                        element_bias = T, 
-                        site_bias = T){
-  
-  # Extracting Ranges
-  this_gr_maf_element_plus_background = GenomicRanges::granges(gr_maf_element_plus_background)
-  
-  # Edge cases, when there are indels overlapping the borders of the element and the background, choose to enrich the element
-  if(length(findOverlaps(gr_element_coords, gr_background_only)) != 0)stop("Element and background overlaps, violating assumptions.")
-  if(element_bias){
-    element_edge_indels = intersect(S4Vectors::queryHits(suppressWarnings(GenomicRanges::findOverlaps(this_gr_maf_element_plus_background, gr_element_coords))), 
-                                    S4Vectors::queryHits(suppressWarnings(GenomicRanges::findOverlaps(this_gr_maf_element_plus_background, gr_background_only))))
-    if(length(element_edge_indels) > 0)
-      this_gr_maf_element_plus_background[element_edge_indels] = do.call(c, lapply(element_edge_indels, function(i) {setdiff(this_gr_maf_element_plus_background[i], gr_background_only)}))
-  }
-  # Edge case, when there are indels overlapping the borders of the site and the element, choose to enrich the sites
-  if(length(GenomicRanges::setdiff(gr_site_coords, gr_element_coords)) != 0)stop("Sites are not completely contained within elements, violating assumptions.")
-  if(site_bias){
-    gr_element_no_sites = GenomicRanges::setdiff(gr_element_coords, gr_site_coords)
-    site_edge_indels = intersect(S4Vectors::queryHits(suppressWarnings(GenomicRanges::findOverlaps(this_gr_maf_element_plus_background, gr_site_coords))), 
-                                 S4Vectors::queryHits(suppressWarnings(GenomicRanges::findOverlaps(this_gr_maf_element_plus_background, gr_element_no_sites))))
-    if(length(site_edge_indels) > 0)
-      this_gr_maf_element_plus_background[site_edge_indels] = GenomicRanges::setdiff(this_gr_maf_element_plus_background[site_edge_indels], gr_element_no_sites)
-  }
-  S4Vectors::mcols(this_gr_maf_element_plus_background) = S4Vectors::mcols(gr_maf_element_plus_background)
-  
-  # Removing duplicated mutations originally capture by both the element and the background
-  this_gr_maf_element_plus_background = this_gr_maf_element_plus_background[!duplicated(data.frame(this_gr_maf_element_plus_background))]
-  
-  # Removing mutations that are in the element with duplicated patients
-  element_muts_indices = unique(S4Vectors::queryHits(GenomicRanges::findOverlaps(this_gr_maf_element_plus_background, gr_element_coords)))
-  element_muts = this_gr_maf_element_plus_background[element_muts_indices]
-  non_element_muts = this_gr_maf_element_plus_background[!1:length(this_gr_maf_element_plus_background) %in% element_muts_indices]
-  element_muts = element_muts[!duplicated(element_muts$mcols.patient)]
-  this_gr_maf_element_plus_background = c(element_muts, non_element_muts)
-  
-  # Creating muts_per_pos
-  mut_midpoint = round((GenomicRanges::start(this_gr_maf_element_plus_background) + GenomicRanges::end(this_gr_maf_element_plus_background))/2)
-  mut_tag = this_gr_maf_element_plus_background$mcols.tag
-  maf_element_plus_background = data.frame(pos1=mut_midpoint, tag=mut_tag, stringsAsFactors=F)
-  muts_per_pos = plyr::ddply(maf_element_plus_background, c("pos1", "tag"), function(x) nrow(x))
-  colnames(muts_per_pos)[3] = "n_mut"
-  
-  # Returning muts_per_pos
-  muts_per_pos
-  
-}
-
 # @import GenomicRanges
 # @import GenomeInfoDb
 # @import BSgenome.Hsapiens.UCSC.hg19
@@ -136,6 +67,8 @@
 #' start and end coordinates, patient id, and trinucleotide context
 #' @param win_size An integer indicating the size of the background window in base pairs for which the
 #' mutation rate is expected to remain the same. The default is 50000bps.
+#' @param element_bias A boolean indicating whether or not indels should be counted by their midpoints
+#' or with bias towards the element
 #'
 #' @return A data frame containing the following columns
 #' \describe{
@@ -180,7 +113,7 @@
 #' id = "ATM"
 #' result = ADWGS_test(id, gr_element_coords, gr_site_coords, gr_maf, 50000)
 #'
-ADWGS_test = function(id, gr_element_coords, gr_site_coords, gr_maf, win_size) {
+ADWGS_test = function(id, gr_element_coords, gr_site_coords, gr_maf, win_size, element_bias = T) {
 
   cat(".")
   null_res = data.frame(id,
@@ -189,8 +122,7 @@ ADWGS_test = function(id, gr_element_coords, gr_site_coords, gr_maf, win_size) {
                         stringsAsFactors=F)
 
   gr_element = gr_element_coords[GenomicRanges::mcols(gr_element_coords)[,1]==id]
-  gr_element_sites = gr_site_coords[S4Vectors::subjectHits(suppressWarnings(GenomicRanges::findOverlaps(gr_element, gr_site_coords)))]
-  
+
   # background is plus/minus window and takes care of cases on chromosome borders
   background_chr = as.character(GenomicRanges::seqnames(gr_element))[1]
   background_start = min(GenomicRanges::start(gr_element))-win_size-2
@@ -242,22 +174,30 @@ ADWGS_test = function(id, gr_element_coords, gr_site_coords, gr_maf, win_size) {
 
   # capture background mutations
   gr_background_only = GenomicRanges::setdiff(gr_background_plus_element, gr_element)
-  gr_maf_background_only = gr_maf[S4Vectors::queryHits(suppressWarnings(GenomicRanges::findOverlaps(gr_maf, gr_background_only)))]
+  gr_maf_background_only = gr_maf[S4Vectors::queryHits(suppressWarnings(GenomicRanges::findOverlaps(gr_maf, gr_background_only, type = "within")))]
 
   # count mutations by position and quad-nucl context; indels will be counted by midpoint
   gr_maf_element_plus_background = c(gr_maf_element, gr_maf_background_only)
-  gr_maf_element_plus_background = gr_maf_element_plus_background[!duplicated(data.frame(gr_maf_element_plus_background))]
-  muts_per_pos = .assign_muts(gr_maf_element_plus_background = gr_maf_element_plus_background,
-                              gr_background_only = gr_background_only,
-                              gr_element_coords = gr_element_coords,
-                              gr_site_coords = gr_site_coords,
-                              element_bias = T,
-                              site_bias = T) # Edit HERE!
-  # mut_midpoint = round((GenomicRanges::start(gr_maf_element_plus_background) + GenomicRanges::end(gr_maf_element_plus_background))/2)
-  # mut_tag = gr_maf_element_plus_background$mcols.tag
-  # maf_element_plus_background = data.frame(pos1=mut_midpoint, tag=mut_tag, stringsAsFactors=F)
-  # muts_per_pos = plyr::ddply(maf_element_plus_background, c("pos1", "tag"), function(x) nrow(x))
-  # colnames(muts_per_pos)[3] = "n_mut"
+  # gr_maf_element_plus_background = gr_maf_element_plus_background[!duplicated(data.frame(gr_maf_element_plus_background))]
+
+  # Counting all mutations which overlap the element as element_mutations
+  if(element_bias){
+    this_gr_maf_element_plus_background = GenomicRanges::granges(gr_maf_element_plus_background)
+    element_edge_indels = intersect(S4Vectors::queryHits(suppressWarnings(GenomicRanges::findOverlaps(this_gr_maf_element_plus_background, gr_element_coords))),
+                                    S4Vectors::queryHits(suppressWarnings(GenomicRanges::findOverlaps(this_gr_maf_element_plus_background, gr_background_only))))
+    if(length(element_edge_indels) > 0)
+      this_gr_maf_element_plus_background[element_edge_indels] = do.call(c, lapply(element_edge_indels, function(i) {GenomicRanges::setdiff(this_gr_maf_element_plus_background[i], gr_background_only)}))
+    S4Vectors::mcols(this_gr_maf_element_plus_background) = S4Vectors::mcols(gr_maf_element_plus_background)
+    gr_maf_element_plus_background = this_gr_maf_element_plus_background
+    rm(this_gr_maf_element_plus_background)
+  }
+
+  # Creating the muts_per_pos data.frame where there are columns for position, tag and number of mutations for background and element
+  mut_midpoint = round((GenomicRanges::start(gr_maf_element_plus_background) + GenomicRanges::end(gr_maf_element_plus_background))/2)
+  mut_tag = gr_maf_element_plus_background$mcols.tag
+  maf_element_plus_background = data.frame(pos1=mut_midpoint, tag=mut_tag, stringsAsFactors=F)
+  muts_per_pos = plyr::ddply(maf_element_plus_background, c("pos1", "tag"), function(x) nrow(x))
+  colnames(muts_per_pos)[3] = "n_mut"
 
   # combine entire region and its mutations by positions and nucleotide content
   dfr = merge(dfr, muts_per_pos, by.x=c("pos", "signt"), by.y=c("pos1", "tag"), all=T)
@@ -268,7 +208,7 @@ ADWGS_test = function(id, gr_element_coords, gr_site_coords, gr_maf, win_size) {
   dfr$is_element = dfr$pos %in% element_posi
 
   # label nucleotides that are part of sites in the element
-  # gr_element_sites = gr_site_coords[S4Vectors::subjectHits(suppressWarnings(GenomicRanges::findOverlaps(gr_element, gr_site_coords)))]
+  gr_element_sites = gr_site_coords[S4Vectors::subjectHits(suppressWarnings(GenomicRanges::findOverlaps(gr_element, gr_site_coords)))]
   site_posi = c()
   if (length(gr_element_sites)>0) {
     site_posi = unique(unlist(lapply(1:length(gr_element_sites),

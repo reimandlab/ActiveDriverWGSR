@@ -4,7 +4,8 @@
 \alias{ADWGS_test}
 \title{ADWGS_test executes the statistical test for ActiveDriverWGS}
 \usage{
-ADWGS_test(id, gr_element_coords, gr_site_coords, gr_maf, win_size)
+ADWGS_test(id, gr_element_coords, gr_site_coords, gr_maf, win_size,
+  element_bias = T)
 }
 \arguments{
 \item{id}{A string used to identify the element of interest. \code{id}
@@ -24,6 +25,9 @@ start and end coordinates, patient id, and trinucleotide context}
 
 \item{win_size}{An integer indicating the size of the background window in base pairs for which the
 mutation rate is expected to remain the same. The default is 50000bps.}
+
+\item{element_bias}{A boolean indicating whether or not indels should be counted by their midpoints
+or with bias towards the element}
 }
 \value{
 A data frame containing the following columns
