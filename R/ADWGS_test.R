@@ -77,7 +77,7 @@
 #'     \item{element_muts_obs}{The number of patients with a mutation in the element}
 #'     \item{element_muts_exp}{The expected number of patients with a mutation in the element with respect to background}
 #'     \item{element_enriched}{A boolean indicating whether the element is enriched in mutations}
-#'     \item{pp_site}{The p-value of the element}
+#'     \item{pp_site}{The p-value of the site}
 #'     \item{site_muts_obs}{The number of patients with a mutation in the site}
 #'     \item{site_muts_exp}{The expected number of patients with a mutation in the site with respect to element}
 #'     \item{site_enriched}{A boolean indicating whether the site is enriched in mutations}

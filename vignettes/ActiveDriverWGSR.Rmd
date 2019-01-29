@@ -2,13 +2,16 @@
 title: "ActiveDriverWGS"
 author: "Helen Zhu, Dr. Juri Reimand"
 date: "`r Sys.Date()`"
-output: 
-  rmarkdown::html_vignette:
-    toc: false
+output:
+  pdf_document:
+    highlight: null
+    number_sections: yes
+  knitr:::html_vignette:
+    toc: true
 vignette: >
   %\VignetteIndexEntry{ActiveDriverWGSR}
-  %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
+  %\VignetteEngine{knitr::rmarkdown}
 ---
 
 ```{r setup, include=FALSE}
