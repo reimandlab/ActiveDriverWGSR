@@ -5,7 +5,7 @@ knitr::opts_chunk$set(echo = TRUE,
                       width=500)
 options(max.print=35)
 
-## ----pressure, echo=FALSE, fig.cap="The ActiveDriverWGS Model", out.width = '75%'----
+## ----pressure, echo=FALSE, fig.cap="Figure 1: The ActiveDriverWGS Model", out.width = '75%'----
 knitr::include_graphics("ADWGS_diagram.png")
 
 ## ----input---------------------------------------------------------------

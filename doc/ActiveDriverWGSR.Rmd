@@ -29,7 +29,7 @@ Cancer is driven by somatic mutations. A few of these mutations confer a surviva
 ActiveDriverWGS analyzes the mutational burden of **SNVs and short indels** (less than 50bps) in functionally defined **elements**. These elements can include the coding regions of protein coding genes and noncoding regulatory regions such as promoters, enhancers and untranslated regions. These elements may also include **sites** of interest such as post-translational modification sites in protein coding genes, miRNA binding sites in noncoding RNAs and transcription factor binding sites in enhancers. Both regions and sites are left up to the user's preference and discretion.
 
 \newline
-ActiveDriverWGS uses a Poisson generalized linear regression to compare the mutational burden of elements against the expected mutational burden of a narrow background window, incorporating the effect of mutational signatures. In our work, we have optimized the background to be 50,000 bps upstream and downstream of elements where mutational rates which vary on a larger genomic scale can be assumed to remain constant. If an element is segmented, such as a protein coding gene which contain several exons, the inter-segment sequence is also used to calculated the expected background rate. If sites are specified, enrichment of site mutations are estimated in elements with enriched mutational burden using the same model comparing sites to element. Users also have the option to exclude hyper-mutated samples which decrease the accuracy of driver discovery.
+ActiveDriverWGS uses a Poisson generalized linear regression to compare the mutational burden of elements against the expected mutational burden of a narrow background window, incorporating the effect of mutational signatures (Figure 1). In our work, we have optimized the background to be 50,000 bps upstream and downstream of elements where mutational rates which vary on a larger genomic scale can be assumed to remain constant. If an element is segmented, such as a protein coding gene which contains several exons, the inter-segment sequence is also used to calculate the expected background rate. If sites are specified, enrichment of site mutations are estimated in elements with enriched mutational burden using the same model comparing sites to element. Users also have the option to exclude hyper-mutated samples which decrease the accuracy of driver discovery.
 
 \newline
 For a more detailed reference on ActiveDriverWGS, please refer to the [preprint](https://www.biorxiv.org/content/early/2017/12/19/236802).
@@ -38,12 +38,12 @@ For a more detailed reference on ActiveDriverWGS, please refer to the [preprint]
 The genome build for ActiveDriverWGS is **hg19**. We are working on adding additional options for **hg38**.
 
 
-```{r pressure, echo=FALSE, fig.cap="The ActiveDriverWGS Model", out.width = '75%'}
+```{r pressure, echo=FALSE, fig.cap="Figure 1: The ActiveDriverWGS Model", out.width = '75%'}
 knitr::include_graphics("ADWGS_diagram.png")
 ```
 
 # Input Data
-ActiveDriverWGSR requires a file for somatic `mutations` and a file for genomic `elements`. A third optional file for `sites` can be specified by the user. Elements may contain multiple segments but each element must have a unique ID.
+ActiveDriverWGSR requires a file for somatic `mutations` and a file for genomic `elements`. A third optional file for `sites` can be specified by the user. Elements may contain multiple segments, each represented in a separate row. Segments belonging to the same element must share a common id unique to the element. 
 
 ```{r input}
 library(ActiveDriverWGSR)
@@ -142,7 +142,7 @@ This function formats the mutations data frame, removes hyper-mutated samples an
 This function calculates the enrichment of mutations for a particular region id. It applies a Poisson generalized linear regression model across mutation signatures to identify enriched regions.
 
 ## Example
-The following example demonstrates how to build an ActiveDriverWGS pipeline which can be adapted to HPCCs. The idea is that the list of ids can be split into manageable pieces and run in parallel jobs. Note that the creation of GRanges objects is part of the ActiveDriverWGS wrapper function and must be completed manually by users wishing to create personalized pipelines. Also, note that multiple testing corrections have be recalculated in additional steps.
+The following example demonstrates how to build an ActiveDriverWGS pipeline which can be adapted to HPCCs. The idea is that the list of ids can be split into manageable pieces and run in parallel jobs. Note that the creation of GRanges objects is part of the ActiveDriverWGS wrapper function and must be completed manually by users wishing to create personalized pipelines. Also, note that multiple testing corrections will need to be recalculated by the user.
 
 ```{r pipeline}
 library(GenomicRanges)
