@@ -183,7 +183,7 @@ ADWGS_test = function(id, gr_element_coords, gr_site_coords, gr_maf, win_size, e
   # Counting all mutations which overlap the element as element_mutations
   if(element_bias){
     this_gr_maf_element_plus_background = GenomicRanges::granges(gr_maf_element_plus_background)
-    element_edge_indels = intersect(S4Vectors::queryHits(suppressWarnings(GenomicRanges::findOverlaps(this_gr_maf_element_plus_background, gr_element_coords))),
+    element_edge_indels = intersect(S4Vectors::queryHits(suppressWarnings(GenomicRanges::findOverlaps(this_gr_maf_element_plus_background, gr_element))),
                                     S4Vectors::queryHits(suppressWarnings(GenomicRanges::findOverlaps(this_gr_maf_element_plus_background, gr_background_only))))
     if(length(element_edge_indels) > 0)
       this_gr_maf_element_plus_background[element_edge_indels] = do.call(c, lapply(element_edge_indels, function(i) {GenomicRanges::setdiff(this_gr_maf_element_plus_background[i], gr_background_only)}))

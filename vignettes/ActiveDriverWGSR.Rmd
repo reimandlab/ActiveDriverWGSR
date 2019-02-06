@@ -26,12 +26,12 @@ options(max.print=35)
 Cancer is driven by somatic mutations. A few of these mutations confer a survival advantage to the tumour (drivers) while most mutations play a passive role in tumour development (passengers). Most driver mutations up to this point have been discovered in protein coding genes in whole exome sequencing datasets. Yet, as whole genome sequencing datasets grow and become the standard, novel methods are required to detect driver mutations in the vast noncoding regulatory genome. Here, we present our solution to this challenge, ActiveDriverWGS.
 
 ### The ActiveDriverWGS Model
-ActiveDriverWGS analyzes the mutational burden of **SNVs and short indels** (less than 50bps) in functionally defined **elements**. These elements can include the coding regions of protein coding genes and noncoding regulatory regions such as promoters, enhancers and untranslated regions. These elements may also include **sites** of interest such as post-translational modification sites in protein coding genes, miRNA binding sites in noncoding RNAs and transcription factor binding sites in enhancers. Both regions and sites are left up to the user's preference and discretion.
+ActiveDriverWGS is a recurrence-based method which builds on the idea that driver mutations are subject to positive selection. This method analyzes the mutational burden of **SNVs and short indels** (less than 50bps) in functionally defined **elements**. These elements can include the coding regions of protein coding genes and noncoding regulatory regions such as promoters, enhancers and untranslated regions. These elements may also include **sites** of interest which reside in elements such as post-translational modification sites in protein coding genes, miRNA binding sites in noncoding RNAs and transcription factor binding sites in enhancers. Both regions and sites are left up to the user's preference and discretion.
 
 \newline
-ActiveDriverWGS uses a Poisson generalized linear regression to compare the mutational burden of elements against the expected mutational burden of a narrow background window, incorporating the effect of mutational signatures (Figure 1). In our work, we have optimized the background to be 50,000 bps upstream and downstream of elements where mutational rates which vary on a larger genomic scale can be assumed to remain constant. If an element is segmented, such as a protein coding gene which contains several exons, the inter-segment sequence is also used to calculate the expected background rate. If sites are specified, enrichment of site mutations are estimated in elements with enriched mutational burden using the same model comparing sites to element. Users also have the option to exclude hyper-mutated samples which decrease the accuracy of driver discovery.
+ActiveDriverWGS uses a Poisson generalized linear regression to compare the mutational burden of elements against the expected mutational burden of a narrow background window (Figure 1). In our work, we have optimized the background to be 50,000 bps upstream and downstream of elements. ActiveDriverWGS also incorporates the effect of mutational signatures, specifically the probability distribution of SNVs arising across trinucleotide contexts which vary with mutational processes. If an element is segmented, such as the exons of a protein coding gene, the inter-segment sequences are also used to calculate the expected background rate. If sites are specified, enrichment of site mutations are estimated in elements with enriched mutational burden using the same model comparing sites to element. Users also have the option to exclude hyper-mutated samples which decrease the accuracy of driver discovery.
 
-\newline
+### Publication
 For a more detailed reference on ActiveDriverWGS, please refer to the [preprint](https://www.biorxiv.org/content/early/2017/12/19/236802).
 
 ### Please Note
@@ -43,8 +43,37 @@ knitr::include_graphics("ADWGS_diagram.png")
 ```
 
 # Input Data
-ActiveDriverWGSR requires a file for somatic `mutations` and a file for genomic `elements`. A third optional file for `sites` can be specified by the user. Elements may contain multiple segments, each represented in a separate row. Segments belonging to the same element must share a common id unique to the element. 
+ActiveDriverWGSR requires a file for somatic `mutations` and a file for genomic `elements`. A third optional file for `sites` can be specified by the user. Elements may contain multiple segments, each represented in a separate row. Segments belonging to the same element must share a common id unique to the element. Sites will only be incorporated in the model if they reside within elements but not all elements need to contain sites. Elements may contain multiple sites. Site ids are independent of element ids.
 
+### Mutations
+
+The `mutations` data must be in a data frame containing the columns with the correct column names `chr`, `pos1`, `pos2`, `ref`, `alt`, and `patient`. Additional columns may be included but will not be analyzed.
+
+1) `chr`: autosomal chromosomes as chr1 to chr22 and sex chromosomes as chrX and chrY
+
+2) `pos1`: the start position of the mutation in base 1 coordinates
+
+3) `pos2`: the end position of the mutation in base 1 coordinates
+
+4) `ref`: the reference allele as a string containing the bases A, T, C or G
+
+5) `alt`: the alternate allele as a string containing the bases A, T, C or G
+
+6) `patient`: the patient identifier as a string
+
+### Elements and Sites
+
+The `elements` and `sites` data must be in data frames containing the columns with the correct column names `chr`, `start`, `end`, and `id`. Additional columns may be included but will not be analyzed.
+
+1) `chr`: autosomal chromosomes as chr1 to chr22 and sex chromosomes as chrX and chrY
+
+2) `start`: the start position of the element or site in base 0 coordinates (BED format)
+
+3) `end`: the end position of the element or site in base 0 coordinates (BED format)
+
+4) `id`: the element identifier - if the element contains multiple segments such as exons, each segment should be a separate row with the segment coordinates and the element identifier as id. Elements can be coding or noncoding such as exons of protein coding genes or active enhancers.
+
+### Example
 ```{r input}
 library(ActiveDriverWGSR)
 
@@ -92,7 +121,7 @@ results = ActiveDriverWGS(mutations = cll_mutations,
 ## Parameter Interpretation
 ActiveDriverWGS has several adjustable parameters:
 
-1) `window_size`: A narrow background window in which mutation rates are assumed to remain constant. We have optimized this parameter on the PCAWG dataset to be 50,000 bps for SNVs and indels.
+1) `window_size`: A narrow background window both upstream and downstream of the element in which mutation rates are assumed to remain constant. We have optimized this parameter on the PCAWG dataset to be 50,000 bps for SNVs and indels.
 
 2) `filter_hyper_MB`: The threshold for the number of simple somatic mutations per megabase above which a sample is considered hypermutated. We define the default to be 30 mutations/megabase according to published literature.
 
@@ -111,25 +140,25 @@ ActiveDriverWGS will return results in a data frame format with the following co
 
 1) `id`: The identifier for the element.
 
-2) `pp_element`: The p-value associated with enrichment of mutations in the element.
+2) `pp_element`: The p-value associated with enrichment of mutations in the element. A value of NA indicates that no mutations fall within the element.
 
-3) `element_muts_obs`: Number of patients with mutations in the element.
+3) `element_muts_obs`: Number of patients with mutations in the element. A value of NA indicates that no mutations fall within the element.
 
-4) `element_muts_exp`: Number of expected patients with mutations in the element.
+4) `element_muts_exp`: Number of expected patients with mutations in the element. A value of NA indicates that no mutations fall within the element.
 
-5) `element_enriched`: Boolean indicating whether an enrichment of mutations is observed.
+5) `element_enriched`: Boolean indicating whether an enrichment of mutations is observed. A value of NA indicates that no mutations fall within the element.
 
-6) `pp_site`: The p-value associated with enrichment of mutations in the sites. 
+6) `pp_site`: The p-value associated with enrichment of mutations in the sites. A value of NA indicates that no site resides in the element.
 
-7) `site_muts_obs`: Number of patients with mutations in the sites.
+7) `site_muts_obs`: Number of patients with mutations in the sites. A value of NA indicates that no site resides in the element.
 
-8) `site_enriched`: Expected number of patients with mutations in the sites.
+8) `site_enriched`: Expected number of patients with mutations in the sites. A value of NA indicates that no site resides in the element.
 
-9) `fdr_element`: FDR corrected p-value associated with the element.
+9) `fdr_element`: FDR corrected p-value associated with the element. 
 
 10) `fdr_site`: FDR corrected p-value associated with the site.
 
-11) `has_site_mutations`: "V" indicating the presence of site mutations
+11) `has_site_mutations`: "V" indicating the presence of site mutations. An empty string indicates that no site mutations are present.
 
 
 # Adapting ActiveDriverWGS to HPCCs
@@ -175,7 +204,10 @@ gr_maf = GRanges(cll_mutations$chr,
 
 # Examplifying the ATM Element
 id = "ATM"
-
+```
+**Note** that when splitting tasks using the `ADWGS_test` function, only the parameter `id` needs to modified for each element while `gr_element_coords`, `gr_sites` and `gr_maf` can be complete datasets.
+```{r result}
+# Result of 1 input element
 result = ADWGS_test(id = id,
                     gr_element_coords = gr_element_coords,
                     gr_site_coords = gr_site_coords,
@@ -188,3 +220,6 @@ result
 ```{r remove_file, echo=FALSE}
 system("rm -r ActiveDriverWGS_recovery/")
 ```
+
+## Technical Support
+For questions, technical support or to report bugs and errors, please use our [GitHub](https://github.com/reimandlab/ActiveDriverWGS).
