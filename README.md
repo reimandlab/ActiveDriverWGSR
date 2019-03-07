@@ -1,6 +1,8 @@
 # ActiveDriverWGS
 
-ActiveDriverWGS is a driver discovery tool for analysis of whole genome sequencing data. It analyzes the mutational burden of SNVs and short indels in functionally defined elements of interest and retrieves elements which are significantly mutated compared to a background window.
+ActiveDriverWGS is a cancer driver discovery tool for analysis of somatic mutations derived from whole genome sequencing. It works on protein-coding sequences as well as various non-coding sequences (non-coding RNAs, promoters, enhancers, to name a few). ActiveDriverWGS is based on a statistical model that analyzes the mutational burden of SNVs and short indels in functionally defined elements of interest. It then retrieves elements which are significantly mutated compared to a background sequence window, its nucleotide sequence context and trinucleotide mutation signatures.
+
+Two major kinds of input are required by ActiveDriverWGS: a set of genomic regions of interest defined as a BED12 file, and a set of somatic mutations in a cohort of tumor samples in a tab-separated text file.
 
 For more information, please refer to the [ActiveDriverWGS preprint](https://www.biorxiv.org/content/early/2017/12/19/236802).
 
