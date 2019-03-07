@@ -57,7 +57,7 @@
   # if the dataset only contains SNVs
   if (nrow(mutations_mnv)==0) {
     # Filtering message
-    cat("Removing ", (nrow(mutations) - length(seq_snvs)), " SNVs in uninterpretable regions of the genome \n\n")
+    cat("Removing ", (nrow(mutations) - length(seq_snvs)), " invalid SNVs\n\n")
     return(mutations_snv)
   }
 
@@ -70,7 +70,7 @@
   indel_seqs = indel_seqs[seq_indels]
 
   # Filtering message
-  cat("Removing ", (nrow(mutations) - length(seq_snvs) - length(seq_indels)), " SNVs & indels in uninterpretable regions of the genome \n\n")
+  cat("Removing ", (nrow(mutations) - length(seq_snvs) - length(seq_indels)), " invalid SNVs & indels\n\n")
 
   mutations_mnv$tag = "indel>X"
   rbind(mutations_snv, mutations_mnv)
