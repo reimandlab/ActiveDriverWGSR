@@ -6,7 +6,7 @@ output:
   rmarkdown:::html_vignette:
     toc: true
 vignette: >
-  %\VignetteIndexEntry{ActiveDriverWGSR}
+  %\VignetteIndexEntry{ActiveDriverWGS}
   %\VignetteEncoding{UTF-8}
   %\VignetteEngine{knitr::rmarkdown}
 ---
@@ -42,7 +42,7 @@ knitr::include_graphics("ADWGS_diagram.png")
 ```
 
 # Input Data
-ActiveDriverWGSR requires a file for somatic `mutations` and a file for genomic `elements`. A third optional file for `sites` can be specified by the user. Elements may contain multiple segments, each represented in a separate row. Segments belonging to the same element must share a common id unique to the element. Sites will only be incorporated in the model if they reside within elements but not all elements need to contain sites. Elements may contain multiple sites. Site ids are independent of element ids.
+ActiveDriverWGS requires a file for somatic `mutations` and a file for genomic `elements`. A third optional file for `sites` can be specified by the user. Elements may contain multiple segments, each represented in a separate row. Segments belonging to the same element must share a common id unique to the element. Sites will only be incorporated in the model if they reside within elements but not all elements need to contain sites. Elements may contain multiple sites. Site ids are independent of element ids.
 
 ### Mutations
 
@@ -74,7 +74,7 @@ The `elements` and `sites` data must be in data frames containing the columns wi
 
 ### Example
 ```{r input}
-library(ActiveDriverWGSR)
+library(ActiveDriverWGS)
 
 data("cll_mutations")
 head(cll_mutations)
@@ -96,7 +96,7 @@ elements = prepare_elements_from_BED12(
   system.file(
     "extdata", 
     "chr17.coding_regions.bed", 
-    package = "ActiveDriverWGSR", 
+    package = "ActiveDriverWGS", 
     mustWork = TRUE))
 
 head(elements)

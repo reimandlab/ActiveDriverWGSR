@@ -58,7 +58,7 @@
 #' @examples
 #' elements = prepare_elements_from_BED12(system.file("extdata",
 #' "chr17.coding_regions.bed",
-#' package = "ActiveDriverWGSR",
+#' package = "ActiveDriverWGS",
 #' mustWork = TRUE))
 prepare_elements_from_BED12 = function(fname) {
 

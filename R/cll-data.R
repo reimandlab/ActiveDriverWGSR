@@ -16,7 +16,6 @@
 #'     \item{ref}{the reference allele as a string containing the bases A, T, C or G}
 #'     \item{alt}{the alternate allele as a string containing the bases A, T, C or G}
 #'     \item{patient}{the patient identifier as a string}
-#'     \item{cc}{cancer type of the sample}
 #' }
 #'
 #' @keywords datasets

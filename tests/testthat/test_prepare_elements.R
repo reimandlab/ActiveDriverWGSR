@@ -4,7 +4,7 @@ test_that("Prepare Elements Imports Elements in the Correct Format", {
 
   elements = prepare_elements_from_BED12(system.file("extdata",
                                                      "chr17.coding_regions.bed",
-                                                     package = "ActiveDriverWGSR",
+                                                     package = "ActiveDriverWGS",
                                                      mustWork = TRUE))
 
   expect_is(elements, "data.frame")
@@ -29,7 +29,7 @@ test_that("Prepare Elements Throws the Right Errors",{
     system.file(
       "extdata",
       "cds_column_error.bed",
-      package = "ActiveDriverWGSR",
+      package = "ActiveDriverWGS",
       mustWork = TRUE)),
       "Incorrect BED12 Format: 12 Columns in BED12 files")
 
@@ -37,7 +37,7 @@ test_that("Prepare Elements Throws the Right Errors",{
     system.file(
       "extdata",
       "cds_str_coords_error.bed",
-      package = "ActiveDriverWGSR",
+      package = "ActiveDriverWGS",
       mustWork = TRUE)),
     "Incorrect BED12 Format: Incorrect coordinate format")
 
@@ -45,7 +45,7 @@ test_that("Prepare Elements Throws the Right Errors",{
     system.file(
       "extdata",
       "cds_chrom_error.bed",
-      package = "ActiveDriverWGSR",
+      package = "ActiveDriverWGS",
       mustWork = TRUE)),
     "Incorrect BED12 Format: Chromosomes must be autosomal, sex or mitochondrial")
 
@@ -53,7 +53,7 @@ test_that("Prepare Elements Throws the Right Errors",{
     system.file(
       "extdata",
       "cds_id_error.bed",
-      package = "ActiveDriverWGSR",
+      package = "ActiveDriverWGS",
       mustWork = TRUE)),
     "Incorrect BED12 Format: IDs must be a character string")
 
@@ -61,7 +61,7 @@ test_that("Prepare Elements Throws the Right Errors",{
     system.file(
       "extdata",
       "cds_blockcount_error.bed",
-      package = "ActiveDriverWGSR",
+      package = "ActiveDriverWGS",
       mustWork = TRUE)),
     "Incorrect BED12 Format: Incorrect blockCounts")
 
@@ -69,7 +69,7 @@ test_that("Prepare Elements Throws the Right Errors",{
     system.file(
       "extdata",
       "cds_blockstart_error.bed",
-      package = "ActiveDriverWGSR",
+      package = "ActiveDriverWGS",
       mustWork = TRUE)),
     "Incorrect BED12 Format: Incorrect blockSizes or blockStarts")
 
@@ -77,7 +77,7 @@ test_that("Prepare Elements Throws the Right Errors",{
     system.file(
       "extdata",
       "cds_blocksize_error.bed",
-      package = "ActiveDriverWGSR",
+      package = "ActiveDriverWGS",
       mustWork = TRUE)),
     "Incorrect BED12 Format: Incorrect blockSizes or blockStarts")
 

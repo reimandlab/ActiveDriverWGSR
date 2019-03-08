@@ -1,4 +1,4 @@
-context("Format of Input Files to ActiveDriverWGSR")
+context("Format of Input Files to ActiveDriverWGS")
 
 set.seed(100)
 

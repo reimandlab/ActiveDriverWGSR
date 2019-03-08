@@ -1,4 +1,4 @@
 library(testthat)
-library(ActiveDriverWGSR)
+library(ActiveDriverWGS)
 
-test_check("ActiveDriverWGSR")
+test_check("ActiveDriverWGS")
