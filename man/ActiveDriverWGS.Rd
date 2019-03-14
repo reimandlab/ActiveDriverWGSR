@@ -5,7 +5,7 @@
 \title{ActiveDriverWGS is a driver discovery tool for simple somatic mutations in cancer whole genomes}
 \usage{
 ActiveDriverWGS(mutations, elements, sites = NULL, window_size = 50000,
-  filter_hyper_MB = 30, recovery.dir = "", mc.cores = 1)
+  filter_hyper_MB = 30, recovery.dir = NULL, mc.cores = 1)
 }
 \arguments{
 \item{mutations}{A data frame containing the following columns: chr, pos1, pos2, ref, alt, patient.
@@ -47,9 +47,9 @@ mutation rate is expected to remain the same. The default is 50000bps.}
 Samples with a rate greater than \code{filter_hyper_MB} mutations per megabase are excluded.
 The default is 30 mutations per megabase.}
 
-\item{recovery.dir}{The directory for storing recovery files. If no directory is specified, ActiveDriverWGS will write
-recovery files in the current directory. If the directory does not exist, ActiveDriverWGS will create the directory.
-If the parameter is unspecified, recovery files will be written to a directory called ActiveDriverWGS_recovery}
+\item{recovery.dir}{The directory for storing recovery files. If the directory does not exist, ActiveDriverWGS will create the directory.
+If the parameter is unspecified, recovery files will not be saved. As an ActiveDriverWGS query for large datasets may be computationally heavy,
+specifying a recovery directory will recover previously computed results if a query is interrupted.}
 
 \item{mc.cores}{The number of cores which can be used if multiple cores are available. The default is 1.}
 }
@@ -76,6 +76,7 @@ fdr_element, fdr_site
 ActiveDriverWGS is a driver discovery tool for simple somatic mutations in cancer whole genomes
 }
 \examples{
+\donttest{
 data(cancer_genes)
 data(cll_mutations)
 
@@ -84,4 +85,5 @@ some_genes = c("ATM", "MYD88", "NOTCH1", "SF3B1", "XPO1",
 
 result = ActiveDriverWGS(mutations = cll_mutations,
 elements = cancer_genes[cancer_genes$id \%in\% some_genes,])
+}
 }

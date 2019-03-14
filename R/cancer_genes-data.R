@@ -25,7 +25,9 @@
 #' @source \href{https://www.gencodegenes.org/human/release_19.html}{GENCODE}
 #'
 #' @examples
-#' data(cll_mutations)
 #' data(cancer_genes)
+#' \donttest{
+#' data(cll_mutations)
 #' ActiveDriverWGS(mutations = cll_mutations, elements = cancer_genes)
+#' }
 NULL

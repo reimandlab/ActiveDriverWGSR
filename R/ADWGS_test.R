@@ -1,11 +1,6 @@
 #' Makes mutational signatures
 #'
 #' @return a dataframe with mutational signatures
-#'
-#' @examples
-#' \dontrun{
-#' mut_signatures = .make_mut_signatures()
-#' }
 .make_mut_signatures = function() {
   nucs = c("A", "C", "G", "T")
 
@@ -26,11 +21,6 @@
 #'
 #' @return a list of observed mutations (numeric), expected mutations (numeric),
 #' observations enriched (boolean) and observations depleted (boolean)
-#'
-#' @examples
-#' \dontrun{
-#' .get_obs_exp(h0, dfr$is_element, dfr, "n_mut")
-#' }
 .get_obs_exp = function(hyp, select_positions, dfr, colname) {
   obs_mut = sum(dfr[select_positions, colname])
 
@@ -90,6 +80,7 @@
 #' @export
 #'
 #' @examples
+#' \donttest{
 #' library(GenomicRanges)
 #'
 #' # Regions
@@ -112,7 +103,7 @@
 #' # ADWGS_test
 #' id = "ATM"
 #' result = ADWGS_test(id, gr_element_coords, gr_site_coords, gr_maf, 50000)
-#'
+#'}
 ADWGS_test = function(id, gr_element_coords, gr_site_coords, gr_maf, win_size, element_bias = T) {
 
   cat(".")

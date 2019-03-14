@@ -27,6 +27,8 @@ a data frame called mutations which has been formatted with an extra column for 
 This function filters hypermutated samples and returns the formatted mutations with the appropriate trinucleotide context
 }
 \examples{
+\donttest{
 data(cll_mutations)
 formatted_mutations = format_muts(cll_mutations, filter_hyper_MB=30)
+}
 }

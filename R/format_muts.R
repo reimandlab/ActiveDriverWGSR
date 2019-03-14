@@ -21,11 +21,6 @@
 #' @return A data frame consisting of the same columns as the original mutations data frame and sorted
 #' by SNVs and Indels with an additional column \code{tag} which indicates the trinucleotide context of
 #' the mutation
-#'
-#' @examples
-#' \dontrun{
-#' .get_3n_context_of_mutations(mutations)
-#' }
 .get_3n_context_of_mutations = function(mutations) {
 
   legal_dna = c("A", "C", "G", "T")
@@ -95,8 +90,10 @@
 #' @export
 #'
 #' @examples
+#' \donttest{
 #' data(cll_mutations)
 #' formatted_mutations = format_muts(cll_mutations, filter_hyper_MB=30)
+#' }
 format_muts = function(mutations, filter_hyper_MB=NA) {
 
   # remove hypermutated samples, according to muts/megabase rate defined

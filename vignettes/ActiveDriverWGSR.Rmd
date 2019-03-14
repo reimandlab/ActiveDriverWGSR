@@ -125,7 +125,7 @@ ActiveDriverWGS has several adjustable parameters:
 
 2) `filter_hyper_MB`: The threshold for the number of simple somatic mutations per megabase above which a sample is considered hypermutated. We define the default to be 30 mutations/megabase according to published literature.
 
-3) `recovery.dir`: The directory for writing recovery files for ActiveDriverWGS. If the directory does not exist, it will be created. If none is specified, ActiveDriverWGS will create the directory ActiveDriverWGS_recovery.
+3) `recovery.dir`: The directory for writing recovery files for ActiveDriverWGS. If the directory does not exist, it will be created. If the parameter is unspecified, recovery files will not be saved. As an ActiveDriverWGS query for large datasets may be computationally heavy, specifying a recovery directory will recover previously computed results if a query is interrupted.
 
 4) `mc.cores`: The number of cores that the user wishes to allocate to running ActiveDriverWGS. For more information, refer to the R package [parallel](https://stat.ethz.ch/R-manual/R-devel/library/parallel/doc/parallel.pdf).
 
@@ -220,10 +220,6 @@ result = ADWGS_test(id = id,
                     win_size = 50000)
 
 result
-```
-
-```{r remove_file, echo=FALSE}
-system("rm -r ActiveDriverWGS_recovery/")
 ```
 
 ## Technical Support

@@ -24,8 +24,10 @@ CLL whole genome simple somatic mutations from Alexandrov et, 2013
 }
 \examples{
 data(cll_mutations)
+\donttest{
 data(cancer_genes)
 ActiveDriverWGS(mutations = cll_mutations, elements = cancer_genes)
+}
 }
 \references{
 Alexandrov, Ludmil B., et al. "Signatures of mutational processes in human cancer." Nature 500.7463 (2013): 415.

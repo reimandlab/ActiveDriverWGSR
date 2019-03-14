@@ -29,13 +29,13 @@ test_that("mutations are formatted properly",{
 
   # Colnames of the mutations
   this_mutations = cll_mutations
-  colnames(this_mutations) = paste0("V", 1:7)
+  colnames(this_mutations) = paste0("V", 1:6)
   expect_error(ActiveDriverWGS(elements = cancer_genes,
                                mutations = this_mutations),
                "mutations must contain the following columns: chr, pos1, pos2, ref, alt & patient")
 
   # Colnames of the mutations
-  this_mutations = cll_mutations[,c(1:2,4:7)]
+  this_mutations = cll_mutations[,c(1:2,4:6)]
   expect_error(ActiveDriverWGS(elements = cancer_genes,
                                mutations = this_mutations),
                "mutations must contain the following columns: chr, pos1, pos2, ref, alt & patient")

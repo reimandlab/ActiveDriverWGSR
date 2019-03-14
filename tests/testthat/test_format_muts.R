@@ -67,12 +67,11 @@ test_that("testing errors on the format muts function",{
                               "ref" = "C",
                               "alt" = "A",
                               "patient" = "Lady Gaga",
-                              "cc" = "NA",
                               stringsAsFactors = F)
   this_mutations = rbind(cll_mutations[1:10,], this_mutations)
   expect_output(format_muts(mutations = this_mutations,
                             filter_hyper_MB = 30),
-                "Removing  1  SNVs & indels in uninterpretable regions of the genome")
+                "Removing  1  invalid SNVs & indels")
 
   # This test doesn't work - I'm not sure why yet
   # Testing that mutations outside of ranges do not work (Part of .get_3n_context_of_mutations)

@@ -21,10 +21,12 @@ data(cancer_gene_sites)
 post-translational modification sites found in cancer genes
 }
 \examples{
+data(cancer_gene_sites)
+\donttest{
 data(cll_mutations)
 data(cancer_genes)
-data(cancer_gene_sites)
 ActiveDriverWGS(mutations = cll_mutations, elements = cancer_genes, sites = cancer_gene_sites)
+}
 }
 \references{
 Wadi, Lina, et al. "Candidate cancer driver mutations in super-enhancers and long-range chromatin interaction networks." bioRxiv (2017): 236802.
