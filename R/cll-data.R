@@ -27,6 +27,8 @@
 #'
 #' @examples
 #' data(cll_mutations)
+#' \donttest{
 #' data(cancer_genes)
 #' ActiveDriverWGS(mutations = cll_mutations, elements = cancer_genes)
+#' }
 NULL

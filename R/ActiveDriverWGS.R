@@ -40,9 +40,9 @@
 #' @param filter_hyper_MB Hyper-mutated samples carry many passenger mutations and dilute the signal of true drivers.
 #' Samples with a rate greater than \code{filter_hyper_MB} mutations per megabase are excluded.
 #' The default is 30 mutations per megabase.
-#' @param recovery.dir The directory for storing recovery files. If no directory is specified, ActiveDriverWGS will write
-#' recovery files in the current directory. If the directory does not exist, ActiveDriverWGS will create the directory.
-#' If the parameter is unspecified, recovery files will be written to a directory called ActiveDriverWGS_recovery
+#' @param recovery.dir The directory for storing recovery files. If the directory does not exist, ActiveDriverWGS will create the directory.
+#' If the parameter is unspecified, recovery files will not be saved. As an ActiveDriverWGS query for large datasets may be computationally heavy,
+#' specifying a recovery directory will recover previously computed results if a query is interrupted.
 #'
 #' @param mc.cores The number of cores which can be used if multiple cores are available. The default is 1.
 #'
@@ -67,6 +67,7 @@
 #' @export
 #'
 #' @examples
+#' \donttest{
 #' data(cancer_genes)
 #' data(cll_mutations)
 #'
@@ -75,12 +76,13 @@
 #'
 #' result = ActiveDriverWGS(mutations = cll_mutations,
 #' elements = cancer_genes[cancer_genes$id %in% some_genes,])
+#' }
 ActiveDriverWGS = function(mutations,
                            elements,
                            sites = NULL,
                            window_size = 50000,
                            filter_hyper_MB = 30,
-                           recovery.dir = "",
+                           recovery.dir = NULL,
                            mc.cores = 1){
 
   # Verifying Format for window_size
@@ -93,22 +95,26 @@ ActiveDriverWGS = function(mutations,
   if (!(length(filter_hyper_MB) == 1 && is.numeric(filter_hyper_MB) && filter_hyper_MB > 0)) stop("filter_hyper_MB must be a positive integer")
 
   # Verifying Format for recovery.dir
-  if(!is.character(recovery.dir) | length(recovery.dir) != 1) stop("recovery.dir must be a string")
-  if(recovery.dir != ""){
+  if(!is.null(recovery.dir)){
+    if(!is.character(recovery.dir) | length(recovery.dir) != 1) stop("recovery.dir must be a string")
+
     if (!dir.exists(recovery.dir)){
       dir.create(recovery.dir)
       message(paste0("Creating ", recovery.dir))
     }
-  }else{
-    recovery.dir = "ActiveDriverWGS_recovery"
-    if (!dir.exists(recovery.dir)){
-      dir.create(recovery.dir)
+
+    if(!endsWith(recovery.dir, "[/]") && recovery.dir != ""){
+      recovery.dir = paste0(recovery.dir, "/")
     }
-    message(paste0("Writing results to ", recovery.dir))
-  }
-  if(!endsWith(recovery.dir, "[/]") && recovery.dir != ""){
-    recovery.dir = paste0(recovery.dir, "/")
-  }
+  } # else{
+    # This can be changed to tempdir() if we should need to
+    # recovery.dir = "ActiveDriverWGS_recovery"
+    # if (!dir.exists(recovery.dir)){
+    #   dir.create(recovery.dir)
+    # }
+    # message(paste0("Writing results to ", recovery.dir))
+  # }
+
 
   # Verifying Format for Mutations
   legal_dna = c('A', 'T', 'C', 'G')
@@ -165,7 +171,7 @@ ActiveDriverWGS = function(mutations,
 
   recovered_results = NULL
   recovered_result_numbers = c()
-  if (!is.na(recovery.dir)) {
+  if (!is.null(recovery.dir)) {
     results_filenames = list.files(recovery.dir, pattern = "ADWGS_result[0123456789]+_recovery_file.rsav")
     if (length(results_filenames) > 0) results_filenames = paste0("/", results_filenames)
     recovered_results = do.call(rbind, lapply(results_filenames, function(filename) {
@@ -188,7 +194,7 @@ ActiveDriverWGS = function(mutations,
                         gr_site_coords = gr_site_coords,
                         gr_maf = gr_muts,
                         win_size = window_size)
-    if (!is.na(recovery.dir)) {
+    if (!is.null(recovery.dir)) {
       result$result_number = i
       save(result, file = paste0(recovery.dir, "ADWGS_result", i, "_recovery_file.rsav"))
     }

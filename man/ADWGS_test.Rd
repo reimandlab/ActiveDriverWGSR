@@ -51,6 +51,7 @@ A data frame containing the following columns
 ADWGS_test executes the statistical test for ActiveDriverWGS
 }
 \examples{
+\donttest{
 library(GenomicRanges)
 
 # Regions
@@ -73,5 +74,5 @@ mcols=cll_mutations[,c("patient", "tag")])
 # ADWGS_test
 id = "ATM"
 result = ADWGS_test(id, gr_element_coords, gr_site_coords, gr_maf, 50000)
-
+}
 }

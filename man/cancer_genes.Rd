@@ -22,9 +22,11 @@ protein coding genes from gencode v.19, cancer genes adapted from the Cancer Gen
 Genes affected solely by amplifications, deletions and translations were removed.
 }
 \examples{
-data(cll_mutations)
 data(cancer_genes)
+\donttest{
+data(cll_mutations)
 ActiveDriverWGS(mutations = cll_mutations, elements = cancer_genes)
+}
 }
 \references{
 Harrow, Jennifer, et al. "GENCODE: the reference human genome annotation for The ENCODE Project." Genome research 22.9 (2012): 1760-1774.

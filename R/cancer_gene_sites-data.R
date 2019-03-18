@@ -22,8 +22,10 @@
 #' @source \href{https://www.biorxiv.org/content/early/2017/12/19/236802}{bioRxiv}
 #'
 #' @examples
+#' data(cancer_gene_sites)
+#' \donttest{
 #' data(cll_mutations)
 #' data(cancer_genes)
-#' data(cancer_gene_sites)
 #' ActiveDriverWGS(mutations = cll_mutations, elements = cancer_genes, sites = cancer_gene_sites)
+#' }
 NULL
