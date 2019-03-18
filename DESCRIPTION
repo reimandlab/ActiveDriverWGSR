@@ -3,7 +3,7 @@ Title: A Driver Discovery Tool for Cancer Whole Genomes
 Version: 1.0.1
 Authors@R: c(person("Helen", "Zhu", email = "helen.zhu@oicr.on.ca", role = c("aut", "cre")),
 	     person("Juri", "Reimand", email = "juri.reimand@oicr.on.ca", role = "aut"))
-Description: A method for finding an enrichment of cancer simple somatic mutations (SNVs and Indels) in functional elements across the human genome. 'ActiveDriverWGS' detects coding and noncoding drivers using whole genome sequencing data.
+Description: A method for finding an enrichment of cancer simple somatic mutations (SNVs and Indels) in functional elements across the human genome. 'ActiveDriverWGS' detects coding and noncoding driver elements using whole genome sequencing data.
 Depends: R (>= 3.0.2)
 Imports: 
 	BSgenome, 
