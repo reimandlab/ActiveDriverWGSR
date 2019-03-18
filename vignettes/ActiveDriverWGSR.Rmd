@@ -107,10 +107,7 @@ ActiveDriverWGS can be run simply with the mutations file, the elements file and
 
 ```{r ActiveDriverWGS}
 
-some_genes = c("ATM", "MYD88", "NOTCH1",
-               "SF3B1", "XPO1", "SOCS1", 
-               "CNOT3", "DDX3X", "KMT2A", 
-               "HIF1A", "APC")
+some_genes = c("ATM", "MYD88", "NOTCH1")
 
 results = ActiveDriverWGS(mutations = cll_mutations,
                           elements = cancer_genes[cancer_genes$id %in% some_genes,],
@@ -132,7 +129,7 @@ ActiveDriverWGS has several adjustable parameters:
 # Interpreting the Results
 
 ```{r results}
-head(results)
+results
 
 ```
 

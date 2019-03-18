@@ -92,7 +92,7 @@
 #' @examples
 #' \donttest{
 #' data(cll_mutations)
-#' formatted_mutations = format_muts(cll_mutations, filter_hyper_MB=30)
+#' formatted_mutations = format_muts(cll_mutations[1:10,], filter_hyper_MB=30)
 #' }
 format_muts = function(mutations, filter_hyper_MB=NA) {
 

@@ -12,7 +12,7 @@
 
 <meta name="author" content="Helen Zhu, Dr. Juri Reimand" />
 
-<meta name="date" content="2019-03-14" />
+<meta name="date" content="2019-03-18" />
 
 <title>ActiveDriverWGS</title>
 
@@ -92,7 +92,7 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 
 <h1 class="title toc-ignore">ActiveDriverWGS</h1>
 <h4 class="author"><em>Helen Zhu, Dr. Juri Reimand</em></h4>
-<h4 class="date"><em>2019-03-14</em></h4>
+<h4 class="date"><em>2019-03-18</em></h4>
 
 
 <div id="TOC">
@@ -231,10 +231,7 @@ The ActiveDriverWGS Model
 <div id="basic-use" class="section level1">
 <h1>Basic Use</h1>
 <p>ActiveDriverWGS can be run simply with the mutations file, the elements file and an optional sites file. In this example, mutations are adapted from the <a href="https://www.nature.com/articles/nature12477">Alexandrov et al, 2013</a> dataset for chronic lymphocytic leukemia (CLL) patients. Regions are adapted from the <a href="https://cancer.sanger.ac.uk/census">cancer gene census</a> and annotations for protein coding genes are adapted from GENCODE.v19.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">some_genes =<span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;ATM&quot;</span>, <span class="st">&quot;MYD88&quot;</span>, <span class="st">&quot;NOTCH1&quot;</span>,
-               <span class="st">&quot;SF3B1&quot;</span>, <span class="st">&quot;XPO1&quot;</span>, <span class="st">&quot;SOCS1&quot;</span>, 
-               <span class="st">&quot;CNOT3&quot;</span>, <span class="st">&quot;DDX3X&quot;</span>, <span class="st">&quot;KMT2A&quot;</span>, 
-               <span class="st">&quot;HIF1A&quot;</span>, <span class="st">&quot;APC&quot;</span>)
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">some_genes =<span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;ATM&quot;</span>, <span class="st">&quot;MYD88&quot;</span>, <span class="st">&quot;NOTCH1&quot;</span>)
 
 results =<span class="st"> </span><span class="kw">ActiveDriverWGS</span>(<span class="dt">mutations =</span> cll_mutations,
                           <span class="dt">elements =</span> cancer_genes[cancer_genes<span class="op">$</span>id <span class="op">%in%</span><span class="st"> </span>some_genes,],
@@ -245,8 +242,8 @@ results =<span class="st"> </span><span class="kw">ActiveDriverWGS</span>(<span 
 ## reversing 0 positions
 ## Removing  0  invalid SNVs &amp; indels
 ## 
-## Tests to do:  11 
-## ...........</code></pre>
+## Tests to do:  3 
+## ...</code></pre>
 <div id="parameter-interpretation" class="section level2">
 <h2>Parameter Interpretation</h2>
 <p>ActiveDriverWGS has several adjustable parameters:</p>
@@ -260,17 +257,17 @@ results =<span class="st"> </span><span class="kw">ActiveDriverWGS</span>(<span 
 </div>
 <div id="interpreting-the-results" class="section level1">
 <h1>Interpreting the Results</h1>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">head</span>(results)</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">results</code></pre></div>
 <pre><code>##       id  pp_element element_muts_obs element_muts_exp element_enriched
 ## 1    ATM 0.001807467                2                0             TRUE
 ## 2  MYD88 0.004976353                1                0             TRUE
-##     pp_site site_muts_obs site_muts_exp site_enriched fdr_element fdr_site
-## 1 1.0000000            NA            NA            NA  0.01241211        1
-## 2 1.0000000            NA            NA            NA  0.01241211        1
+##   pp_site site_muts_obs site_muts_exp site_enriched fdr_element fdr_site
+## 1       1            NA            NA            NA 0.005422402        1
+## 2       1            NA            NA            NA 0.005641867        1
 ##   has_site_mutations
 ## 1                   
 ## 2                   
-##  [ reached getOption(&quot;max.print&quot;) -- omitted 4 rows ]</code></pre>
+##  [ reached getOption(&quot;max.print&quot;) -- omitted 1 row ]</code></pre>
 <p>ActiveDriverWGS will return results in a data frame format with the following columns.</p>
 <ol style="list-style-type: decimal">
 <li><p><code>id</code>: The identifier for the element.</p></li>

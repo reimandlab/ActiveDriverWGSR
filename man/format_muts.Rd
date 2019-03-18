@@ -29,6 +29,6 @@ This function filters hypermutated samples and returns the formatted mutations w
 \examples{
 \donttest{
 data(cll_mutations)
-formatted_mutations = format_muts(cll_mutations, filter_hyper_MB=30)
+formatted_mutations = format_muts(cll_mutations[1:10,], filter_hyper_MB=30)
 }
 }
