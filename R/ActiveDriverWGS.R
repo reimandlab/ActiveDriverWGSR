@@ -162,7 +162,8 @@ ActiveDriverWGS = function(mutations,
     gr_site_coords = GenomicRanges::GRanges(sites$chr,
                                             IRanges::IRanges(sites$start, sites$end))
   }else{
-    gr_site_coords = GenomicRanges::GRanges(c(seqnames=NULL,ranges=NULL,strand=NULL))
+    gr_site_coords = GenomicRanges::GRanges()
+    # gr_site_coords = GenomicRanges::GRanges(c(seqnames=NULL,ranges=NULL,strand=NULL))
   }
 
   # Running ADWGS Test

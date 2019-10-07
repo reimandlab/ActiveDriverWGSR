@@ -88,10 +88,10 @@ head(cancer_gene_sites)
 ```
 In the above example, sites have the same start and end coordinates. While this is true for these active sites, this is not a necessity. The only requirement is that sites need to be contained within elements.
 
-## Importing BED12 Files as Input Regions
-For elements and sites written in BED12 files, the prepare_elements_from_BED12 function can be used to read the file and adapt it to fulfill the format requirements for the `elements` and `sites` parameters of the ActiveDriverWGS function. For more information on the BED12 format, please refer to the [UCSC guidelines](https://genome.ucsc.edu/FAQ/FAQformat.html#format1). In this example, elements are adapted from annotations for protein coding genes from [GENCODE.v19](https://www.gencodegenes.org/human/release_19.html) for chromosome 17.
+## Importing BED12 & BED4 Files as Input Regions
+For elements and sites written in BED12 files and BED4 files, the prepare_elements_from_BED12 and prepare_elements_from_BED4 function can be used to read the file and adapt it to fulfill the format requirements for the `elements` and `sites` parameters of the ActiveDriverWGS function. For more information on the BED12 or BED4 format, please refer to the [UCSC guidelines](https://genome.ucsc.edu/FAQ/FAQformat.html#format1). In this example, elements are adapted from annotations for protein coding genes from [GENCODE.v19](https://www.gencodegenes.org/human/release_19.html) for chromosome 17 and sites are adapted from post-translation modification sites from [ActiveDriverDB](https://activedriverdb.org/).
 
-```{r prepare_elements_from_BED12}
+```{r prepare_elements_from_BED12 and prepare_elements_from_BED4}
 elements = prepare_elements_from_BED12(
   system.file(
     "extdata", 
@@ -100,6 +100,15 @@ elements = prepare_elements_from_BED12(
     mustWork = TRUE))
 
 head(elements)
+
+sites = prepare_elements_from_BED4(
+  system.file(
+    "extdata", 
+    "mini.ptm.bed", 
+    package = "ActiveDriverWGS", 
+    mustWork = TRUE))
+
+head(sites)
 ```
 
 # Basic Use

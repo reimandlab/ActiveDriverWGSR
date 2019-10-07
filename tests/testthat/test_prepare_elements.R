@@ -19,12 +19,33 @@ test_that("Prepare Elements Imports Elements in the Correct Format", {
 
   expect_is(elements[,4], "character")
 
-  expect_identical(colnames(elements), c("chr", "starts", "ends", "id"))
+  expect_identical(colnames(elements), c("chr", "start", "end", "id"))
 
+  elements = prepare_elements_from_BED4(system.file("extdata",
+                                                     "mini.ptm.bed",
+                                                     package = "ActiveDriverWGS",
+                                                     mustWork = TRUE))
+  
+  expect_is(elements, "data.frame")
+  
+  expect_equal(ncol(elements), 4)
+  
+  expect_is(elements[,1], "character")
+  
+  expect_is(elements[,2], "numeric")
+  
+  expect_is(elements[,3], "numeric")
+  
+  expect_is(elements[,4], "character")
+  
+  expect_identical(colnames(elements), c("chr", "start", "end", "id"))
 })
+
+
 
 test_that("Prepare Elements Throws the Right Errors",{
 
+  # BED12
   expect_error(prepare_elements_from_BED12(
     system.file(
       "extdata",
@@ -80,5 +101,39 @@ test_that("Prepare Elements Throws the Right Errors",{
       package = "ActiveDriverWGS",
       mustWork = TRUE)),
     "Incorrect BED12 Format: Incorrect blockSizes or blockStarts")
+  
+  # BED4
+  expect_error(prepare_elements_from_BED4(
+    system.file(
+      "extdata",
+      "ptm_column_error.bed",
+      package = "ActiveDriverWGS",
+      mustWork = TRUE)),
+    "Incorrect BED4 Format: 4 Columns in BED4 files")
+  
+  expect_error(prepare_elements_from_BED4(
+    system.file(
+      "extdata",
+      "ptm_str_coords_error.bed",
+      package = "ActiveDriverWGS",
+      mustWork = TRUE)),
+    "Incorrect BED4 Format: Incorrect coordinate format")
+  
+  expect_error(prepare_elements_from_BED4(
+    system.file(
+      "extdata",
+      "ptm_chrom_error.bed",
+      package = "ActiveDriverWGS",
+      mustWork = TRUE)),
+    "Incorrect BED4 Format: Chromosomes must be autosomal, sex or mitochondrial")
+  
+  expect_error(prepare_elements_from_BED4(
+    system.file(
+      "extdata",
+      "ptm_id_error.bed",
+      package = "ActiveDriverWGS",
+      mustWork = TRUE)),
+    "Incorrect BED4 Format: IDs must be a character string")
+  
 
 })
