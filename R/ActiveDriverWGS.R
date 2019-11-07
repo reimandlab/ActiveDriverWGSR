@@ -196,7 +196,6 @@ ActiveDriverWGS = function(mutations,
     recovered_results = do.call(rbind, lapply(results_filenames, function(filename) {
       load_result = suppressWarnings(try(load(paste0(recovery.dir, filename)), silent = TRUE))
       if (class(load_result) == "try-error") return(NULL)
-      if (ncol(result) != 13) return(NULL)
       result = result
     }))
     recovered_result_numbers = recovered_results$result_number
