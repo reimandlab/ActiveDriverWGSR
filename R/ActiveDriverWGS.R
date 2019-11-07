@@ -168,8 +168,26 @@ ActiveDriverWGS = function(mutations,
 
   # Running ADWGS Test
   all_results = NULL
-  not_done = sort(unique(gr_element_coords$mcols))
 
+  # Pre-Filtering Results
+  mutated_elements = sort(unique(gr_element_coords$mcols[S4Vectors::queryHits(suppressWarnings(GenomicRanges::findOverlaps(gr_element_coords, gr_muts)))]))
+  unmutated_elements = sort(unique(gr_element_coords$mcols[!gr_element_coords$mcols %in% mutated_elements]))
+  not_done = mutated_elements
+  
+  # Unmutated Results
+  unmutated_results = NULL
+  if(length(unmutated_elements) > 9){
+    unmutated_results = data.frame(unmutated_elements,
+                                   pp_element=NA, element_muts_obs=NA, element_muts_exp=NA, element_enriched=NA,
+                                   pp_site=NA, site_muts_obs=NA, site_muts_exp=NA, site_enriched=NA,
+                                   stringsAsFactors=F)
+  }
+  if(!(is.null(recovery.dir))){
+    unmutated_results$result_number = 1:length(unmutated_elements) + length(mutated_elements)
+  }
+  cat("Number of Elements with 0 Mutations: ", length(unmutated_elements), "\n")
+
+  # Recovered Results
   recovered_results = NULL
   recovered_result_numbers = c()
   if (!is.null(recovery.dir)) {
@@ -185,8 +203,9 @@ ActiveDriverWGS = function(mutations,
   }
 
   cat("Tests to do: ", length(not_done), "\n")
-  if (length(recovered_result_numbers) > 0) cat("Tests recovered: ", length(recovered_result_numbers), "\n")
-
+  if (length(recovered_result_numbers) > 0) cat("Tests recovered: ", length(unique(recovered_result_numbers)), "\n")
+  
+  # Mutated Results
   mutated_results = do.call(rbind, parallel::mclapply(1:length(not_done), function(i) {
     if (i %% 100 == 0) cat(i, " elements completed\n")
     if (i %in% recovered_result_numbers) return(NULL)
@@ -202,10 +221,10 @@ ActiveDriverWGS = function(mutations,
     result
   }, mc.cores = mc.cores))
 
-  all_results = rbind(recovered_results, mutated_results)
-
-  rm(mutated_results, recovered_results)
+  all_results = rbind(recovered_results, mutated_results, unmutated_results)
   if (nrow(all_results) != length(unique(elements$id))) stop("Error: Something unexpected happened. Please try again.\n")
+
+  rm(mutated_results, recovered_results, unmutated_results)
   rm(elements, gr_element_coords)
 
   # Formatting Results
