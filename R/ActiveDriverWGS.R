@@ -173,11 +173,11 @@ ActiveDriverWGS = function(mutations,
   mutated_elements = sort(unique(gr_element_coords$mcols[S4Vectors::queryHits(suppressWarnings(GenomicRanges::findOverlaps(gr_element_coords, gr_muts)))]))
   unmutated_elements = sort(unique(gr_element_coords$mcols[!gr_element_coords$mcols %in% mutated_elements]))
   not_done = mutated_elements
-  
+
   # Unmutated Results
   unmutated_results = NULL
   if(length(unmutated_elements) > 9){
-    unmutated_results = data.frame(unmutated_elements,
+    unmutated_results = data.frame(id = unmutated_elements,
                                    pp_element=NA, element_muts_obs=NA, element_muts_exp=NA, element_enriched=NA,
                                    pp_site=NA, site_muts_obs=NA, site_muts_exp=NA, site_enriched=NA,
                                    stringsAsFactors=F)
@@ -203,7 +203,7 @@ ActiveDriverWGS = function(mutations,
 
   cat("Tests to do: ", length(not_done), "\n")
   if (length(recovered_result_numbers) > 0) cat("Tests recovered: ", length(unique(recovered_result_numbers)), "\n")
-  
+
   # Mutated Results
   mutated_results = do.call(rbind, parallel::mclapply(1:length(not_done), function(i) {
     if (i %% 100 == 0) cat(i, " elements completed\n")
