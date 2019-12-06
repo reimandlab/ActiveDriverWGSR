@@ -25,6 +25,9 @@
 #'     and the element identifier as id. Elements can be coding or noncoding such as exons of protein
 #'     coding genes or active enhancers.}
 #' }
+#'
+#' @param reference The background reference database in interest
+#'
 #' @param sites A data frame containing the following columns: chr, start, end, id
 #' \describe{
 #'     \item{chr}{autosomal chromosomes as chr1 to chr22 and sex chromosomes as chrX and chrY}
@@ -74,11 +77,32 @@
 #' some_genes = c("ATM", "MYD88", "NOTCH1", "SF3B1", "XPO1",
 #' "SOCS1", "CNOT3", "DDX3X", "KMT2A", "HIF1A", "APC")
 #'
+#' Test with hg19
+#'
 #' result = ActiveDriverWGS(mutations = cll_mutations,
-#' elements = cancer_genes[cancer_genes$id %in% some_genes,])
+#' elements = cancer_genes[cancer_genes$id %in% some_genes,], reference = "hg19")
+#'
+#' Test with hg38
+#'
+#' some_genestest = paste(some_genes, collapse = ";| ")
+#' some_genestest = paste0(some_genestest, ";")
+#' elementshg38test = elementshg38[grepl(some_genestest, elementshg38$id),]
+#' result = ActiveDriverWGS(mutations = cll_mutations,
+#' elements = elementshg38test, reference = "hg38")
+#'
+#'
+#' Test with mm9
+#' mouse_genes = c("BRCA1", "BRCA2")
+#'
+#' mm9cancerelements = elementsmm10[grepl("BRCA1", elementsmm9$id),]
+#'
+#'
+#' Test with mm10
+#' mm10cancerelements = elementsmm10[grepl("BRCA1", elementsmm10$id),]
 #' }
 ActiveDriverWGS = function(mutations,
                            elements,
+                           reference,
                            sites = NULL,
                            window_size = 50000,
                            filter_hyper_MB = 30,
@@ -116,6 +140,34 @@ ActiveDriverWGS = function(mutations,
   # }
 
 
+  # checking if reference genome is a valid one
+  if (!(reference %in% c("hg19", "hg38", "mm9", "mm10"))){stop("reference must be a valid background reference genome")}
+
+
+  # if reference genome = Homo sapiens, 22 autosomal chromosomes and 2 sex chromosomes
+  if (reference == "hg19"){
+    chr1 = 1;
+    chrY = 24;
+    chromosomes <- BSgenome.Hsapiens.UCSC.hg19::Hsapiens
+  }
+  if (reference == "hg38"){
+    chr1 = 1;
+    chrY = 24;
+    chromosomes <- BSgenome.Hsapiens.UCSC.hg38::Hsapiens
+  }
+
+  # if reference genome = Mus musculus, 22 autosomal chromosomes and 2 sex chromosomes
+  if (reference == "mm9"){
+    chr1 = 1;
+    chrY = 21;
+    chromosomes <- BSgenome.Mmusculus.UCSC.mm9::Mmusculus
+  }
+  if (reference == "mm10"){
+    chr1 = 1;
+    chrY = 21;
+    chromosomes <- BSgenome.Mmusculus.UCSC.mm10::Mmusculus
+  }
+
   # Verifying Format for Mutations
   legal_dna = c('A', 'T', 'C', 'G')
   if (!is.data.frame(mutations)) stop("mutations must be a data frame")
@@ -123,7 +175,7 @@ ActiveDriverWGS = function(mutations,
   if (any(is.na(mutations))) stop("mutations may not contain missing values")
   if (any(duplicated(mutations))) stop("duplicated mutations are present. please review your format")
   if (!(is.character(mutations$chr) && is.character(mutations$ref) && is.character(mutations$alt))) stop("chr, ref and alt must be character")
-  if (!any(mutations$chr %in% BSgenome::seqnames(BSgenome.Hsapiens.UCSC.hg19::Hsapiens)[1:24])) stop("Only the 22 autosomal and 2 sex chromosomes may be used at this time. Note that chr23 should be formatted as chrX and chr24 should be formatted as chrY")
+  if (!any(mutations$chr %in% BSgenome::seqnames(chromosomes)[chr1:chrY])) stop("Only the 22 autosomal and 2 sex chromosomes may be used at this time. Note that chr23 should be formatted as chrX and chr24 should be formatted as chrY")
   if (!(is.numeric(mutations$pos1) && is.numeric(mutations$pos2))) stop("pos1 and pos2 must be numeric")
   if (!(any(mutations$ref %in% legal_dna) && any(mutations$alt %in% legal_dna))) stop("Reference and alternate alleles must be A, T, C or G")
   if (!(is.character(mutations$patient))) stop("patient identifier must be a string")
@@ -194,7 +246,8 @@ ActiveDriverWGS = function(mutations,
                         gr_element_coords = gr_element_coords,
                         gr_site_coords = gr_site_coords,
                         gr_maf = gr_muts,
-                        win_size = window_size)
+                        win_size = window_size,
+                        background = chromosomes)
     if (!is.null(recovery.dir)) {
       result$result_number = i
       save(result, file = paste0(recovery.dir, "ADWGS_result", i, "_recovery_file.rsav"))

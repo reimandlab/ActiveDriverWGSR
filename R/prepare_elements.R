@@ -120,29 +120,29 @@ prepare_elements_from_BED12 = function(fname) {
 #' "mini.ptm.bed",
 #' package = "ActiveDriverWGS",
 #' mustWork = TRUE))
-#' 
+#'
 prepare_elements_from_BED4 = function(fname) {
-  
+
   # Legal Chromosomes
   legal_chr = paste0("chr", c(1:22, "M", "X", "Y"))
-  
+
   # Reading File
   input = utils::read.delim(fname, stringsAsFactors=F, header=F)
   colnames(input) = paste0("V", 1:ncol(input))
-  
+
   # Checking File Format
   if (ncol(input) != 4) stop("Incorrect BED4 Format: 4 Columns in BED4 files")
   if (!is.numeric(input$V2) | !is.numeric(input$V3)) stop("Incorrect BED4 Format: Incorrect coordinate format")
   if (!any(input$V1 %in% legal_chr)) stop("Incorrect BED4 Format: Chromosomes must be autosomal, sex or mitochondrial")
   if (!is.character(input$V4)) stop("Incorrect BED4 Format: IDs must be a character string")
-  
+
   # Processing File
   colnames(input) = c("chr", "start", "end", "id")
   input = data.frame(input, stringsAsFactors = F)
   input$start = as.numeric(input$start)
   input$end = as.numeric(input$end)
   dim1 = nrow(input)
-  
+
   # Filtering Regions for Those Identified on a Single Chromosome (Mitochondrial, Autosomal and Sex Chromosomes)
   # & Repeated Elements
   chr = by(input$chr, input$id, function(x) unique(as.character(x)), simplify=F)
@@ -153,4 +153,40 @@ prepare_elements_from_BED4 = function(fname) {
   dim2 = nrow(input)
   cat("\n Preparing Elements Complete \n RM", dim1-dim2, "lines\n")
   input
+}
+
+#
+#
+# gtf to bed format to prepare as elements
+#
+#
+gtf_to_bed = function(gtf_file, filename) {
+  #read in the file
+  gtf <- read.table(gtf_file, header = FALSE, sep = '\t')
+
+  #collect only the columns needed for bed4
+  gtf <- data.frame(gtf$V1, gtf$V4, gtf$V5, gtf$V9)
+
+  colnames(gtf) <- NULL
+
+  #convert the start and end positions of chromosome to numeric
+  gtf[2] <- sapply(gtf[2], as.numeric)
+  gtf[3] <- sapply(gtf[3], as.numeric)
+
+  gtf[4] <-
+    strsplit(teststr, ";")
+  #[[1]] - splits into a list of list with each element of the row
+  # [1] "gene_id ENSG00000223972.5"                     " gene_type transcribed_unprocessed_pseudogene"
+  # [3] " gene_name DDX11L1"                            " level 2"
+  # [5] " hgnc_id HGNC:37102"                           " havana_gene OTTHUMG00000000961.2"
+
+  # gets you just the gene_name portion of the string
+  teststr[[1]][3]
+  # splits the gene_name and the actual gene name - just want gene name
+  strsplit(teststr, " ")
+  # gets you just the gene name
+  teststr[[1]][3]
+
+  #write the table as .bed format
+  write.table(gtf, file=filename, row.names=FALSE, quote=F, sep="\t")
 }

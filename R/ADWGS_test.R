@@ -104,7 +104,7 @@
 #' id = "ATM"
 #' result = ADWGS_test(id, gr_element_coords, gr_site_coords, gr_maf, 50000)
 #'}
-ADWGS_test = function(id, gr_element_coords, gr_site_coords, gr_maf, win_size, element_bias = T) {
+ADWGS_test = function(id, gr_element_coords, gr_site_coords, gr_maf, win_size, element_bias = T, background) {
 
   cat(".")
   null_res = data.frame(id,
@@ -119,12 +119,12 @@ ADWGS_test = function(id, gr_element_coords, gr_site_coords, gr_maf, win_size, e
   background_start = min(GenomicRanges::start(gr_element))-win_size-2
   background_start = max(background_start, 2)
   background_end = max(GenomicRanges::end(gr_element))+win_size+1
-  background_end = min(background_end, GenomeInfoDb::seqlengths(BSgenome.Hsapiens.UCSC.hg19::Hsapiens)[background_chr])
+  background_end = min(background_end, GenomeInfoDb::seqlengths(background)[background_chr])
   gr_background_plus_element = GenomicRanges::GRanges(background_chr,
                                                       IRanges::IRanges(background_start, background_end))
 
   # get sequence trinucleotide
-  this_seq = strsplit(as.character(BSgenome::getSeq(BSgenome.Hsapiens.UCSC.hg19::Hsapiens, gr_background_plus_element)), '')[[1]]
+  this_seq = strsplit(as.character(BSgenome::getSeq(background, gr_background_plus_element)), '')[[1]]
   left_nucleotide = this_seq[1:(length(this_seq)-2)]
   mid_nucleotide = this_seq[2:(length(this_seq)-1)]
   right_nucleotide = this_seq[3:(length(this_seq)+0)]
