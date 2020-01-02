@@ -3,6 +3,7 @@
 # @import BSgenome.Hsapiens.UCSC.hg19
 # @import parallel
 
+BiocManager::install("BSgenome.Mmusculus.UCSC.mm9")
 
 #' ActiveDriverWGS is a driver discovery tool for simple somatic mutations in cancer whole genomes
 #'
@@ -140,7 +141,7 @@ ActiveDriverWGS = function(mutations,
   # }
 
 
-  # checking if reference genome is a valid one
+  # Checking if reference genome is a valid
   if (!(reference %in% c("hg19", "hg38", "mm9", "mm10"))){stop("reference must be a valid background reference genome")}
 
 
@@ -159,12 +160,12 @@ ActiveDriverWGS = function(mutations,
   # if reference genome = Mus musculus, 22 autosomal chromosomes and 2 sex chromosomes
   if (reference == "mm9"){
     chr1 = 1;
-    chrY = 21;
+    chrY = 20;
     chromosomes <- BSgenome.Mmusculus.UCSC.mm9::Mmusculus
   }
   if (reference == "mm10"){
     chr1 = 1;
-    chrY = 21;
+    chrY = 20;
     chromosomes <- BSgenome.Mmusculus.UCSC.mm10::Mmusculus
   }
 
@@ -182,7 +183,8 @@ ActiveDriverWGS = function(mutations,
 
   # Creating gr_muts
   mutations = format_muts(mutations = mutations,
-                          filter_hyper_MB = filter_hyper_MB)
+                          filter_hyper_MB = filter_hyper_MB,
+                          reference = chromosomes)
   gr_muts = GenomicRanges::GRanges(mutations$chr,
                                    IRanges::IRanges(mutations$pos1, mutations$pos2), mcols=mutations[,c("patient", "tag")])
   # save(gr_muts, file=paste0(recovery.dir,"gr_muts.rsav"))

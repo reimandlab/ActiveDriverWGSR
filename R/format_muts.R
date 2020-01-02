@@ -21,7 +21,7 @@
 #' @return A data frame consisting of the same columns as the original mutations data frame and sorted
 #' by SNVs and Indels with an additional column \code{tag} which indicates the trinucleotide context of
 #' the mutation
-.get_3n_context_of_mutations = function(mutations) {
+.get_3n_context_of_mutations = function(mutations, reference) {
 
   legal_dna = c("A", "C", "G", "T")
 
@@ -33,7 +33,7 @@
   # snvs can have flanks
   flank_ranges = GenomicRanges::GRanges(mutations_snv$chr,
                                         IRanges::IRanges(start=mutations_snv$pos1-1, end=mutations_snv$pos2+1), strand="*")
-  triples = as.character(BSgenome::getSeq(BSgenome.Hsapiens.UCSC.hg19::Hsapiens, flank_ranges))
+  triples = as.character(BSgenome::getSeq(reference, flank_ranges))
 
   # filtering SNVs in unsequenceable regions of the genome
   seq_snvs = grep("N", triples, invert = T)
@@ -59,7 +59,7 @@
   # filtering indels in unsequenceable regions of the genome
   indel_ranges = GenomicRanges::GRanges(mutations_mnv$chr,
                                         IRanges::IRanges(start=mutations_mnv$pos1, end=mutations_mnv$pos2), strand="*")
-  indel_seqs = as.character(BSgenome::getSeq(BSgenome.Hsapiens.UCSC.hg19::Hsapiens, indel_ranges))
+  indel_seqs = as.character(BSgenome::getSeq(reference, indel_ranges))
   seq_indels = grep("N", indel_seqs, invert = T)
   mutations_mnv = mutations_mnv[seq_indels,]
   indel_seqs = indel_seqs[seq_indels]
@@ -94,7 +94,7 @@
 #' data(cll_mutations)
 #' formatted_mutations = format_muts(cll_mutations[1:10,], filter_hyper_MB=30)
 #' }
-format_muts = function(mutations, filter_hyper_MB=NA) {
+format_muts = function(mutations, filter_hyper_MB=NA, reference) {
 
   # remove hypermutated samples, according to muts/megabase rate defined
   if (!is.na(filter_hyper_MB) & filter_hyper_MB>0) {
@@ -130,6 +130,6 @@ format_muts = function(mutations, filter_hyper_MB=NA) {
     rm(pos1, pos2)
   }
 
-  mutations = .get_3n_context_of_mutations(mutations)
+  mutations = .get_3n_context_of_mutations(mutations, reference)
   mutations
 }
