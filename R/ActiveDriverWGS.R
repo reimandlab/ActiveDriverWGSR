@@ -3,7 +3,6 @@
 # @import BSgenome.Hsapiens.UCSC.hg19
 # @import parallel
 
-BiocManager::install("BSgenome.Mmusculus.UCSC.mm9")
 
 #' ActiveDriverWGS is a driver discovery tool for simple somatic mutations in cancer whole genomes
 #'
