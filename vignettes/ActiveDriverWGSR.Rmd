@@ -31,7 +31,8 @@ Optionally, the tested genomic elements may also include **active sites** of int
 ActiveDriverWGS uses a Poisson generalized linear regression to compare the mutational burden of elements against the expected mutational burden of a narrow background window (Figure 1). In our work, we have optimized the background to be 50,000 bps upstream and downstream of elements. ActiveDriverWGS also incorporates the effect of mutational signatures, specifically the probability distribution of SNVs arising across trinucleotide contexts which vary with mutational processes. If an element is segmented, such as the exons of a protein coding gene, the inter-segment sequences are also used to calculate the expected background rate, up to +/- 50 kbps around every segment.  Users also have the option to exclude hyper-mutated samples which decrease the accuracy of driver discovery.
 
 ### Publication
-For a more detailed reference on ActiveDriverWGS, please refer to the [preprint](https://www.biorxiv.org/content/early/2017/12/19/236802).
+For a more detailed reference on ActiveDriverWGS, please refer to the [publication](https://www.cell.com/molecular-cell/fulltext/S1097-2765(19)30957-8).
+Helen Zhu*, Liis Uuskula-Reimand*, Keren Isaev*, Lina Wadi, Azad Alizada, Shimin Shuai, Vincent Huang, Dike Aduluso-Nwaobasi, Marta Paczkowska, Diala Abd-Rabbo, Oliver Ocsenas, Minggao Liang, J. Drew Thompson, Yao Li, Luyao Ruan, Michal Krassowski, Irakli Dzneladze, Jared T. Simpson, Mathieu Lupien, Lincoln D. Stein, Paul C. Boutros, Michael D. Wilson, Jüri Reimand. **Candidate Cancer Driver Mutations in Distal Regulatory Elements and Long-Range Chromatin Interaction Networks**. Molecular Cell (2020), https://doi.org/10.1016/j.molcel.2019.12.027 .
 
 ### Please Note
 The genome build for ActiveDriverWGS is **hg19**. We are working on adding additional options for **hg38**.
