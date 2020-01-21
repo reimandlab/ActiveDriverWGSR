@@ -19,4 +19,6 @@ Open R in the directory you cloned the package in and run `install.packages('Act
 ## Using ActiveDriverWGS
 #### NOTE: Currently ActiveDriverWGS only works on regions/mutations from hg19. Stay tuned for an update.
 
-For a tutorial on ActiveDriverWGS, please click [here](http://htmlpreview.github.io/?http://github.com/reimandlab/ActiveDriverWGS/blob/master/inst/doc/ActiveDriverWGS.html).
+For a tutorial on ActiveDriverWGS, please click [here](http://htmlpreview.github.io/?https://github.com/reimandlab/ActiveDriverWGSR/blob/master/vignettes/ActiveDriverWGSR.html).
+
+
