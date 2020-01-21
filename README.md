@@ -4,7 +4,9 @@ ActiveDriverWGS is a cancer driver discovery tool for analysis of somatic mutati
 
 Two major kinds of input are required by ActiveDriverWGS: a set of genomic regions of interest defined as a BED12 file, and a set of somatic mutations in a cohort of tumor samples in a tab-separated text file.
 
-For more information, please refer to the [ActiveDriverWGS preprint](https://www.biorxiv.org/content/early/2017/12/19/236802).
+For more information, please refer to the [publication](https://www.cell.com/molecular-cell/fulltext/S1097-2765(19)30957-8).
+
+Helen Zhu*, Liis Uuskula-Reimand*, Keren Isaev*, Lina Wadi, Azad Alizada, Shimin Shuai, Vincent Huang, Dike Aduluso-Nwaobasi, Marta Paczkowska, Diala Abd-Rabbo, Oliver Ocsenas, Minggao Liang, J. Drew Thompson, Yao Li, Luyao Ruan, Michal Krassowski, Irakli Dzneladze, Jared T. Simpson, Mathieu Lupien, Lincoln D. Stein, Paul C. Boutros, Michael D. Wilson, Jüri Reimand. Candidate Cancer Driver Mutations in Distal Regulatory Elements and Long-Range Chromatin Interaction Networks. Molecular Cell (2020), https://doi.org/10.1016/j.molcel.2019.12.027
 
 ## Installation
 
