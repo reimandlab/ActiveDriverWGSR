@@ -229,4 +229,4 @@ result
 ```
 
 ## Technical Support
-For questions, technical support or to report bugs and errors, please use our [GitHub](https://github.com/reimandlab/ActiveDriverWGS).
+For questions, technical support or to report bugs and errors, please use our [GitHub](https://github.com/reimandlab/ActiveDriverWGSR).
