@@ -157,11 +157,15 @@ ActiveDriverWGS = function(mutations,
   }
 
   # if reference genome = Mus musculus, 22 autosomal chromosomes and 2 sex chromosomes
+
+
   if (reference == "mm9"){
     chr1 = 1;
-    chrY = 20;
+    chrY = 21;
     chromosomes <- BSgenome.Mmusculus.UCSC.mm9::Mmusculus
   }
+
+
   if (reference == "mm10"){
     chr1 = 1;
     chrY = 20;
@@ -175,9 +179,11 @@ ActiveDriverWGS = function(mutations,
   if (any(is.na(mutations))) stop("mutations may not contain missing values")
   if (any(duplicated(mutations))) stop("duplicated mutations are present. please review your format")
   if (!(is.character(mutations$chr) && is.character(mutations$ref) && is.character(mutations$alt))) stop("chr, ref and alt must be character")
-  if (!any(mutations$chr %in% BSgenome::seqnames(chromosomes)[chr1:chrY])) stop("Only the 22 autosomal and 2 sex chromosomes may be used at this time. Note that chr23 should be formatted as chrX and chr24 should be formatted as chrY")
+  if (!any(mutations$chr %in% BSgenome::seqnames(chromosomes)[chr1:chrY]))
+    stop("Only the 22 autosomal and 2 sex chromosomes may be used at this time.
+         Note that chr23 should be formatted as chrX and chr24 should be formatted as chrY")
   if (!(is.numeric(mutations$pos1) && is.numeric(mutations$pos2))) stop("pos1 and pos2 must be numeric")
-  if (!(any(mutations$ref %in% legal_dna) && any(mutations$alt %in% legal_dna))) stop("Reference and alternate alleles must be A, T, C or G")
+  if (!(grepl("^[ATCG]+$", mutations$ref) && grepl("^[ATCG]+$", mutations$alt))) stop("Reference and alternate alleles must be A, T, C or G")
   if (!(is.character(mutations$patient))) stop("patient identifier must be a string")
 
   # Creating gr_muts
