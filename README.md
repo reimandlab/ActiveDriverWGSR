@@ -12,10 +12,10 @@ Helen Zhu*, Liis Uuskula-Reimand*, Keren Isaev*, Lina Wadi, Azad Alizada, Shimin
 
 #### devtools:
 Using the R package `devtools`, run
-`devtools::install_github('https://github.com/reimandlab/ActiveDriverWGS')`
+`devtools::install_github('https://github.com/reimandlab/ActiveDriverWGSR')`
 
 #### From source
-Clone the repository: `https://github.com/reimandlab/ActiveDriverWGS.git`
+Clone the repository: `https://github.com/reimandlab/ActiveDriverWGSR.git`
 Open R in the directory you cloned the package in and run `install.packages('ActiveDriverWGS', repos=NULL)`
 
 ## Using ActiveDriverWGS
