@@ -99,6 +99,9 @@
 #'
 #' Test with mm10
 #' mm10cancerelements = elementsmm10[grepl("BRCA1", elementsmm10$id),]
+#'
+#' Negative Binomial example
+#' result <- ActiveDriverWGS(WSmut, exEle, "mm9")
 #' }
 ActiveDriverWGS = function(mutations,
                            elements,
@@ -183,7 +186,7 @@ ActiveDriverWGS = function(mutations,
     stop("Only the 22 autosomal and 2 sex chromosomes may be used at this time.
          Note that chr23 should be formatted as chrX and chr24 should be formatted as chrY")
   if (!(is.numeric(mutations$pos1) && is.numeric(mutations$pos2))) stop("pos1 and pos2 must be numeric")
-  if ((any(testMutDel$ref %in% legal_dna) && all(grepl("^[ATCG]+$", testMutDel$alt)))) stop("Reference and alternate alleles must be A, T, C or G")
+  # if ((any(mutations$ref %in% legal_dna) && all(grepl("^[ATCG]+$", mutations$alt)))) stop("Reference and alternate alleles must be A, T, C or G")
   if (!(is.character(mutations$patient))) stop("patient identifier must be a string")
 
   # Creating gr_muts
