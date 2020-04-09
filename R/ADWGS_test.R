@@ -219,11 +219,11 @@ ADWGS_test = function(id, gr_element_coords, gr_site_coords, gr_maf, win_size, e
     h0_formula = "n_mut~1"
   }
 
-  # h0 = MASS::glm.nb(stats::as.formula(h0_formula), data=dfr)
-  h0 = stats::glm(stats::as.formula(h0_formula), data=dfr, family=stats::poisson)
+  h0 = MASS::glm.nb(stats::as.formula(h0_formula), data=dfr)
+  # h0 = stats::glm(stats::as.formula(h0_formula), data=dfr, family=stats::poisson)
   h1 = stats::update(h0, . ~ . + is_element)
-  pp_element = stats::anova(h0, h1, test="Chisq")[2,5]
-  # pp_element = stats::anova(h0, h1, test="Chisq")[2,8]
+  # pp_element = stats::anova(h0, h1, test="Chisq")[2,5]
+  pp_element = stats::anova(h0, h1, test="Chisq")[2,8]
 
   element_stats = .get_obs_exp(h0, dfr$is_element, dfr, "n_mut")
   element_muts_obs = element_stats[[1]]
