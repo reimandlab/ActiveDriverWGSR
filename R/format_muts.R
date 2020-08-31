@@ -22,53 +22,63 @@
 #' by SNVs and Indels with an additional column \code{tag} which indicates the trinucleotide context of
 #' the mutation
 .get_3n_context_of_mutations = function(mutations) {
+	
+	legal_dna = c("A", "C", "G", "T")
+	this_genome = BSgenome.Hsapiens.UCSC.hg19::Hsapiens
+	
+	mutations_snv = mutations[mutations$ref %in% legal_dna & mutations$alt %in% legal_dna,]
+	mutations_indel = mutations[!(mutations$ref %in% legal_dna & mutations$alt %in% legal_dna),]
+	
+	if (nrow(mutations_snv) > 0) {
+		# snvs can have flanks
+		flank_ranges = GenomicRanges::GRanges(mutations_snv$chr,
+				IRanges::IRanges(start = mutations_snv$pos1-1, 
+								end = mutations_snv$pos2+1), strand="*")
+		triples = as.character(BSgenome::getSeq(this_genome, flank_ranges))
+		
+		# filtering SNVs in unsequenceable regions of the genome
+		seq_snvs = grep("N", triples, invert = T)
+		mutations_snv = mutations_snv[seq_snvs,]
+		triples = triples[seq_snvs]
+		
+		# complement trinucleotide where necessary to force into one signature space
+		new_triples = triples
+		new_alt = mutations_snv$alt
+		which_to_complement = which(mutations_snv$ref %in% c("G", "A"))
+		
+		new_triples[which_to_complement] = 
+				as.character(Biostrings::complement(Biostrings::DNAStringSet(
+					new_triples[which_to_complement])))
+		new_alt[which_to_complement] = 
+				as.character(Biostrings::complement(Biostrings::DNAStringSet(
+					new_alt[which_to_complement])))
+		mutations_snv$tag = paste0(new_triples, ">", new_alt)
+	} else { 
+		mutations_snv = NULL
+		seq_snvs = 0
+	}
 
-  legal_dna = c("A", "C", "G", "T")
+	if (nrow(mutations_indel) > 0) {
+		# filtering indels in unsequenceable regions of the genome
+		indel_ranges = GenomicRanges::GRanges(mutations_indel$chr,
+				IRanges::IRanges(start = mutations_indel$pos1, 
+								end = mutations_indel$pos2), strand="*")
+		indel_seqs = as.character(BSgenome::getSeq(this_genome, indel_ranges))
+		seq_indels = grep("N", indel_seqs, invert = T)
+		mutations_indel = mutations_indel[seq_indels,]
+		indel_seqs = indel_seqs[seq_indels]
+		
+		mutations_indel$tag = "indel>X"
+	} else {
+		mutations_indel = NULL
+		seq_indels = 0
+	}
 
-  mutations_snv = mutations[mutations$ref %in% legal_dna & mutations$alt %in% legal_dna,]
-  mutations_mnv = mutations[!(mutations$ref %in% legal_dna & mutations$alt %in% legal_dna),]
-
-  if(nrow(mutations_snv) == 0)stop("Dataset must contain SNVs")
-
-  # snvs can have flanks
-  flank_ranges = GenomicRanges::GRanges(mutations_snv$chr,
-                                        IRanges::IRanges(start=mutations_snv$pos1-1, end=mutations_snv$pos2+1), strand="*")
-  triples = as.character(BSgenome::getSeq(BSgenome.Hsapiens.UCSC.hg19::Hsapiens, flank_ranges))
-
-  # filtering SNVs in unsequenceable regions of the genome
-  seq_snvs = grep("N", triples, invert = T)
-  mutations_snv = mutations_snv[seq_snvs,]
-  triples = triples[seq_snvs]
-
-  # complement trinucleotide where necessary to force into one signature space
-  new_triples = triples
-  new_alt = mutations_snv$alt
-  which_to_complement = which(mutations_snv$ref %in% c("G", "A"))
-
-  new_triples[which_to_complement] = as.character(Biostrings::complement(Biostrings::DNAStringSet(new_triples[which_to_complement])))
-  new_alt[which_to_complement] = as.character(Biostrings::complement(Biostrings::DNAStringSet(new_alt[which_to_complement])))
-  mutations_snv$tag = paste0(new_triples, ">", new_alt)
-
-  # if the dataset only contains SNVs
-  if (nrow(mutations_mnv)==0) {
-    # Filtering message
-    cat("Removing ", (nrow(mutations) - length(seq_snvs)), " invalid SNVs\n\n")
-    return(mutations_snv)
-  }
-
-  # filtering indels in unsequenceable regions of the genome
-  indel_ranges = GenomicRanges::GRanges(mutations_mnv$chr,
-                                        IRanges::IRanges(start=mutations_mnv$pos1, end=mutations_mnv$pos2), strand="*")
-  indel_seqs = as.character(BSgenome::getSeq(BSgenome.Hsapiens.UCSC.hg19::Hsapiens, indel_ranges))
-  seq_indels = grep("N", indel_seqs, invert = T)
-  mutations_mnv = mutations_mnv[seq_indels,]
-  indel_seqs = indel_seqs[seq_indels]
-
-  # Filtering message
-  cat("Removing ", (nrow(mutations) - length(seq_snvs) - length(seq_indels)), " invalid SNVs & indels\n\n")
-
-  mutations_mnv$tag = "indel>X"
-  rbind(mutations_snv, mutations_mnv)
+	# Filtering message
+	n_muts_removed = (nrow(mutations) - length(seq_snvs) - length(seq_indels))
+	cat("Removing ", n_muts_removed, " invalid SNVs & indels\n\n")
+	
+	rbind(mutations_snv, mutations_indel)
 }
 
 

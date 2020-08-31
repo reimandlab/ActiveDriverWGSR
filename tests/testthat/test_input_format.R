@@ -67,13 +67,13 @@ test_that("mutations are formatted properly",{
   this_mutations$ref = tolower(this_mutations$ref)
   expect_error(ActiveDriverWGS(elements = cancer_genes,
                                mutations = this_mutations),
-               "Reference and alternate alleles must be A, T, C or G")
+               "Reference and alternate alleles must be A, T, C, G or -")
 
   this_mutations = cll_mutations
   this_mutations$alt = tolower(this_mutations$alt)
   expect_error(ActiveDriverWGS(elements = cancer_genes,
                                mutations = this_mutations),
-               "Reference and alternate alleles must be A, T, C or G")
+               "Reference and alternate alleles must be A, T, C, G or -")
 
   # Positions as strings
   this_mutations = cll_mutations

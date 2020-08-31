@@ -54,12 +54,6 @@ test_that("testing errors on the format muts function",{
                            filter_hyper_MB = 30),
                "No mutations left after filtering")
 
-  # Testing SNVs Only (Part of .get_3n_context_of_mutations)
-  this_mutations = cll_mutations[cll_mutations$pos2 != cll_mutations$pos1,]
-  expect_error(format_muts(mutations = this_mutations,
-                           filter_hyper_MB = 30),
-               "Dataset must contain SNVs")
-
   # Testing that mutations in unsequenceable regions are filtered (Part of .get_3n_context_of_mutations)
   this_mutations = data.frame("chr" = "chr1",
                               "pos1" = 126000000,

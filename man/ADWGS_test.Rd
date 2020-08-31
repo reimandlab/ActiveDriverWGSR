@@ -4,8 +4,14 @@
 \alias{ADWGS_test}
 \title{ADWGS_test executes the statistical test for ActiveDriverWGS}
 \usage{
-ADWGS_test(id, gr_element_coords, gr_site_coords, gr_maf, win_size,
-  element_bias = T)
+ADWGS_test(
+  id,
+  gr_element_coords,
+  gr_site_coords,
+  gr_maf,
+  win_size,
+  element_bias = T
+)
 }
 \arguments{
 \item{id}{A string used to identify the element of interest. \code{id}

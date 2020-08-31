@@ -4,8 +4,15 @@
 \alias{ActiveDriverWGS}
 \title{ActiveDriverWGS is a driver discovery tool for simple somatic mutations in cancer whole genomes}
 \usage{
-ActiveDriverWGS(mutations, elements, sites = NULL, window_size = 50000,
-  filter_hyper_MB = 30, recovery.dir = NULL, mc.cores = 1)
+ActiveDriverWGS(
+  mutations,
+  elements,
+  sites = NULL,
+  window_size = 50000,
+  filter_hyper_MB = 30,
+  recovery.dir = NULL,
+  mc.cores = 1
+)
 }
 \arguments{
 \item{mutations}{A data frame containing the following columns: chr, pos1, pos2, ref, alt, patient.
@@ -13,8 +20,8 @@ ActiveDriverWGS(mutations, elements, sites = NULL, window_size = 50000,
     \item{chr}{autosomal chromosomes as chr1 to chr22 and sex chromosomes as chrX and chrY}
     \item{pos1}{the start position of the mutation in base 1 coordinates}
     \item{pos2}{the end position of the mutation in base 1 coordinates}
-    \item{ref}{the reference allele as a string containing the bases A, T, C or G}
-    \item{alt}{the alternate allele as a string containing the bases A, T, C or G}
+    \item{ref}{the reference allele as a string containing the bases A, T, C, G or -}
+    \item{alt}{the alternate allele as a string containing the bases A, T, C, G or -}
     \item{patient}{the patient identifier as a string}
 }}
 

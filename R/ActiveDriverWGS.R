@@ -11,8 +11,8 @@
 #'     \item{chr}{autosomal chromosomes as chr1 to chr22 and sex chromosomes as chrX and chrY}
 #'     \item{pos1}{the start position of the mutation in base 1 coordinates}
 #'     \item{pos2}{the end position of the mutation in base 1 coordinates}
-#'     \item{ref}{the reference allele as a string containing the bases A, T, C or G}
-#'     \item{alt}{the alternate allele as a string containing the bases A, T, C or G}
+#'     \item{ref}{the reference allele as a string containing the bases A, T, C, G or -}
+#'     \item{alt}{the alternate allele as a string containing the bases A, T, C, G or -}
 #'     \item{patient}{the patient identifier as a string}
 #' }
 #' @param elements A data frame containing the following columns: chr, start, end, id
@@ -116,17 +116,45 @@ ActiveDriverWGS = function(mutations,
   # }
 
 
-  # Verifying Format for Mutations
-  legal_dna = c('A', 'T', 'C', 'G')
-  if (!is.data.frame(mutations)) stop("mutations must be a data frame")
-  if (!all(c("chr", "pos1", "pos2", "ref", "alt", "patient") %in% colnames(mutations))) stop("mutations must contain the following columns: chr, pos1, pos2, ref, alt & patient")
-  if (any(is.na(mutations))) stop("mutations may not contain missing values")
-  if (any(duplicated(mutations))) stop("duplicated mutations are present. please review your format")
-  if (!(is.character(mutations$chr) && is.character(mutations$ref) && is.character(mutations$alt))) stop("chr, ref and alt must be character")
-  if (!any(mutations$chr %in% BSgenome::seqnames(BSgenome.Hsapiens.UCSC.hg19::Hsapiens)[1:24])) stop("Only the 22 autosomal and 2 sex chromosomes may be used at this time. Note that chr23 should be formatted as chrX and chr24 should be formatted as chrY")
-  if (!(is.numeric(mutations$pos1) && is.numeric(mutations$pos2))) stop("pos1 and pos2 must be numeric")
-  if (!(any(mutations$ref %in% legal_dna) && any(mutations$alt %in% legal_dna))) stop("Reference and alternate alleles must be A, T, C or G")
-  if (!(is.character(mutations$patient))) stop("patient identifier must be a string")
+	# Verifying Format for Mutations
+	if (!is.data.frame(mutations)) {
+		stop("mutations must be a data frame")
+	}
+
+	if (!all(c("chr", "pos1", "pos2", "ref", "alt", "patient") %in% colnames(mutations))) {
+		 stop("mutations must contain the following columns: chr, pos1, pos2, ref, alt & patient")
+	}
+	
+	if (any(is.na(mutations))) {
+		stop("mutations may not contain missing values")
+	}
+	
+	if (any(duplicated(mutations))) {
+		stop("duplicated mutations are present. please review your format")
+	}
+	
+	if (!(is.character(mutations$chr) && 
+			is.character(mutations$ref) && 
+			is.character(mutations$alt))) {
+				stop("chr, ref and alt must be character")
+	}
+		
+	if (!any(mutations$chr %in% 
+			BSgenome::seqnames(BSgenome.Hsapiens.UCSC.hg19::Hsapiens)[1:24])) {
+		stop("Only the 22 autosomal and 2 sex chromosomes may be used at this time. Note that chr23 should be formatted as chrX and chr24 should be formatted as chrY")
+	}
+	
+	if (!(is.numeric(mutations$pos1) && is.numeric(mutations$pos2))) {
+		stop("pos1 and pos2 must be numeric")
+	}
+
+	if (!(all(grepl("[ATGC\\-]", c(mutations$ref, mutations$alt))))) {
+	    stop("Reference and alternate alleles must be A, T, C, G or -")
+	}
+
+	if (!(is.character(mutations$patient))) {
+		stop("patient identifier must be a string")
+	}
 
   # Creating gr_muts
   mutations = format_muts(mutations = mutations,

@@ -4,7 +4,8 @@
 \name{cll_mutations}
 \alias{cll_mutations}
 \title{CLL mutations}
-\format{A data frame containing the following columns: chr, pos1, pos2, ref, alt, patient.
+\format{
+A data frame containing the following columns: chr, pos1, pos2, ref, alt, patient.
 \describe{
     \item{chr}{autosomal chromosomes as chr1 to chr22 and sex chromosomes as chrX and chrY}
     \item{pos1}{the start position of the mutation in base 1 coordinates}
@@ -12,7 +13,8 @@
     \item{ref}{the reference allele as a string containing the bases A, T, C or G}
     \item{alt}{the alternate allele as a string containing the bases A, T, C or G}
     \item{patient}{the patient identifier as a string}
-}}
+}
+}
 \source{
 \href{ftp://ftp.sanger.ac.uk/pub/cancer/AlexandrovEtAl}{FTP Server}
 }
