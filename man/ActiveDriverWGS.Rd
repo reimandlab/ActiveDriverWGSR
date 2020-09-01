@@ -11,7 +11,8 @@ ActiveDriverWGS(
   window_size = 50000,
   filter_hyper_MB = 30,
   recovery.dir = NULL,
-  mc.cores = 1
+  mc.cores = 1,
+  ref_genome = "hg19"
 )
 }
 \arguments{
@@ -59,6 +60,8 @@ If the parameter is unspecified, recovery files will not be saved. As an ActiveD
 specifying a recovery directory will recover previously computed results if a query is interrupted.}
 
 \item{mc.cores}{The number of cores which can be used if multiple cores are available. The default is 1.}
+
+\item{ref_genome}{The reference genome used on the analysis. The default option is "hg19", other options are "hg38", "mm9" and "mm10".}
 }
 \value{
 A data frame containing the results of driver discovery containing the following columns: id, pp_element,

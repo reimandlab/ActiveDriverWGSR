@@ -58,9 +58,11 @@ test_that("mutations are formatted properly",{
   this_chromosomes = structure(paste0("chr", letters[1:24]), names = paste0("chr", c(1:22, "X", "Y")))
   this_mutations = cll_mutations
   this_mutations$chr = this_chromosomes[this_mutations$chr]
+  err_expect = paste("Only autosomal and sex chromosomes may be used in mutation data (24 for human, 21 for mouse).", 
+				"Note that chr23 and chr24 should be formatted as chrX and chrY, respectively")
   expect_error(ActiveDriverWGS(elements = cancer_genes,
                                mutations = this_mutations),
-               "Only the 22 autosomal and 2 sex chromosomes may be used at this time. Note that chr23 should be formatted as chrX and chr24 should be formatted as chrY")
+               err_expect, fixed = TRUE)
 
   # Illegal bases
   this_mutations = cll_mutations
@@ -138,6 +140,15 @@ test_that("elements are formatted properly",{
                                mutations = cll_mutations),
                "start and end must be numeric")
 
+  # unexpected chromosome
+  this_elements = cancer_genes
+  this_elements$chr[1] = paste0("CHR", this_elements$chr[1])
+  err_expect = paste("Only autosomal and sex chromosomes may be used in element coordinates (24 for human, 21 for mouse).", 
+			"Note that chr23 and chr24 should be formatted as chrX and chrY, respectively")
+  expect_error(ActiveDriverWGS(elements = this_elements,
+                               mutations = cll_mutations),
+	err_expect, fixed = TRUE)
+
   # Numeric ID
   this_elements = cancer_genes
   this_elements$id = 1:nrow(this_elements)
@@ -191,6 +202,16 @@ test_that("sites are formatted properly",{
                                mutations = cll_mutations,
                                sites = this_sites),
                "site identifier must be a string")
+
+  # unexpected chromosome
+  this_sites = cancer_gene_sites
+  this_sites$chr[1] = paste0("CHR", this_sites$chr[1])
+  err_expect = paste("Only autosomal and sex chromosomes may be used in site coordinates (24 for human, 21 for mouse).", 
+		"Note that chr23 and chr24 should be formatted as chrX and chrY, respectively")
+  expect_error(ActiveDriverWGS(elements = cancer_genes,
+                               mutations = cll_mutations,
+                               sites = this_sites),
+		err_expect, fixed = TRUE)
 })
 
 test_that("window_size is a positive integer",{
