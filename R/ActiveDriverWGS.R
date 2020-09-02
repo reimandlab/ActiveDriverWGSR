@@ -35,8 +35,8 @@
 #'     phosphosites of protein coding genes in genomic coordinates or transcription factor binding sites of active
 #'     enhancers.}
 #' }
-#' @param window_size An integer indicating the size of the background window in base pairs for which the
-#' mutation rate is expected to remain the same. The default is 50000bps.
+#' @param window_size An integer indicating the size of the background window in base pairs that is used to establish
+#' the expected mutation rate and respective null model. The default is 50000bps
 #' @param filter_hyper_MB Hyper-mutated samples carry many passenger mutations and dilute the signal of true drivers.
 #' Samples with a rate greater than \code{filter_hyper_MB} mutations per megabase are excluded.
 #' The default is 30 mutations per megabase.
@@ -77,7 +77,7 @@
 #' "SOCS1", "CNOT3", "DDX3X", "KMT2A", "HIF1A", "APC")
 #'
 #' result = ActiveDriverWGS(mutations = cll_mutations,
-#' elements = cancer_genes[cancer_genes$id %in% some_genes,])
+#' 		elements = cancer_genes[cancer_genes$id %in% some_genes,])
 #' }
 ActiveDriverWGS = function(mutations,
 							elements,
@@ -180,7 +180,7 @@ ActiveDriverWGS = function(mutations,
 	}
 	
 	# Creating gr_muts
-	mutations = format_muts(mutations = mutations, filter_hyper_MB = filter_hyper_MB)
+	mutations = format_muts(mutations = mutations, this_genome = this_genome, filter_hyper_MB = filter_hyper_MB)
 	gr_muts = GenomicRanges::GRanges(mutations$chr,
 			IRanges::IRanges(mutations$pos1, mutations$pos2), 
 			mcols = mutations[,c("patient", "tag")])
@@ -303,7 +303,7 @@ ActiveDriverWGS = function(mutations,
 		result = ADWGS_test(
 				id = not_done[i], gr_element_coords = gr_element_coords,
 				gr_site_coords = gr_site_coords, gr_maf = gr_muts,
-				win_size = window_size)
+				win_size = window_size, this_genome = this_genome)
 
 		# save each result into recovery dir if requested
 		if (!is.null(recovery.dir)) {

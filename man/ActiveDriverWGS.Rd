@@ -48,8 +48,8 @@ ActiveDriverWGS(
     enhancers.}
 }}
 
-\item{window_size}{An integer indicating the size of the background window in base pairs for which the
-mutation rate is expected to remain the same. The default is 50000bps.}
+\item{window_size}{An integer indicating the size of the background window in base pairs that is used to establish
+the expected mutation rate and respective null model. The default is 50000bps}
 
 \item{filter_hyper_MB}{Hyper-mutated samples carry many passenger mutations and dilute the signal of true drivers.
 Samples with a rate greater than \code{filter_hyper_MB} mutations per megabase are excluded.
@@ -94,6 +94,6 @@ some_genes = c("ATM", "MYD88", "NOTCH1", "SF3B1", "XPO1",
 "SOCS1", "CNOT3", "DDX3X", "KMT2A", "HIF1A", "APC")
 
 result = ActiveDriverWGS(mutations = cll_mutations,
-elements = cancer_genes[cancer_genes$id \%in\% some_genes,])
+		elements = cancer_genes[cancer_genes$id \%in\% some_genes,])
 }
 }

@@ -4,7 +4,7 @@
 \alias{format_muts}
 \title{This function filters hypermutated samples and returns the formatted mutations with the appropriate trinucleotide context}
 \usage{
-format_muts(mutations, filter_hyper_MB = NA)
+format_muts(mutations, this_genome, filter_hyper_MB = NA)
 }
 \arguments{
 \item{mutations}{A data frame with the following columns: chr, pos1, pos2, ref, alt, patient
@@ -16,6 +16,8 @@ format_muts(mutations, filter_hyper_MB = NA)
     \item{alt}{the alternate allele as a string containing the bases A, T, C or G}
     \item{patient}{the patient identifier as a string}
 }}
+
+\item{this_genome}{The reference genome object of BSgenome}
 
 \item{filter_hyper_MB}{The number of mutations per megabase for which a sample is considered hypermutated.
 Hypermutated samples will be removed in further analyses.}
@@ -29,6 +31,8 @@ This function filters hypermutated samples and returns the formatted mutations w
 \examples{
 \donttest{
 data(cll_mutations)
-formatted_mutations = format_muts(cll_mutations[1:10,], filter_hyper_MB=30)
+this_genome = BSgenome.Hsapiens.UCSC.hg19::Hsapiens
+formatted_mutations = format_muts(cll_mutations[1:10,], 
+		filter_hyper_MB = 30, this_genome = this_genome)
 }
 }

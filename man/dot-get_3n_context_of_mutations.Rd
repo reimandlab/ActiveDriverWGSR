@@ -4,7 +4,7 @@
 \alias{.get_3n_context_of_mutations}
 \title{This function finds the tri-nucleotide context of mutations}
 \usage{
-.get_3n_context_of_mutations(mutations)
+.get_3n_context_of_mutations(mutations, this_genome)
 }
 \arguments{
 \item{mutations}{A data frame with the following columns: chr, pos1, pos2, ref, alt, patient
@@ -16,6 +16,8 @@
     \item{alt}{the alternate allele as a string containing the bases A, T, C or G}
     \item{patient}{the patient identifier as a string}
 }}
+
+\item{this_genome}{The reference genome object of BSgenome, for example BSgenome.Hsapiens.UCSC.hg19::Hsapiens}
 }
 \value{
 A data frame consisting of the same columns as the original mutations data frame and sorted

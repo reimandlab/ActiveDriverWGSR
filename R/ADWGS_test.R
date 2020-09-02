@@ -55,8 +55,9 @@
 #' nullifies the requirement for sites to exist.
 #' @param gr_maf A GenomicRanges object that describes the mutations in the dataset containing the chromosome,
 #' start and end coordinates, patient id, and trinucleotide context
-#' @param win_size An integer indicating the size of the background window in base pairs for which the
-#' mutation rate is expected to remain the same. The default is 50000bps.
+#' @param win_size An integer indicating the size of the background window in base pairs that is used to establish
+#' the expected mutation rate and respective null model. The default is 50000bps
+#' @param this_genome The reference genome object of BSgenome, for example BSgenome.Hsapiens.UCSC.hg19::Hsapiens
 #' @param element_bias A boolean indicating whether or not indels should be counted by their midpoints
 #' or with bias towards the element
 #'
@@ -92,9 +93,12 @@
 #' # Sites (NULL)
 #' gr_site_coords = GRanges(c(seqnames=NULL,ranges=NULL,strand=NULL))
 #'
+#' # Reference genome
+#' this_genome = BSgenome.Hsapiens.UCSC.hg19::Hsapiens
+#'
 #' # Mutations
 #' data(cll_mutations)
-#' cll_mutations = format_muts(cll_mutations)
+#' cll_mutations = format_muts(cll_mutations, this_genome = this_genome)
 #'
 #' gr_maf = GRanges(cll_mutations$chr,
 #' IRanges(cll_mutations$pos1, cll_mutations$pos2),
@@ -102,9 +106,10 @@
 #'
 #' # ADWGS_test
 #' id = "ATM"
-#' result = ADWGS_test(id, gr_element_coords, gr_site_coords, gr_maf, 50000)
+#' result = ADWGS_test(id, gr_element_coords, gr_site_coords, gr_maf, 
+#'		win_size = 50000, this_genome = this_genome)
 #'}
-ADWGS_test = function(id, gr_element_coords, gr_site_coords, gr_maf, win_size, element_bias = T) {
+ADWGS_test = function(id, gr_element_coords, gr_site_coords, gr_maf, win_size, this_genome, element_bias = T) {
 
   cat(".")
   null_res = data.frame(id,
@@ -119,12 +124,12 @@ ADWGS_test = function(id, gr_element_coords, gr_site_coords, gr_maf, win_size, e
   background_start = min(GenomicRanges::start(gr_element))-win_size-2
   background_start = max(background_start, 2)
   background_end = max(GenomicRanges::end(gr_element))+win_size+1
-  background_end = min(background_end, GenomeInfoDb::seqlengths(BSgenome.Hsapiens.UCSC.hg19::Hsapiens)[background_chr])
+  background_end = min(background_end, GenomeInfoDb::seqlengths(this_genome)[background_chr])
   gr_background_plus_element = GenomicRanges::GRanges(background_chr,
                                                       IRanges::IRanges(background_start, background_end))
 
   # get sequence trinucleotide
-  this_seq = strsplit(as.character(BSgenome::getSeq(BSgenome.Hsapiens.UCSC.hg19::Hsapiens, gr_background_plus_element)), '')[[1]]
+  this_seq = strsplit(as.character(BSgenome::getSeq(this_genome, gr_background_plus_element)), '')[[1]]
   left_nucleotide = this_seq[1:(length(this_seq)-2)]
   mid_nucleotide = this_seq[2:(length(this_seq)-1)]
   right_nucleotide = this_seq[3:(length(this_seq)+0)]
