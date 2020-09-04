@@ -1,8 +1,8 @@
 # ActiveDriverWGS
 
-<b>Note: ActiveDriverWGS (1.1.0) has been released. It supports alternative reference genomes (hg38, mm9, mm10) and has been optimized for speed and memory usage. (Sept 4th 2020).</b>
+<b>Note: ActiveDriverWGS (1.1.0) has been released. It supports alternative reference genomes (hg38, mm9, mm10) and has been optimized for speed and memory usage (Sept 4th 2020).</b>
 
-ActiveDriverWGS is a cancer driver discovery tool for analysis of somatic mutations derived from whole genome sequencing. It works on protein-coding sequences as well as various non-coding sequences (non-coding RNAs, promoters, enhancers, etc). ActiveDriverWGS is based on a statistical model that analyzes the mutational burden of SNVs and short indels in functionally defined elements of interest. It then retrieves elements which are significantly mutated compared to a background sequence window, its nucleotide sequence context and trinucleotide mutation signatures. ActiveDriverWGS is implemented as an R package.
+ActiveDriverWGS is a cancer driver discovery tool for analysis of somatic mutations derived from whole genome sequencing. It works on protein-coding sequences as well as various non-coding sequences (non-coding RNAs, promoters, enhancers, etc). ActiveDriverWGS is based on a statistical model that analyzes the mutational burden of SNVs and short indels in functionally defined elements of interest. It then retrieves elements that are significantly mutated compared to their background sequence windows, nucleotide sequence contexts and trinucleotide mutation signatures. ActiveDriverWGS is implemented as an R package and is available from GitHub and CRAN.
 
 Two major kinds of input are required by ActiveDriverWGS: a set of genomic regions of interest defined as a BED12 file, and a set of somatic mutations in a cohort of tumor samples in a tab-separated text file. The default reference genome is human (hg19)and the updated version of ActiveDriverWGS also supports the human genome (hg38) and the mouse genome (mm9, mm10). 
 
