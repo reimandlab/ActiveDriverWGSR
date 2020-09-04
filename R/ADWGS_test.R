@@ -158,7 +158,7 @@ ADWGS_test = function(id, gr_element_coords, gr_site_coords, gr_maf, win_size, t
 	trinuc_background = .seq2signt(gr_background, this_genome, signt_template)
 
 	# separate indels and SNVs for distinct analyses	
-	dfr_snv = NULL
+	dfr_snv = NULL; patients_with_SNV_in_element = NULL
 	if(length(gr_snv) > 0) {
 		
 		# count the mutations of every signt class
@@ -181,6 +181,12 @@ ADWGS_test = function(id, gr_element_coords, gr_site_coords, gr_maf, win_size, t
 			snv_sites = merge(snv_sites, trinuc_sites, by = "signt")
 			snv_sites$region = "sites"
 		}
+		
+		# keep track of patients with SNVs, to remove indels later
+		gr_snv_el_site = gr_snv[unique(S4Vectors::queryHits(
+				GenomicRanges::findOverlaps(gr_snv, c(gr_elements, gr_sites))))]
+		patients_with_SNV_in_element = 
+				unique(GenomicRanges::mcols(gr_snv_el_site)[,"mcols.patient"])
 
 		dfr_snv = rbind(snv_sites, snv_elements, snv_background)
 	}
@@ -197,6 +203,11 @@ ADWGS_test = function(id, gr_element_coords, gr_site_coords, gr_maf, win_size, t
 		gr_indel_bg = gr_indel[S4Vectors::queryHits(
 				GenomicRanges::findOverlaps(gr_indel, gr_background))]
 		gr_indel = c(gr_indel_fg, gr_indel_bg)
+
+		# unique indel tag, remove multiple instances		
+		indel_tag = apply(data.frame(gr_indel)[,c("seqnames", "start", "end", "mcols.patient")], 
+				1, paste, collapse = "::")
+		gr_indel = gr_indel[!duplicated(indel_tag)]
 		
 		# count all indels in regions
 		indel_index_sites = unique(S4Vectors::queryHits(
@@ -210,6 +221,21 @@ ADWGS_test = function(id, gr_element_coords, gr_site_coords, gr_maf, win_size, t
 		indel_index_elements = setdiff(indel_index_elements, indel_index_sites)
 		indel_index_background = setdiff(indel_index_background, 
 				c(indel_index_elements, indel_index_sites))
+				
+		# discard element indels that occur in a patient previously seen with SNV there
+		which_indel_index_element_dup = 
+				which(GenomicRanges::mcols(gr_indel[indel_index_elements])[,"mcols.patient"] 
+						%in% patients_with_SNV_in_element)
+		if (length(which_indel_index_element_dup) > 0) {
+			indel_index_elements = indel_index_elements[ - which_indel_index_element_dup]
+		}
+		# discard site indels that occur in a patient previously seen with SNV there
+		which_indel_index_sites_dup = 
+				which(GenomicRanges::mcols(gr_indel[indel_index_sites])[,"mcols.patient"] 
+						%in% patients_with_SNV_in_element)
+		if (length(which_indel_index_sites_dup) > 0) {
+			indel_index_sites = indel_index_sites[ - which_indel_index_sites_dup]
+		}
 
 		# initiate data frame
 		indel_sites = indel_elements = indel_background = data.frame(
