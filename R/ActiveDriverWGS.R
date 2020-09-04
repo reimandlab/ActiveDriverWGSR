@@ -242,7 +242,8 @@ ActiveDriverWGS = function(mutations,
 		}
 		
 		gr_site_coords = GenomicRanges::GRanges(sites$chr,
-				IRanges::IRanges(sites$start, sites$end))
+				IRanges::IRanges(sites$start, sites$end),
+				mcols = sites$id)
 	} else {
 		gr_site_coords = GenomicRanges::GRanges()
 	}

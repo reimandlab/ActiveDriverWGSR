@@ -14,7 +14,7 @@ data(cancer_gene_sites)
 gr_site_coords = GRanges(seqnames = cancer_gene_sites$chr,
                          IRanges(start = cancer_gene_sites$start,
                                  end = cancer_gene_sites$end),
-                         mocols = cancer_gene_sites$id)
+                         mcols = gsub("(.+) (.+) (.+)", "\\1", cancer_gene_sites$id))
 # loading mutations
 data(cll_mutations)
 
