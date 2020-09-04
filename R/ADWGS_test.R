@@ -43,7 +43,6 @@
 # @import IRanges
 # @import BSgenome
 # @import S4Vectors
-# @import plyr
 
 #' ADWGS_test executes the statistical test for ActiveDriverWGS
 #'
@@ -61,8 +60,6 @@
 #' @param win_size An integer indicating the size of the background window in base pairs that is used to establish
 #' the expected mutation rate and respective null model. The default is 50000bps
 #' @param this_genome The reference genome object of BSgenome, for example BSgenome.Hsapiens.UCSC.hg19::Hsapiens
-#' @param element_bias A boolean indicating whether or not indels should be counted by their midpoints
-#' or with bias towards the element
 #'
 #' @return A data frame containing the following columns
 #' \describe{
@@ -112,7 +109,7 @@
 #' result = ADWGS_test(id, gr_element_coords, gr_site_coords, gr_maf, 
 #'		win_size = 50000, this_genome = this_genome)
 #'}
-ADWGS_test = function(id, gr_element_coords, gr_site_coords, gr_maf, win_size, this_genome, element_bias = T) {
+ADWGS_test = function(id, gr_element_coords, gr_site_coords, gr_maf, win_size, this_genome) {
 	
 	cat(".")
 	null_res = data.frame(id,
@@ -124,7 +121,7 @@ ADWGS_test = function(id, gr_element_coords, gr_site_coords, gr_maf, win_size, t
 	gr_elements = gr_element_coords[GenomicRanges::mcols(gr_element_coords)[,1]==id]
 	# sites can be missing
 	if (length(gr_site_coords) == 0) {
-		gr_sites = GRanges()
+		gr_sites = GenomicRanges::GRanges()
 	} else {
 		gr_sites = gr_site_coords[GenomicRanges::mcols(gr_site_coords)[,1]==id]
 	}
@@ -233,7 +230,7 @@ ADWGS_test = function(id, gr_element_coords, gr_site_coords, gr_maf, win_size, t
 		
 		if (length(gr_sites) > 0) {
 			indel_sites$n_mut = length(indel_index_sites)
-			indel_sites$n_pos = sum(width(gr_sites))
+			indel_sites$n_pos = sum(GenomicRanges::width(gr_sites))
 			indel_sites$region = "sites"
 		} else {
 			indel_sites = NULL
@@ -258,8 +255,9 @@ ADWGS_test = function(id, gr_element_coords, gr_site_coords, gr_maf, win_size, t
 	formula_h0 = ifelse(length(signt_with_muts) > 1, "n_mut ~ signt", "n_mut ~ 1")
 
 	# Poisson model testing
-	h0 = glm(as.formula(formula_h0), offset = log(n_pos), family = poisson, data = dfr_mut)
-	h1 = update(h0, . ~ . + is_element)
+	h0 = stats::glm(stats::as.formula(formula_h0), offset = log(dfr_mut$n_pos), 
+			family = stats::poisson, data = dfr_mut)
+	h1 = stats::update(h0, . ~ . + is_element)
 	pp_element = stats::anova(h0, h1, test="Chisq")[2,5]
 	
 	element_stats = .get_obs_exp(h0, dfr_mut$is_element == 1, dfr_mut, "n_mut")
@@ -275,7 +273,7 @@ ADWGS_test = function(id, gr_element_coords, gr_site_coords, gr_maf, win_size, t
 	pp_site = site_muts_obs = site_muts_exp = site_enriched = site_depleted = NA
 	if (length(gr_sites) > 0) {
 	
-		h2 = update(h1, . ~ . + is_site)
+		h2 = stats::update(h1, . ~ . + is_site)
 		pp_site = stats::anova(h1, h2, test="Chisq")[2,5]		
 		
 	    site_stats = .get_obs_exp(h1, dfr_mut$is_site == 1, dfr_mut, "n_mut")
