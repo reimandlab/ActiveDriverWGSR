@@ -10,8 +10,7 @@ ADWGS_test(
   gr_site_coords,
   gr_maf,
   win_size,
-  this_genome,
-  element_bias = T
+  this_genome
 )
 }
 \arguments{
@@ -34,9 +33,6 @@ start and end coordinates, patient id, and trinucleotide context}
 the expected mutation rate and respective null model. The default is 50000bps}
 
 \item{this_genome}{The reference genome object of BSgenome, for example BSgenome.Hsapiens.UCSC.hg19::Hsapiens}
-
-\item{element_bias}{A boolean indicating whether or not indels should be counted by their midpoints
-or with bias towards the element}
 }
 \value{
 A data frame containing the following columns
