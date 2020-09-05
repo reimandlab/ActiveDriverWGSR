@@ -1,7 +1,7 @@
 ---
 title: "ActiveDriverWGS"
 author: "Helen Zhu, Juri Reimand"
-date: `R Sys.Date()`
+date: "`R Sys.Date()`"
 output: 
   rmarkdown:::html_vignette:
     toc: true
