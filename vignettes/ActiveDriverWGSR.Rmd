@@ -3,7 +3,7 @@ title: "ActiveDriverWGS"
 author: "Helen Zhu, Juri Reimand"
 date: "`R Sys.Date()`"
 output: 
-  rmarkdown:::html_vignette:
+  rmarkdown:::github_document:
     toc: true
 vignette: >
   %\VignetteIndexEntry{ActiveDriverWGS}
@@ -11,12 +11,12 @@ vignette: >
   %\VignetteEngine{knitr::rmarkdown}
 ---
 
-```{r setup, include=FALSE}
+```{r setup, include = FALSE}
 knitr::opts_chunk$set(echo = TRUE,
-                      warning=FALSE, 
-                      message=FALSE, 
-                      width=500)
-options(max.print=35)
+                      warning = FALSE, 
+                      message = FALSE, 
+                      width = 500)
+options(max.print = 35)
 ```
 
 # Introduction
