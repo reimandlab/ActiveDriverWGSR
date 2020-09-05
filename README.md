@@ -86,7 +86,7 @@ results = ActiveDriverWGS(mutations = cll_mutations, elements = elements)
 
 ## Detailed tutorial
 
-For a tutorial on ActiveDriverWGS, please click [here](http://htmlpreview.github.io/?https://github.com/reimandlab/ActiveDriverWGSR/blob/master/vignettes/ActiveDriverWGSR.Rmd) or [here](https://github.com/reimandlab/ActiveDriverWGSR/blob/master/vignettes/ActiveDriverWGSR.Rmd).
+For a tutorial on ActiveDriverWGS, please click [here](http://htmlpreview.github.io/?https://github.com/reimandlab/ActiveDriverWGSR/blob/master/vignettes/ActiveDriverWGSR.Rmd) or [here](https://github.com/reimandlab/ActiveDriverWGSR/blob/master/doc/ActiveDriverWGSR.html).
 
 ## Publication
 
