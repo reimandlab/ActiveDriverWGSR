@@ -21,7 +21,7 @@
 #' @keywords datasets
 #'
 #' @references Alexandrov, Ludmil B., et al. "Signatures of mutational processes in human cancer." Nature 500.7463 (2013): 415.
-#' (\href{https://www.ncbi.nlm.nih.gov/pubmed/23945592}{PubMed})
+#' (\href{https://pubmed.ncbi.nlm.nih.gov/23945592/}{PubMed})
 #'
 #' @source \href{ftp://ftp.sanger.ac.uk/pub/cancer/AlexandrovEtAl}{FTP Server}
 #'

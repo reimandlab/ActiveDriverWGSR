@@ -32,6 +32,6 @@ ActiveDriverWGS(mutations = cll_mutations, elements = cancer_genes)
 }
 \references{
 Harrow, Jennifer, et al. "GENCODE: the reference human genome annotation for The ENCODE Project." Genome research 22.9 (2012): 1760-1774.
-(\href{https://www.ncbi.nlm.nih.gov/pubmed/22955987}{PubMed})
+(\href{https://pubmed.ncbi.nlm.nih.gov/22955987/}{PubMed})
 }
 \keyword{datasets}
