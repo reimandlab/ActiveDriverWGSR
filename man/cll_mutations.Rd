@@ -33,6 +33,6 @@ ActiveDriverWGS(mutations = cll_mutations, elements = cancer_genes)
 }
 \references{
 Alexandrov, Ludmil B., et al. "Signatures of mutational processes in human cancer." Nature 500.7463 (2013): 415.
-(\href{https://www.ncbi.nlm.nih.gov/pubmed/23945592}{PubMed})
+(\href{https://pubmed.ncbi.nlm.nih.gov/23945592/}{PubMed})
 }
 \keyword{datasets}

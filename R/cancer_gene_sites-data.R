@@ -16,10 +16,10 @@
 #'
 #' @keywords datasets
 #'
-#' @references Wadi, Lina, et al. "Candidate cancer driver mutations in super-enhancers and long-range chromatin interaction networks." bioRxiv (2017): 236802.
-#' (\href{https://www.biorxiv.org/content/early/2017/12/19/236802}{bioRxiv})
+#' @references Wadi, Lina, et al. "ActiveDriverDB: human disease mutations and genome variation in post-translational modification sites of proteins." Nucleic Acids Res. (2018): Jan 4;46(D1):D901-D910.
+#' (\href{https://pubmed.ncbi.nlm.nih.gov/29126202/}{PubMed})
 #'
-#' @source \href{https://www.biorxiv.org/content/early/2017/12/19/236802}{bioRxiv}
+#' @source \href{https://pubmed.ncbi.nlm.nih.gov/29126202/}{PubMed}
 #'
 #' @examples
 #' data(cancer_gene_sites)
