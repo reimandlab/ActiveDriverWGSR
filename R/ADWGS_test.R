@@ -22,19 +22,16 @@
 #' @param dfr a dataframe containing the data to be tested
 #' @param colname name of the column which indicates the count of mutations in the positions of interest
 #'
-#' @return a list of observed mutations (numeric), expected mutations (numeric),
-#' observations enriched (boolean) and observations depleted (boolean)
+#' @return a list of observed mutations and expected mutations
 .get_obs_exp = function(hyp, select_positions, dfr, colname) {
   obs_mut = sum(dfr[select_positions, colname])
 
   exp_probs = hyp$fitted.values[select_positions]
   # simulate from poisson distribution with values from model response
-  exp_boot = replicate(1000, sum(stats::rpois(rep(1, length(exp_probs)), exp_probs)))
+  exp_boot = replicate(100, sum(stats::rpois(rep(1, length(exp_probs)), exp_probs)))
   exp_mut = stats::median(exp_boot)
-  obs_enriched = (obs_mut > stats::quantile(exp_boot, 0.95))[[1]]
-  obs_depleted = (obs_mut < stats::quantile(exp_boot, 0.05))[[1]]
 
-  list(obs_mut, exp_mut, obs_enriched, obs_depleted)
+  list(obs_mut, exp_mut)
 }
 
 # @import GenomicRanges
@@ -286,30 +283,36 @@ ADWGS_test = function(id, gr_element_coords, gr_site_coords, gr_maf, win_size, t
 	h1 = stats::update(h0, . ~ . + is_element)
 	pp_element = stats::anova(h0, h1, test="Chisq")[2,5]
 	
+	# coefficient determines enrichment or depletion
+	# if significant depletion flip p-value direction
+	coef_element = stats::coef(h1)[['is_element']]
+	element_enriched = coef_element > 0
+	if (!element_enriched & !is.na(pp_element) & pp_element < 0.5) {
+		pp_element = 1 - pp_element
+	}
+	
+	# observed and expected values from sampling
 	element_stats = .get_obs_exp(h0, dfr_mut$is_element == 1, dfr_mut, "n_mut")
 	element_muts_obs = element_stats[[1]]
 	element_muts_exp = element_stats[[2]]
-	element_enriched = element_stats[[3]]
-	element_depleted = element_stats[[4]]
-	
-    pp_element = ifelse(element_depleted & !is.na(pp_element) & pp_element < 0.5, 
-    		1 - pp_element, pp_element)
 
 	# if region has sites, test second hypothesis on regions
 	pp_site = site_muts_obs = site_muts_exp = site_enriched = site_depleted = NA
 	if (length(gr_sites) > 0) {
 	
 		h2 = stats::update(h1, . ~ . + is_site)
-		pp_site = stats::anova(h1, h2, test="Chisq")[2,5]		
+		pp_site = stats::anova(h1, h2, test="Chisq")[2,5]
+		
+		# coefficient determines enrichment or depletion
+		coef_site = stats::coef(h2)[['is_site']]
+		site_enriched = coef_site > 0
+		if (!site_enriched & !is.na(pp_site) & pp_site < 0.5) {
+			pp_site = 1 - pp_site
+		}
 		
 	    site_stats = .get_obs_exp(h1, dfr_mut$is_site == 1, dfr_mut, "n_mut")
 	    site_muts_obs = site_stats[[1]]
 	    site_muts_exp = site_stats[[2]]
-	    site_enriched = site_stats[[3]]
-	    site_depleted = site_stats[[4]]
-	    
-	    pp_site = ifelse(site_depleted & !is.na(pp_site) & pp_site < 0.5, 
-	    		1 - pp_site, pp_site)
 	}
 
 	data.frame(id,

@@ -16,8 +16,7 @@
 \item{colname}{name of the column which indicates the count of mutations in the positions of interest}
 }
 \value{
-a list of observed mutations (numeric), expected mutations (numeric),
-observations enriched (boolean) and observations depleted (boolean)
+a list of observed mutations and expected mutations
 }
 \description{
 Calculates the number of expected mutations based

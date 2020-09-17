@@ -1,3 +1,9 @@
+# ActiveDriverWGS 1.1.1
+
+## Major Changes
+
+* Bug fixed: a rare set of very large elements with depletion of mutations would sometimes appear as enriched in mutations. 
+
 # ActiveDriverWGS 1.1.0
 
 ## Major Changes
