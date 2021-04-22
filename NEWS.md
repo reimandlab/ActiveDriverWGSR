@@ -1,6 +1,8 @@
-# ActiveDriverWGS 1.1.1
+# ActiveDriverWGS 1.1.2
 
-## Major Changes
+* Bug fixed: datasets with very few unmutated elements (<10) previously failed to include these elements in results.
+
+# ActiveDriverWGS 1.1.1
 
 * Bug fixed: a rare set of very large elements with depletion of mutations would sometimes appear as enriched in mutations. 
 
