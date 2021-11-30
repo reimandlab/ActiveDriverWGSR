@@ -106,20 +106,23 @@ ActiveDriverWGS = function(mutations,
 		stop("ref_genome must one of 'hg19', 'hg38', 'mm9', 'mm10'")
 	}
 	
+	hg_permitted_chrs = paste0("chr", c(1:22, "X", "Y", "M"))
+	mm_permitted_chrs = paste0("chr", c(1:19, "X", "Y", "M"))
+	
 	this_genome = BSgenome.Hsapiens.UCSC.hg19::Hsapiens
-	permitted_chrs = paste0("chr", c(1:22, "X", "Y"))
+	permitted_chrs = hg_permitted_chrs
 	
 	if (ref_genome == 'hg38') {
 		this_genome = BSgenome.Hsapiens.UCSC.hg38::Hsapiens
-		permitted_chrs = paste0("chr", c(1:22, "X", "Y"))
+		permitted_chrs = hg_permitted_chrs
 	}
 	if (ref_genome == 'mm9') {
 		this_genome = BSgenome.Mmusculus.UCSC.mm9::Mmusculus
-		permitted_chrs = paste0("chr", c(1:19, "X", "Y"))
+		permitted_chrs = mm_permitted_chrs
 	}
 	if (ref_genome == 'mm10') {
 		this_genome = BSgenome.Mmusculus.UCSC.mm10::Mmusculus
-		permitted_chrs = paste0("chr", c(1:19, "X", "Y"))
+		permitted_chrs = mm_permitted_chrs
 	}
 	
 	# Verifying Format for recovery.dir
