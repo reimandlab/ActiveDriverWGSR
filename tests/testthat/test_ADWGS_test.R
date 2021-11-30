@@ -1,6 +1,7 @@
 context("Testing the ADWGS_test function")
 
 library(GenomicRanges)
+library(BSgenome.Hsapiens.UCSC.hg19)
 
 # loading regions
 data(cancer_genes)
