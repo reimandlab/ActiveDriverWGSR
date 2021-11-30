@@ -16,7 +16,7 @@ A data frame containing the following columns: chr, pos1, pos2, ref, alt, patien
 }
 }
 \source{
-\href{ftp://ftp.sanger.ac.uk/pub/cancer/AlexandrovEtAl}{FTP Server}
+\href{https://www.nature.com/articles/nature12477}{Publication}
 }
 \usage{
 data(cll_mutations)

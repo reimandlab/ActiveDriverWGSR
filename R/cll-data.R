@@ -23,7 +23,7 @@
 #' @references Alexandrov, Ludmil B., et al. "Signatures of mutational processes in human cancer." Nature 500.7463 (2013): 415.
 #' (\href{https://pubmed.ncbi.nlm.nih.gov/23945592/}{PubMed})
 #'
-#' @source \href{ftp://ftp.sanger.ac.uk/pub/cancer/AlexandrovEtAl}{FTP Server}
+#' @source \href{https://www.nature.com/articles/nature12477}{Publication}
 #'
 #' @examples
 #' data(cll_mutations)
