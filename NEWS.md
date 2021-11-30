@@ -1,6 +1,7 @@
 # ActiveDriverWGS 1.1.2
 
 * Bug fixed: datasets with very few unmutated elements (<10) previously failed to include these elements in results.
+* New option: mitochondrial mutations can be analyzed (chrM). 
 
 # ActiveDriverWGS 1.1.1
 
