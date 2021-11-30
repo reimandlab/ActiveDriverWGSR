@@ -141,7 +141,10 @@ ADWGS_test = function(id, gr_element_coords, gr_site_coords, gr_maf, win_size, t
 	gr_background = GenomicRanges::setdiff(gr_background, gr_elements)
 
 	# make sure sites capture only the element and not the background	
-	gr_sites = GenomicRanges::intersect(gr_sites, gr_elements)	#   suppressWarnings() to suppress this warning.)
+	# there is an unexplained err here with chromosomes/levels:
+	# when intersect(elements, sites), then err is thrown: seqlevels(seqinfo(x))' and 'levels(seqnames(x))' are not identical
+	# if order switched, then err no longer
+	gr_sites = GenomicRanges::intersect(gr_elements, gr_sites)
 	
 	# remove sites from elements to avoid double counting
 	gr_elements = GenomicRanges::setdiff(gr_elements, gr_sites)
