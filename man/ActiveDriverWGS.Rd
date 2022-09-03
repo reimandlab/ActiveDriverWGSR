@@ -12,7 +12,8 @@ ActiveDriverWGS(
   filter_hyper_MB = 30,
   recovery.dir = NULL,
   mc.cores = 1,
-  ref_genome = "hg19"
+  ref_genome = "hg19",
+  detect_depleted_mutations = FALSE
 )
 }
 \arguments{
@@ -59,6 +60,8 @@ specifying a recovery directory will recover previously computed results if a qu
 \item{mc.cores}{The number of cores which can be used if multiple cores are available. The default is 1.}
 
 \item{ref_genome}{The reference genome used on the analysis. The default option is "hg19", other options are "hg38", "mm9" and "mm10".}
+
+\item{detect_depleted_mutations}{if TRUE, detect elements with significantly fewer than expected mutations. FALSE by default}
 }
 \value{
 A data frame containing the results of driver discovery containing the following columns: id, pp_element,

@@ -1,3 +1,9 @@
+# ActiveDriverWGS 1.2.0
+
+* Updated trinucleotide quantification in sequence and mutations. Trinucleotides on the inverse strand are now reverse complemented instead of complemented to match COSMIC signatures.
+* More accurate and stable numeric estimates of expected mutations are provided as output instead of the Poisson-sampled estimates provided previously. 
+* The package now allows identification of genomic elements with significantly fewer mutations than expected, potentially reflecting negative selection of elements. This is enabled using an optional command line parameter detect_depleted_mutations. In the analysis depleted mutations, elements with enriched mutations are assigned non-significant P-values.
+
 # ActiveDriverWGS 1.1.2
 
 * Bug fixed: datasets with very few unmutated elements (<10) previously failed to include these elements in results.

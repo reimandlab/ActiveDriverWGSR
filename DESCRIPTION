@@ -1,7 +1,10 @@
 Package: ActiveDriverWGS
 Title: A Driver Discovery Tool for Cancer Whole Genomes
-Version: 1.1.2
-Authors@R: c(person("Juri", "Reimand", email = "juri.reimand@utoronto.ca", role = c("aut", "cre")), person("Helen", "Zhu", email = "helen.zhu@oicr.on.ca", role = c("aut")))
+Version: 1.2.0
+Authors@R: c(
+	person("Juri", "Reimand", email = "juri.reimand@utoronto.ca", role = c("aut", "cre")), 
+	person("Helen", "Zhu", email = "helen.zhu@oicr.on.ca", role = c("aut")), 
+	person("Kevin", "Cheng", email = "kevin.cheng@oicr.on.ca", role = "ctb"))
 Description: A method for finding an enrichment of cancer simple somatic mutations (SNVs and Indels) in functional elements across the human genome. 'ActiveDriverWGS' detects coding and noncoding driver elements using whole genome sequencing data. The method is part of the following publication: Candidate Cancer Driver Mutations in Distal Regulatory Elements and Long-Range Chromatin Interaction Networks. Molecular Cell (2020) <doi:10.1016/j.molcel.2019.12.027>.
 Depends: R (>= 3.5)
 Imports: 
@@ -23,4 +26,4 @@ Suggests:
 	testthat, 
 	rmarkdown
 VignetteBuilder: knitr
-RoxygenNote: 7.1.1
+RoxygenNote: 7.1.2

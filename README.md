@@ -1,6 +1,6 @@
 # ActiveDriverWGS
 
-<b>Note: ActiveDriverWGS (1.1.2) has been released. It supports alternative reference genomes (hg38, mm9, mm10) and has been optimized for speed and memory usage. Two rarely-executed bugs have been fixed in minor versions 1.1.0-1.1.2 (See NEWS.md).</b>
+<b>Note: ActiveDriverWGS (1.2.0) has been released. It includes an improved trinucleotide quantification in genomic elements and mutations. Testing for depletion of mutations in genomic elements has been enabled. Improved estimated of expected mutations have been added. See NEWS.md for detailed updates.</b>
 
 ActiveDriverWGS is a cancer driver discovery tool for analysis of somatic mutations derived from whole genome sequencing. It works on protein-coding sequences as well as various non-coding sequences (non-coding RNAs, promoters, enhancers, etc). ActiveDriverWGS is based on a statistical model that analyzes the mutational burden of SNVs and short indels in functionally defined elements of interest. It then retrieves elements that are significantly mutated compared to their background sequence windows, nucleotide sequence contexts and trinucleotide mutation signatures. ActiveDriverWGS is implemented as an R package and is available from GitHub and CRAN.
 
@@ -55,13 +55,13 @@ results = ActiveDriverWGS(mutations = cll_mutations, elements = elements_to_test
 
 results
 #       id  pp_element element_muts_obs element_muts_exp element_enriched pp_site
-# 1    ATM 0.001807467                2                0             TRUE       1
-# 2  MYD88 0.004976353                1                0             TRUE       1
-# 3 NOTCH1 0.005641867                2                0             TRUE       1
+# 1    ATM 0.002092488                2       0.11059736             TRUE       1
+# 2  MYD88 0.003309630                1       0.01337728             TRUE       1
+# 3 NOTCH1 0.004964277                2       0.16562752             TRUE       1
 #   site_muts_obs site_muts_exp site_enriched fdr_element fdr_site
-# 1            NA            NA            NA 0.005422402        1
-# 2            NA            NA            NA 0.005641867        1
-# 3            NA            NA            NA 0.005641867        1
+# 1            NA            NA            NA 0.004964277        1
+# 2            NA            NA            NA 0.004964277        1
+# 3            NA            NA            NA 0.004964277        1
 #   has_site_mutations
 # 1
 # 2
