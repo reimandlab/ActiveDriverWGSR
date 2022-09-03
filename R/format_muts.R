@@ -46,10 +46,10 @@
 		which_to_complement = which(mutations_snv$ref %in% c("G", "A"))
 		
 		new_triples[which_to_complement] = 
-				as.character(Biostrings::complement(Biostrings::DNAStringSet(
+				as.character(Biostrings::reverseComplement(Biostrings::DNAStringSet(
 					new_triples[which_to_complement])))
 		new_alt[which_to_complement] = 
-				as.character(Biostrings::complement(Biostrings::DNAStringSet(
+				as.character(Biostrings::reverseComplement(Biostrings::DNAStringSet(
 					new_alt[which_to_complement])))
 		mutations_snv$tag = paste0(new_triples, ">", new_alt)
 	} else { 

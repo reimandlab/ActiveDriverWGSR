@@ -26,10 +26,9 @@
 .get_obs_exp = function(hyp, select_positions, dfr, colname) {
   obs_mut = sum(dfr[select_positions, colname])
 
-  exp_probs = hyp$fitted.values[select_positions]
-  # simulate from poisson distribution with values from model response
-  exp_boot = replicate(100, sum(stats::rpois(rep(1, length(exp_probs)), exp_probs)))
-  exp_mut = stats::median(exp_boot)
+  exp_probs = hyp$fitted.values[select_positions] 
+  # derive a fractional estimate of expected mutations as a sum of per-nucleotide probabilties
+  exp_mut = sum(exp_probs)
 
   list(obs_mut, exp_mut)
 }
@@ -57,6 +56,7 @@
 #' @param win_size An integer indicating the size of the background window in base pairs that is used to establish
 #' the expected mutation rate and respective null model. The default is 50000bps
 #' @param this_genome The reference genome object of BSgenome, for example BSgenome.Hsapiens.UCSC.hg19::Hsapiens
+#' @param detect_depleted_mutations if TRUE, detect elements with significantly fewer than expected mutations. FALSE by default
 #'
 #' @return A data frame containing the following columns
 #' \describe{
@@ -106,7 +106,7 @@
 #' result = ADWGS_test(id, gr_element_coords, gr_site_coords, gr_maf, 
 #'		win_size = 50000, this_genome = this_genome)
 #'}
-ADWGS_test = function(id, gr_element_coords, gr_site_coords, gr_maf, win_size, this_genome) {
+ADWGS_test = function(id, gr_element_coords, gr_site_coords, gr_maf, win_size, this_genome, detect_depleted_mutations = FALSE) {
 	
 	cat(".")
 	null_res = data.frame(id,
@@ -284,14 +284,19 @@ ADWGS_test = function(id, gr_element_coords, gr_site_coords, gr_maf, win_size, t
 	h0 = stats::glm(stats::as.formula(formula_h0), offset = log(dfr_mut$n_pos), 
 			family = stats::poisson, data = dfr_mut)
 	h1 = stats::update(h0, . ~ . + is_element)
-	pp_element = stats::anova(h0, h1, test="Chisq")[2,5]
+	pp_element = pp_element_2way = stats::anova(h0, h1, test="Chisq")[2,5]
 	
 	# coefficient determines enrichment or depletion
 	# if significant depletion flip p-value direction
+	# this is the default option. 
+	# if user defines 'allow_negative_selection' then both positively and negatively selected sites will be shown
 	coef_element = stats::coef(h1)[['is_element']]
 	element_enriched = coef_element > 0
-	if (!element_enriched & !is.na(pp_element) & pp_element < 0.5) {
-		pp_element = 1 - pp_element
+	if (!detect_depleted_mutations & !element_enriched & !is.na(pp_element) & pp_element < 0.5) {
+		pp_element = 1 - pp_element_2way
+	}
+	if (detect_depleted_mutations & element_enriched & !is.na(pp_element) & pp_element < 0.5) {
+		pp_element = 1 - pp_element_2way
 	}
 	
 	# observed and expected values from sampling
@@ -304,13 +309,16 @@ ADWGS_test = function(id, gr_element_coords, gr_site_coords, gr_maf, win_size, t
 	if (length(gr_sites) > 0) {
 	
 		h2 = stats::update(h1, . ~ . + is_site)
-		pp_site = stats::anova(h1, h2, test="Chisq")[2,5]
+		pp_site = pp_site_2way = stats::anova(h1, h2, test="Chisq")[2,5]
 		
 		# coefficient determines enrichment or depletion
 		coef_site = stats::coef(h2)[['is_site']]
 		site_enriched = coef_site > 0
-		if (!site_enriched & !is.na(pp_site) & pp_site < 0.5) {
-			pp_site = 1 - pp_site
+		if (!detect_depleted_mutations & !site_enriched & !is.na(pp_site) & pp_site < 0.5) {
+			pp_site = 1 - pp_site_2way
+		}
+		if (detect_depleted_mutations & site_enriched & !is.na(pp_site) & pp_site < 0.5) {
+			pp_site = 1 - pp_site_2way
 		}
 		
 	    site_stats = .get_obs_exp(h1, dfr_mut$is_site == 1, dfr_mut, "n_mut")
@@ -350,7 +358,7 @@ ADWGS_test = function(id, gr_element_coords, gr_site_coords, gr_maf, win_size, t
 	# complement trinucleotides for A/G nucleotides
 	where_reverse = substr(tri_nucleotide, 2, 2) %in% c("A", "G")
 	tri_nucleotide[where_reverse] = 
-			as.character(Biostrings::complement(Biostrings::DNAStringSet(
+			as.character(Biostrings::reverseComplement(Biostrings::DNAStringSet(
 					tri_nucleotide[where_reverse])))
 	
 	tri_nucleotide = data.frame(table(tri_nucleotide), stringsAsFactors = FALSE)
