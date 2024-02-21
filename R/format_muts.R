@@ -75,7 +75,7 @@
 
 	# Filtering message
 	n_muts_removed = (nrow(mutations) - length(seq_snvs) - length(seq_indels))
-	cat("Removing ", n_muts_removed, " invalid SNVs & indels\n\n")
+	warning(paste0("Removing ", n_muts_removed, " invalid SNVs & indels\n\n"))
 	
 	rbind(mutations_snv, mutations_indel)
 }
@@ -116,12 +116,11 @@ format_muts = function(mutations, this_genome, filter_hyper_MB = NA) {
 		
 		hyper_tab = sample_mut_count[sample_mut_count > total_muts_filter]
 		spl_rm = names(hyper_tab)
-		no_mut_rm = sum(hyper_tab)
+		no_mut_rm = sum(hyper_tab)		
+		warning("remove ", length(spl_rm), " hypermut samples, n=", no_mut_rm, " muts, ", round(100*no_mut_rm/nrow(mutations)), "%\n")
+		warning(paste0("hypermuted samples: ", spl_rm, "\n\n"))
 		
-		cat(length(spl_rm), "remove hypermut, n=", no_mut_rm, ", ", round(100*no_mut_rm/nrow(mutations)), "%\n")
-		cat("hypermuted samples: ", spl_rm, "\n\n")
-		
-		mutations = mutations[!mutations$patient %in% spl_rm,, drop=F]
+		mutations = mutations[!mutations$patient %in% spl_rm,, drop = F]
 	}
 	if(nrow(mutations) == 0) {
 		stop("No mutations left after filtering hypermutators")
@@ -141,7 +140,7 @@ format_muts = function(mutations, this_genome, filter_hyper_MB = NA) {
 	
 	# reverse start/end coordinates of deletions
 	rev_coords = which(mutations$pos2 - mutations$pos1 < 0)
-	cat("reversing", length(rev_coords), "positions\n")
+	warning(paste0("reversing ", length(rev_coords), " positions\n"))
 	if (length(rev_coords)>0) {
 		pos1 = mutations[rev_coords, "pos1"]
 		pos2 = mutations[rev_coords, "pos2"]

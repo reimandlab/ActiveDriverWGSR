@@ -108,7 +108,6 @@
 #'}
 ADWGS_test = function(id, gr_element_coords, gr_site_coords, gr_maf, win_size, this_genome, detect_depleted_mutations = FALSE) {
 	
-	cat(".")
 	null_res = data.frame(id,
 			pp_element = NA, element_muts_obs = NA, element_muts_exp = NA, element_enriched = NA,
 			pp_site = NA, site_muts_obs = NA, site_muts_exp = NA, site_enriched = NA,

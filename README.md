@@ -90,7 +90,7 @@ For a tutorial on ActiveDriverWGS, please click [here](http://htmlpreview.github
 
 ## Publication
 
-For more information, please refer to the [publication](https://www.cell.com/molecular-cell/fulltext/S1097-2765(19)30957-8).
+For more information, please refer to the [publication](https://doi.org/10.1016/j.molcel.2019.12.027).
 
 Helen Zhu*, Liis Uuskula-Reimand*, Keren Isaev*, Lina Wadi, Azad Alizada, Shimin Shuai, Vincent Huang, Dike Aduluso-Nwaobasi, Marta Paczkowska, Diala Abd-Rabbo, Oliver Ocsenas, Minggao Liang, J. Drew Thompson, Yao Li, Luyao Ruan, Michal Krassowski, Irakli Dzneladze, Jared T. Simpson, Mathieu Lupien, Lincoln D. Stein, Paul C. Boutros, Michael D. Wilson, Jüri Reimand. <b>Candidate Cancer Driver Mutations in Distal Regulatory Elements and Long-Range Chromatin Interaction Networks</b>. <i>Molecular Cell</i> (2020), https://doi.org/10.1016/j.molcel.2019.12.027
 

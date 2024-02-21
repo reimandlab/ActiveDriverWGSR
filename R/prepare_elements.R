@@ -19,7 +19,7 @@
 .split_coord_fragments_in_BED = function(i, coords) {
 
   # Progress Update
-  if (i %% 100 == 0) cat(i, " ")
+  if (i %% 100 == 0) warning(paste0(i, " "))
 
   # Retrieving coords
   n_regions =  as.numeric(coords[i, "V10"])
@@ -76,7 +76,7 @@ prepare_elements_from_BED12 = function(fname) {
   if (!is.character(input$V4)) stop("Incorrect BED12 Format: IDs must be a character string")
 
   # Processing File
-  cat("\n", nrow(input), " Rows :: Processing row ")
+  warning(paste0("\n", nrow(input), " Rows :: Processing row "))
   coords = do.call(rbind, lapply(1:nrow(input), .split_coord_fragments_in_BED, input))
   coords = data.frame(coords, stringsAsFactors=F)
   coords$start = as.numeric(coords$start)
@@ -92,7 +92,7 @@ prepare_elements_from_BED12 = function(fname) {
   # remove repeated elements
   coords = unique(coords)
   dim2 = nrow(coords)
-  cat("\n Preparing Elements Complete \n RM", dim1-dim2, "lines\n")
+  warning(paste0("\n Preparing Elements Complete \n RM", dim1-dim2, "lines\n"))
   coords
 }
 
@@ -151,6 +151,6 @@ prepare_elements_from_BED4 = function(fname) {
   # remove repeated elements
   input = unique(input)
   dim2 = nrow(input)
-  cat("\n Preparing Elements Complete \n RM", dim1-dim2, "lines\n")
+  warning(paste0("\n Preparing Elements Complete \n RM", dim1-dim2, "lines\n"))
   input
 }

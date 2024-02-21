@@ -271,7 +271,7 @@ ActiveDriverWGS = function(mutations,
 	if(!(is.null(recovery.dir))){
 		unmutated_results$result_number = 1:length(unmutated_elements) + length(mutated_elements)
 	}
-	cat("Number of Elements with 0 Mutations: ", length(unmutated_elements), "\n")
+	warning(paste0("Number of Elements with 0 Mutations: ", length(unmutated_elements), "\n"))
 	
 	# Recovered Results
 	recovered_results = NULL
@@ -290,15 +290,15 @@ ActiveDriverWGS = function(mutations,
 		recovered_result_numbers = recovered_results$result_number
 	}
 	
-	cat("Tests to do: ", length(not_done), "\n")
+	warning(paste0("Tests to do: ", length(not_done), "\n"))
 	if (length(recovered_result_numbers) > 0) {
-		cat("Tests recovered: ", length(unique(recovered_result_numbers)), "\n")
+		warning(paste0("Tests recovered: ", length(unique(recovered_result_numbers)), "\n"))
 	}
 	
 	# Mutated Results
 	mutated_results = do.call(rbind, parallel::mclapply(1:length(not_done), function(i) {
 		if (i %% 100 == 0) {
-			cat(i, " elements completed\n")
+			warning(paste0(i, " elements completed\n"))
 		}
 		
 		# skip calculation if this item is completed already
