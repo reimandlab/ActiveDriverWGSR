@@ -1,5 +1,6 @@
 context("Testing the ActiveDriverWGS function")
 
+skip_if_not_installed("BSgenome.Hsapiens.UCSC.hg19")
 library(GenomicRanges)
 
 # loading regions

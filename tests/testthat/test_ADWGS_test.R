@@ -1,5 +1,6 @@
 context("Testing the ADWGS_test function")
 
+skip_if_not_installed("BSgenome.Hsapiens.UCSC.hg19")
 library(GenomicRanges)
 library(BSgenome.Hsapiens.UCSC.hg19)
 

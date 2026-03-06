@@ -1,3 +1,8 @@
+# ActiveDriverWGS 1.2.1
+
+* Bug fixed: elements and sites with coordinates below 2 or beyond the chromosome end now return an informative error, preventing downstream failures in trinucleotide context calculations.
+* Bug fixed: all GenomicRanges operations (findOverlaps, setdiff, intersect, union) now use ignore.strand = TRUE, ensuring mutations, elements, and sites are always matched by genomic position regardless of strand.
+
 # ActiveDriverWGS 1.2.0
 
 * Updated trinucleotide quantification in sequence and mutations. Trinucleotides on the inverse strand are now reverse complemented instead of complemented to match COSMIC signatures.

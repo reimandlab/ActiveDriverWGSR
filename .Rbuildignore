@@ -1,2 +1,4 @@
 ^doc$
 ^Meta$
+^CLAUDE\.md$
+^.*\.DS_Store$

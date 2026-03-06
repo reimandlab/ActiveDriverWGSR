@@ -1,5 +1,6 @@
 context("Format of Input Files to ActiveDriverWGS")
 
+skip_if_not_installed("BSgenome.Hsapiens.UCSC.hg19")
 set.seed(100)
 
 # loading regions
@@ -155,6 +156,20 @@ test_that("elements are formatted properly",{
   expect_error(ActiveDriverWGS(elements = this_elements,
                                mutations = cll_mutations),
                "element identifier must be a string")
+
+  # Coordinates below minimum (2)
+  this_elements = cancer_genes
+  this_elements$start[which(this_elements$id == "ATM")[1]] = 1
+  expect_error(ActiveDriverWGS(elements = this_elements,
+                               mutations = cll_mutations),
+               "elements contain coordinates below 2 for the following ids: ATM")
+
+  # Coordinates beyond chromosome end (chr11 length is 135006516, max allowed is 135006515)
+  this_elements = cancer_genes
+  this_elements$end[which(this_elements$id == "ATM")[1]] = 135006516
+  expect_error(ActiveDriverWGS(elements = this_elements,
+                               mutations = cll_mutations),
+               "elements contain coordinates beyond chromosome ends for the following ids: ATM")
 })
 
 test_that("sites are formatted properly",{
@@ -206,12 +221,28 @@ test_that("sites are formatted properly",{
   # unexpected chromosome
   this_sites = cancer_gene_sites
   this_sites$chr[1] = paste0("CHR", this_sites$chr[1])
-  err_expect = paste("Only autosomal and sex chromosomes may be used in site coordinates (24 for human, 21 for mouse).", 
+  err_expect = paste("Only autosomal and sex chromosomes may be used in site coordinates (24 for human, 21 for mouse).",
 		"Note that chr23 and chr24 should be formatted as chrX and chrY, respectively")
   expect_error(ActiveDriverWGS(elements = cancer_genes,
                                mutations = cll_mutations,
                                sites = this_sites),
 		err_expect, fixed = TRUE)
+
+  # Coordinates below minimum (2)
+  this_sites = cancer_gene_sites
+  this_sites$start[which(this_sites$id == "ATM")[1]] = 1
+  expect_error(ActiveDriverWGS(elements = cancer_genes,
+                               mutations = cll_mutations,
+                               sites = this_sites),
+               "sites contain coordinates below 2 for the following ids: ATM")
+
+  # Coordinates beyond chromosome end (chr11 length is 135006516, max allowed is 135006515)
+  this_sites = cancer_gene_sites
+  this_sites$end[which(this_sites$id == "ATM")[1]] = 135006516
+  expect_error(ActiveDriverWGS(elements = cancer_genes,
+                               mutations = cll_mutations,
+                               sites = this_sites),
+               "sites contain coordinates beyond chromosome ends for the following ids: ATM")
 })
 
 test_that("window_size is a positive integer",{

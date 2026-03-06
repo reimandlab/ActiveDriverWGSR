@@ -123,7 +123,7 @@ ADWGS_test = function(id, gr_element_coords, gr_site_coords, gr_maf, win_size, t
 	}
 	
 	# return empty result if no mutations found
-	if (length(GenomicRanges::findOverlaps(gr_elements, gr_maf)) == 0) {
+	if (length(GenomicRanges::findOverlaps(gr_elements, gr_maf, ignore.strand = TRUE)) == 0) {
 		return(null_res)
 	}
 	
@@ -131,22 +131,22 @@ ADWGS_test = function(id, gr_element_coords, gr_site_coords, gr_maf, win_size, t
 	gr_background = .create_background(gr_elements, win_size, this_genome)
 
 	# take all mutations needed for this analysis (both element and background)
-	gr_mutations = gr_maf[S4Vectors::queryHits(GenomicRanges::findOverlaps(gr_maf, gr_background))]
+	gr_mutations = gr_maf[S4Vectors::queryHits(GenomicRanges::findOverlaps(gr_maf, gr_background, ignore.strand = TRUE))]
 	# separate indels and SNVs for distinct rules
 	gr_indel = gr_mutations[GenomicRanges::mcols(gr_mutations)[,2] == "indel>X"]
 	gr_snv = gr_mutations[GenomicRanges::mcols(gr_mutations)[,2] != "indel>X"]
 
 	# remove element components from background
-	gr_background = GenomicRanges::setdiff(gr_background, gr_elements)
+	gr_background = GenomicRanges::setdiff(gr_background, gr_elements, ignore.strand = TRUE)
 
 	# make sure sites capture only the element and not the background	
 	# there is an unexplained err here with chromosomes/levels:
 	# when intersect(elements, sites), then err is thrown: seqlevels(seqinfo(x))' and 'levels(seqnames(x))' are not identical
 	# if order switched, then err no longer
-	gr_sites = GenomicRanges::intersect(gr_elements, gr_sites)
+	gr_sites = GenomicRanges::intersect(gr_elements, gr_sites, ignore.strand = TRUE)
 	
 	# remove sites from elements to avoid double counting
-	gr_elements = GenomicRanges::setdiff(gr_elements, gr_sites)
+	gr_elements = GenomicRanges::setdiff(gr_elements, gr_sites, ignore.strand = TRUE)
 
 	# create set of all mutation signatures (trinucleotide ref + alt nucleotide); AG mapped to CG
 	signt_template = .make_mut_signatures()
@@ -183,7 +183,7 @@ ADWGS_test = function(id, gr_element_coords, gr_site_coords, gr_maf, win_size, t
 		
 		# keep track of patients with SNVs, to remove indels later
 		gr_snv_el_site = gr_snv[unique(S4Vectors::queryHits(
-				GenomicRanges::findOverlaps(gr_snv, c(gr_elements, gr_sites))))]
+				GenomicRanges::findOverlaps(gr_snv, c(gr_elements, gr_sites), ignore.strand = TRUE)))]
 		patients_with_SNV_in_element = 
 				unique(GenomicRanges::mcols(gr_snv_el_site)[,"mcols.patient"])
 
@@ -196,11 +196,11 @@ ADWGS_test = function(id, gr_element_coords, gr_site_coords, gr_maf, win_size, t
 
 		# remove multiple indels per patient if these affect the same element/site
 		gr_indel_fg = gr_indel[S4Vectors::queryHits(
-				GenomicRanges::findOverlaps(gr_indel, c(gr_sites, gr_elements)))]
+				GenomicRanges::findOverlaps(gr_indel, c(gr_sites, gr_elements), ignore.strand = TRUE))]
 		gr_indel_fg = gr_indel_fg[!duplicated(
 				GenomicRanges::mcols(gr_indel_fg)[,"mcols.patient"])]
 		gr_indel_bg = gr_indel[S4Vectors::queryHits(
-				GenomicRanges::findOverlaps(gr_indel, gr_background))]
+				GenomicRanges::findOverlaps(gr_indel, gr_background, ignore.strand = TRUE))]
 		gr_indel = c(gr_indel_fg, gr_indel_bg)
 
 		# unique indel tag, remove multiple instances		
@@ -210,11 +210,11 @@ ADWGS_test = function(id, gr_element_coords, gr_site_coords, gr_maf, win_size, t
 		
 		# count all indels in regions
 		indel_index_sites = unique(S4Vectors::queryHits(
-				GenomicRanges::findOverlaps(gr_indel, gr_sites)))
+				GenomicRanges::findOverlaps(gr_indel, gr_sites, ignore.strand = TRUE)))
 		indel_index_elements = unique(S4Vectors::queryHits(
-				GenomicRanges::findOverlaps(gr_indel, gr_elements)))
+				GenomicRanges::findOverlaps(gr_indel, gr_elements, ignore.strand = TRUE)))
 		indel_index_background = unique(S4Vectors::queryHits(
-				GenomicRanges::findOverlaps(gr_indel, gr_background)))
+				GenomicRanges::findOverlaps(gr_indel, gr_background, ignore.strand = TRUE)))
 		
 		# to avoid double counting, create hierarchy: sites affected first, then elements, bgrd
 		indel_index_elements = setdiff(indel_index_elements, indel_index_sites)
@@ -386,8 +386,8 @@ ADWGS_test = function(id, gr_element_coords, gr_site_coords, gr_maf, win_size, t
 		return(NULL)
 	}
 
-	gr_snv_here = 
-			gr_snv[S4Vectors::queryHits(GenomicRanges::findOverlaps(gr_snv, gr_seq))]
+	gr_snv_here =
+			gr_snv[S4Vectors::queryHits(GenomicRanges::findOverlaps(gr_snv, gr_seq, ignore.strand = TRUE))]
 	
 	# for elements and sites, we need to remove duplicate mutations per patient
 	# false positives such as local hypermutation rates
@@ -434,6 +434,6 @@ ADWGS_test = function(id, gr_element_coords, gr_site_coords, gr_maf, win_size, t
 	gr_background = GenomicRanges::GRanges(GenomicRanges::seqnames(gr_elements), 
 			IRanges::IRanges(bg_starts, bg_ends))
 	# take one joined background set to avoid duplicates
-	gr_background = GenomicRanges::union(gr_background, gr_background)
+	gr_background = GenomicRanges::union(gr_background, gr_background, ignore.strand = TRUE)
 	gr_background
 }

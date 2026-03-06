@@ -1,5 +1,6 @@
 context("Testing the function of the format_muts function")
 
+skip_if_not_installed("BSgenome.Hsapiens.UCSC.hg19")
 # loading mutations
 data(cll_mutations)
 
