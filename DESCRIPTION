@@ -10,9 +10,6 @@ Depends: R (>= 3.5)
 Imports: 
 	BSgenome, 
 	BSgenome.Hsapiens.UCSC.hg19, 
-	BSgenome.Hsapiens.UCSC.hg38, 
-	BSgenome.Mmusculus.UCSC.mm9, 
-	BSgenome.Mmusculus.UCSC.mm10, 
 	Biostrings, 
 	GenomeInfoDb,
 	GenomicRanges,
@@ -22,8 +19,11 @@ License: GPL-3
 Encoding: UTF-8
 LazyData: true
 Suggests: 
+	BSgenome.Hsapiens.UCSC.hg38, 
+	BSgenome.Mmusculus.UCSC.mm9, 
+	BSgenome.Mmusculus.UCSC.mm10, 
 	knitr, 
 	testthat, 
 	rmarkdown
 VignetteBuilder: knitr
-RoxygenNote: 7.3.1
+RoxygenNote: 7.3.2
