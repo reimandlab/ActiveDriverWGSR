@@ -1,9 +1,10 @@
 ## ----setup, include=FALSE-----------------------------------------------------
 knitr::opts_chunk$set(echo = TRUE,
-                      warning=FALSE, 
-                      message=FALSE, 
+                      warning=FALSE,
+                      message=FALSE,
                       width=500)
 options(max.print=35)
+run_genome_chunks <- requireNamespace("BSgenome.Hsapiens.UCSC.hg19", quietly = TRUE)
 
 ## ----pressure, echo=FALSE, fig.cap="The ActiveDriverWGS Model", out.width = '75%'----
 knitr::include_graphics("ADWGS_diagram.png")
@@ -40,7 +41,7 @@ sites = prepare_elements_from_BED4(
 
 head(sites)
 
-## ----ActiveDriverWGS----------------------------------------------------------
+## ----ActiveDriverWGS, eval = run_genome_chunks--------------------------------
 
 some_genes = c("ATM", "MYD88", "NOTCH1")
 
@@ -49,11 +50,11 @@ results = ActiveDriverWGS(mutations = cll_mutations,
                           sites = cancer_gene_sites)
 
 
-## ----results------------------------------------------------------------------
+## ----results, eval = run_genome_chunks----------------------------------------
 results
 
 
-## ----pipeline-----------------------------------------------------------------
+## ----pipeline, eval = run_genome_chunks---------------------------------------
 library(GenomicRanges)
 
 # Loading elements & creating a GRanges object
@@ -88,7 +89,7 @@ gr_maf = GRanges(cll_mutations$chr,
 # Examplifying the ATM Element
 id = "ATM"
 
-## ----result-------------------------------------------------------------------
+## ----result, eval = run_genome_chunks-----------------------------------------
 # Result of 1 input element
 result = ADWGS_test(id = id,
                     gr_element_coords = gr_element_coords,

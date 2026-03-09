@@ -13,10 +13,11 @@ vignette: >
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE,
-                      warning=FALSE, 
-                      message=FALSE, 
+                      warning=FALSE,
+                      message=FALSE,
                       width=500)
 options(max.print=35)
+run_genome_chunks <- requireNamespace("BSgenome.Hsapiens.UCSC.hg19", quietly = TRUE)
 ```
 
 # Introduction
@@ -115,7 +116,7 @@ head(sites)
 # Basic Use
 ActiveDriverWGS can be run with the mutations file, the elements file and an optional sites file. In this example, mutations are adapted from the [Alexandrov et al, 2013](https://www.nature.com/articles/nature12477) dataset for chronic lymphocytic leukemia (CLL) patients. Regions are adapted from the [cancer gene census](https://cancer.sanger.ac.uk/census) and annotations for protein coding genes are adapted from GENCODE.v19.
 
-```{r ActiveDriverWGS}
+```{r ActiveDriverWGS, eval = run_genome_chunks}
 
 some_genes = c("ATM", "MYD88", "NOTCH1")
 
@@ -140,7 +141,7 @@ ActiveDriverWGS has several adjustable parameters:
 
 # Interpreting the Results
 
-```{r results}
+```{r results, eval = run_genome_chunks}
 results
 
 ```
@@ -187,7 +188,7 @@ This function calculates the enrichment of mutations for a particular region id.
 ## Example
 The following example demonstrates how to build an ActiveDriverWGS pipeline which can be adapted to HPCCs. Parallel jobs are executed for a list of element ids whereas mutation data and element coordinates are prepared prior to the process. Note that the creation of GRanges objects is part of the `ActiveDriverWGS()` wrapper function and must be completed manually by users wishing to create personalized pipelines. The function `ADWGS_test()` needs a link to the reference genome object (from the R package `BSgenome`) as an argument, and assumes that the mutations and element coordinates match the reference genome. Also, note that multiple testing corrections will need to be recalculated by the user after the results have been collected from individual jobs.
 
-```{r pipeline}
+```{r pipeline, eval = run_genome_chunks}
 library(GenomicRanges)
 
 # Loading elements & creating a GRanges object
@@ -223,7 +224,7 @@ gr_maf = GRanges(cll_mutations$chr,
 id = "ATM"
 ```
 **Note** that when splitting tasks using the `ADWGS_test` function, only the parameter `id` needs to modified for each element while `gr_element_coords`, `gr_sites` and `gr_maf` can be the complete datasets. However, the compute time and memory can be saved in very large analyses by providing more-optimal subsets of these datasets for each test, for example those limited to specific chromosomes.
-```{r result}
+```{r result, eval = run_genome_chunks}
 # Result of 1 input element
 result = ADWGS_test(id = id,
                     gr_element_coords = gr_element_coords,
